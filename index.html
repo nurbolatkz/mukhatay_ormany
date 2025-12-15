@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mukhatay Ormany - Восстанавливаем леса Казахстана</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 glass-web3 border-b border-green-200/50 dark:border-green-900/50">
+        <div class="container max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="relative">
+                    <i class="fas fa-tree text-2xl text-green-600 dark:text-green-400 animate-float3d"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                        Mukhatay Ormany
+                    </span>
+                    <span class="text-xs text-green-600 dark:text-green-400 font-medium">Восстанавливаем леса Казахстана</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <div id="auth-section">
+                    <!-- Auth buttons will be dynamically inserted here -->
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="main-content">
+        <!-- Home Page Content -->
+        <section id="home-page" class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+            <!-- Animated background blobs -->
+            <div class="absolute inset-0 overflow-hidden">
+                <div class="absolute top-20 left-10 w-72 h-72 bg-green-400 dark:bg-green-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+                <div class="absolute top-40 right-10 w-72 h-72 bg-emerald-400 dark:bg-emerald-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20" style="animation-delay: 2s;"></div>
+                <div class="absolute -bottom-8 left-20 w-72 h-72 bg-teal-400 dark:bg-teal-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20" style="animation-delay: 4s;"></div>
+            </div>
+
+            <div class="container max-w-6xl mx-auto px-4 relative z-10">
+                <div class="text-center">
+                    <!-- Floating badge -->
+                    <div class="mb-8 inline-block animate-fade-in-down">
+                        <div class="badge-glow">
+                            <i class="fas fa-sparkles mr-2"></i>
+                            Реальные посадки, реальный результат
+                        </div>
+                    </div>
+
+                    <!-- Main heading with 3D effect -->
+                    <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight animate-fade-in-up">
+                        <span class="block">Восстанавливаем</span>
+                        <span class="bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                            леса Казахстана
+                        </span>
+                    </h1>
+
+                    <!-- Subtitle -->
+                    <p class="text-lg md:text-xl text-muted-foreground mb-6 max-w-3xl mx-auto leading-relaxed animate-slide-in-left">
+                        <span class="font-semibold text-foreground">Mukhatay Ormany</span> — это единый экологический проект с собственными землями и инфраструктурой. 
+                        Мы реализуем реальные экологические проекты: от выращивания саженцев до высадки и долгосрочного ухода за лесами.
+                    </p>
+
+                    <p class="text-muted-foreground mb-12 max-w-2xl mx-auto text-sm italic animate-slide-in-right">
+                        Не виртуальные деревья, а реальные посадки на собственных территориях в Казахстане
+                    </p>
+
+                    <!-- CTA Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center mb-16 animate-bounce-in">
+                        <button id="plant-tree-btn" class="btn-premium text-lg px-10 py-7 h-auto bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-lg hover:shadow-xl hover:shadow-green-500/50">
+                            <i class="fas fa-bolt mr-2"></i>
+                            Посадить дерево
+                        </button>
+                        <button id="choose-location-btn" class="text-lg px-10 py-7 h-auto border-2 border-green-600 hover:bg-green-50 dark:hover:bg-green-950 hover:shadow-lg hover:shadow-green-500/20 rounded-lg font-semibold text-green-600 dark:text-green-400">
+                            Выбрать локацию
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Login/Register Modal -->
+        <div id="auth-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+            <div class="glass-web3 p-8 rounded-2xl max-w-md w-full mx-4 border border-green-500/50">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold" id="auth-title">Вход</h2>
+                    <button id="close-auth-modal" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <form id="auth-form">
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold mb-2" for="email">Email</label>
+                        <input type="email" id="email" class="w-full px-4 py-2 rounded-lg border border-border bg-muted/30" required>
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-sm font-semibold mb-2" for="password">Пароль</label>
+                        <input type="password" id="password" class="w-full px-4 py-2 rounded-lg border border-border bg-muted/30" required>
+                    </div>
+                    <div id="register-fields" class="hidden mb-4">
+                        <label class="block text-sm font-semibold mb-2" for="name">Имя</label>
+                        <input type="text" id="name" class="w-full px-4 py-2 rounded-lg border border-border bg-muted/30">
+                    </div>
+                    <button type="submit" class="w-full btn-premium bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700">
+                        <span id="auth-submit-text">Войти</span>
+                    </button>
+                </form>
+                <div class="mt-4 text-center">
+                    <p class="text-sm text-muted-foreground">
+                        <span id="toggle-auth-text">Нет аккаунта?</span>
+                        <button id="toggle-auth-mode" class="text-green-600 hover:underline font-semibold ml-1">
+                            Зарегистрироваться
+                        </button>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Page -->
+        <section id="dashboard-page" class="hidden relative min-h-screen py-12 overflow-hidden">
+            <!-- Animated background blobs -->
+            <div class="absolute inset-0 overflow-hidden">
+                <div class="absolute top-20 left-10 w-72 h-72 bg-green-400 dark:bg-green-600 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
+                <div class="absolute top-40 right-10 w-72 h-72 bg-emerald-400 dark:bg-emerald-600 rounded-full mix-blend-multiply filter blur-3xl opacity-10" style="animation-delay: 2s;"></div>
+            </div>
+
+            <div class="container max-w-6xl mx-auto px-4 relative z-10">
+                <!-- Header -->
+                <div class="mb-12 animate-fade-in-down">
+                    <h1 class="text-4xl font-bold mb-2">
+                        Добро пожаловать, <span id="user-name" class="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Пользователь</span>
+                    </h1>
+                    <p class="text-muted-foreground text-lg">Отслеживайте свои пожертвования и экологическое влияние</p>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="mb-12 grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in-up">
+                    <div class="glass-web3 p-8 rounded-2xl border-2 border-green-500/30 hover:border-green-500/60 transition-all cursor-pointer">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-muted-foreground mb-2">Всего пожертвований</p>
+                                <p class="text-4xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent" id="total-donations">
+                                    0
+                                </p>
+                            </div>
+                            <div>
+                                <i class="fas fa-tree text-4xl text-green-600 dark:text-green-400"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-web3 p-8 rounded-2xl border-2 border-emerald-500/30 hover:border-emerald-500/60 transition-all cursor-pointer">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-muted-foreground mb-2">Посажено деревьев</p>
+                                <p class="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent" id="trees-planted">
+                                    0
+                                </p>
+                            </div>
+                            <div>
+                                <i class="fas fa-leaf text-4xl text-emerald-600 dark:text-emerald-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Donations Section -->
+                <div class="mb-12 animate-slide-in-left">
+                    <h2 class="text-3xl font-bold mb-6">Ваши пожертвования</h2>
+                    <div id="donations-container">
+                        <!-- Donations will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Applications Section -->
+                <div class="animate-slide-in-right">
+                    <h2 class="text-3xl font-bold mb-6">Статус заявок</h2>
+                    <div id="applications-container">
+                        <!-- Applications will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Admin Dashboard Page -->
+        <section id="admin-page" class="hidden relative min-h-screen py-12 overflow-hidden">
+            <!-- Animated background blobs -->
+            <div class="absolute inset-0 overflow-hidden">
+                <div class="absolute top-20 left-10 w-72 h-72 bg-green-400 dark:bg-green-600 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
+                <div class="absolute top-40 right-10 w-72 h-72 bg-emerald-400 dark:bg-emerald-600 rounded-full mix-blend-multiply filter blur-3xl opacity-10" style="animation-delay: 2s;"></div>
+            </div>
+
+            <div class="container max-w-6xl mx-auto px-4 relative z-10">
+                <!-- Header -->
+                <div class="mb-12 animate-fade-in-down">
+                    <h1 class="text-4xl font-bold mb-2">
+                        Админ <span class="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">панель</span>
+                    </h1>
+                    <p class="text-muted-foreground text-lg">Управление пожертвованиями, заявками и пользователями</p>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="mb-12 grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-in-up">
+                    <div class="glass-web3 p-8 rounded-2xl border-2 border-green-500/30 hover:border-green-500/60 transition-all">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-muted-foreground mb-2">Всего пользователей</p>
+                                <p class="text-4xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent" id="total-users">
+                                    0
+                                </p>
+                            </div>
+                            <div>
+                                <i class="fas fa-users text-4xl text-green-600 dark:text-green-400"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-web3 p-8 rounded-2xl border-2 border-emerald-500/30 hover:border-emerald-500/60 transition-all">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-muted-foreground mb-2">Всего пожертвований</p>
+                                <p class="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent" id="admin-total-donations">
+                                    0
+                                </p>
+                            </div>
+                            <div>
+                                <i class="fas fa-file-alt text-4xl text-emerald-600 dark:text-emerald-400"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-web3 p-8 rounded-2xl border-2 border-teal-500/30 hover:border-teal-500/60 transition-all">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-muted-foreground mb-2">Заявки на рассмотрении</p>
+                                <p class="text-4xl font-bold bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent" id="pending-applications">
+                                    0
+                                </p>
+                            </div>
+                            <div>
+                                <i class="fas fa-clock text-4xl text-teal-600 dark:text-teal-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <div class="mb-8 flex gap-4 border-b border-green-500/30">
+                    <button id="applications-tab" class="px-6 py-3 font-semibold transition-all text-green-600 dark:text-green-400 border-b-2 border-green-600 dark:border-green-400">
+                        <i class="fas fa-file-alt mr-2"></i>
+                        Заявки
+                    </button>
+                    <button id="users-tab" class="px-6 py-3 font-semibold transition-all text-muted-foreground hover:text-foreground">
+                        <i class="fas fa-users mr-2"></i>
+                        Пользователи
+                    </button>
+                </div>
+
+                <!-- Applications Tab -->
+                <div id="applications-tab-content">
+                    <div id="admin-applications-container">
+                        <!-- Applications will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Users Tab -->
+                <div id="users-tab-content" class="hidden">
+                    <div id="admin-users-container">
+                        <!-- Users will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
