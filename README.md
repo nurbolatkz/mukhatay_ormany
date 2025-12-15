@@ -1,95 +1,60 @@
-# Tree Donation Platform - Frontend Only Version
+# Mukhatay Ormany - Tree Donation Platform
 
-This is a frontend-only version of the Tree Donation Platform designed for deployment on GitHub Pages. It includes user registration, login, personal cabinet (dashboard), and admin panel functionalities using only HTML, CSS, and JavaScript.
+A modern, animated landing page for the Mukhatay Ormany tree donation platform in Kazakhstan.
+
+## Project Overview
+
+This is a responsive, animated landing page built with HTML, CSS, and JavaScript for the Mukhatay Ormany ecological project. The platform focuses on forest restoration and tree planting in Kazakhstan with two main locations:
+
+1. Forest of Central Asia - nursery (83 ha)
+2. Karaganda region reforestation project (up to 25,000 hectares)
 
 ## Features
 
-1. **User Authentication**
-   - User registration and login
-   - Session management using localStorage
-   - Password-less implementation (for demo purposes)
+- Modern, responsive design with animations
+- Multi-language support (primarily Russian)
+- Single-page application with smooth scrolling
+- Mobile-friendly navigation
+- Animated sections that trigger on scroll
+- Clean, eco-friendly color scheme
 
-2. **Personal Cabinet (Dashboard)**
-   - User profile display
-   - Donation history
-   - Application status tracking
+## Sections
 
-3. **Admin Panel**
-   - User management
-   - Application review and status updates
-   - Statistics dashboard
+1. Hero section with call-to-action buttons
+2. Location showcase with key statistics
+3. Step-by-step process explanation
+4. Trust factors and project transparency
+5. About the project and mission
+6. Responsive footer with navigation
 
-4. **Responsive Design**
-   - Mobile-friendly layout
-   - Modern UI with animations and glassmorphism effects
+## Technologies Used
 
-## Files Structure
+- HTML5
+- CSS3 (Flexbox and Grid layouts)
+- JavaScript (ES6)
+- Google Fonts
+- Font Awesome icons
 
-```
-gh-pages/
-├── index.html       # Main HTML file with all pages
-├── styles.css       # Complete styling with animations
-├── script.js        # All JavaScript functionality
-└── README.md        # This file
-```
+## Setup
 
-## How to Deploy to GitHub Pages
-
-1. Create a new repository on GitHub or use an existing one
-2. Copy all files from this `gh-pages` directory to your repository
-3. Commit and push the files to GitHub
-4. Go to your repository settings
-5. Scroll down to the "Pages" section
-6. Select "Deploy from a branch" as the source
-7. Choose your branch (usually `main` or `master`)
-8. Set the folder to `/ (root)`
-9. Click "Save"
-10. Wait for GitHub to build and deploy your site
-
-## Sample Accounts
-
-For demonstration purposes, the application comes with sample accounts:
-
-1. **Administrator Account**
-   - Email: `admin@example.com`
-   - Password: `admin123`
-
-2. **Regular User Account**
-   - Email: `ivan@example.com`
-   - Password: `user123`
-
-## Data Storage
-
-All data is stored in the browser's localStorage:
-- User accounts
-- Donation records
-- Applications
-
-This means data persists between sessions but is specific to each browser/device.
+1. Clone the repository
+2. Open `index.html` in a web browser
+3. No build process required - works directly in browser
 
 ## Customization
 
-To customize the platform:
-1. Modify `index.html` to change content and structure
-2. Update `styles.css` to change the appearance
-3. Edit `script.js` to modify functionality
+To modify content:
+- Edit `index.html` for structural/content changes
+- Modify `styles.css` for styling adjustments
+- Update `script.js` for interactive behaviors
 
-## Browser Support
+## Deployment
 
-This frontend works on all modern browsers that support:
-- localStorage
-- CSS3 animations and transitions
-- ES6 JavaScript features
+This project is designed for GitHub Pages deployment:
+1. Push to a GitHub repository
+2. Enable GitHub Pages in repository settings
+3. Set source to `gh-pages` branch
 
-## Limitations
+## License
 
-Since this is a frontend-only implementation:
-- Data is not synchronized between devices/browsers
-- No server-side validation or security
-- Not suitable for production use without a backend
-
-For a production implementation, you would need to integrate with a backend service for:
-- Secure authentication
-- Database storage
-- Real-time updates
-- Payment processing
+This project is open source and available under the MIT License.
