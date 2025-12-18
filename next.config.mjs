@@ -1,5 +1,3 @@
-import { resolve } from 'path';
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   typescript: {
@@ -12,10 +10,6 @@ const nextConfig = {
   output: 'standalone',
   // Add empty turbopack config to silence Turbopack warnings
   turbopack: {},
-  webpack: (config) => {
-    config.resolve.alias['@'] = resolve(__dirname);
-    return config;
-  },
 }
 
 export default nextConfig
