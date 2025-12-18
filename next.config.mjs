@@ -1,3 +1,5 @@
+import { resolve } from 'path';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   typescript: {
@@ -11,7 +13,7 @@ const nextConfig = {
   // Add empty turbopack config to silence Turbopack warnings
   turbopack: {},
   webpack: (config) => {
-    config.resolve.alias['@'] = require('path').resolve(__dirname);
+    config.resolve.alias['@'] = resolve(__dirname);
     return config;
   },
 }
