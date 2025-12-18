@@ -6,7 +6,7 @@ services:
     container_name: mukhatay-ormany-postgres
     restart: unless-stopped
     networks:
-      - n8n-compose_web
+      - app-network
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
@@ -26,7 +26,7 @@ services:
     container_name: mukhatay-ormany-backend
     restart: unless-stopped
     networks:
-      - n8n-compose_web
+      - app-network
     environment:
       - FLASK_ENV=production
       - DATABASE_URL=postgresql://mukhatay_user:StrongPassword2025!@postgres:5432/mukhatay_ormany_db
@@ -35,13 +35,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.mukhatay-backend.rule=Host(`mukhatayormany.birqadam.kz`) && (PathPrefix(`/api`) || PathPrefix(`/admin`))"
-      - "traefik.http.routers.mukhatay-backend.entrypoints=websecure"
-      - "traefik.http.routers.mukhatay-backend.tls.certresolver=mytlschallenge"
-      - "traefik.http.services.mukhatay-backend.loadbalancer.server.port=5000"
-      - "traefik.http.routers.mukhatay-backend.priority=10"
+    ports:
+      - "5000:5000"
 
   frontend:
     build:
@@ -50,28 +45,20 @@ services:
     container_name: mukhatay-ormany-frontend
     restart: unless-stopped
     networks:
-      - n8n-compose_web
+      - app-network
     environment:
-      - NEXT_PUBLIC_API_URL=https://mukhatayormany.birqadam.kz
+      - NEXT_PUBLIC_API_URL=http://localhost:5000
       - NODE_ENV=production
       - PORT=3000
       - HOSTNAME=0.0.0.0
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.mukhatay-frontend.rule=Host(`mukhatayormany.birqadam.kz`)"
-      - "traefik.http.routers.mukhatay-frontend.entrypoints=websecure"
-      - "traefik.http.routers.mukhatay-frontend.tls.certresolver=mytlschallenge"
-      - "traefik.http.services.mukhatay-frontend.loadbalancer.server.port=3000"
-      - "traefik.http.routers.mukhatay-frontend.priority=5"
-      # CORS headers if needed
-      - "traefik.http.middlewares.mukhatay-cors.headers.accesscontrolallowmethods=GET,OPTIONS,PUT,POST,DELETE,PATCH"
-      - "traefik.http.middlewares.mukhatay-cors.headers.accesscontrolalloworiginlist=https://mukhatayormany.birqadam.kz"
-      - "traefik.http.middlewares.mukhatay-cors.headers.accesscontrolmaxage=100"
-      - "traefik.http.middlewares.mukhatay-cors.headers.addvaryheader=true"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
 
 volumes:
   postgres_data:
 
 networks:
-  n8n-compose_web:
-    external: true
+  app-network:
+    driver: bridge
