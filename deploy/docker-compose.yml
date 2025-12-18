@@ -6,7 +6,7 @@ services:
     container_name: mukhatay-ormany-postgres
     restart: unless-stopped
     networks:
-      - mukhatay-network
+      - n8n-compose_web
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
@@ -26,7 +26,7 @@ services:
     container_name: mukhatay-ormany-backend
     restart: unless-stopped
     networks:
-      - mukhatay-network
+      - n8n-compose_web
     environment:
       - FLASK_ENV=production
       - DATABASE_URL=postgresql://mukhatay_user:StrongPassword2025!@postgres:5432/mukhatay_user
@@ -50,7 +50,7 @@ services:
     container_name: mukhatay-ormany-frontend
     restart: unless-stopped
     networks:
-      - mukhatay-network
+      - n8n-compose_web
     environment:
       - NEXT_PUBLIC_API_URL=https://mukhatayormany.birqadam.kz
       - NODE_ENV=production
@@ -73,5 +73,5 @@ volumes:
   postgres_data:
 
 networks:
-  mukhatay-network:
-    driver: bridge
+  n8n-compose_web:
+    external: true
