@@ -216,14 +216,14 @@ export function DonationsManagement() {
               <TableBody>
                 {filteredDonations.map((donation) => (
                   <TableRow key={donation.id}>
-                    <TableCell className="font-medium">{donation.id}</TableCell>
-                    <TableCell>{donation.donor_name}</TableCell>
-                    <TableCell className="text-muted-foreground">{donation.email}</TableCell>
-                    <TableCell>{donation.location}</TableCell>
-                    <TableCell className="font-semibold">{donation.trees}</TableCell>
-                    <TableCell className="font-semibold">{donation.amount.toLocaleString()} ₸</TableCell>
-                    <TableCell>{getStatusBadge(donation.status)}</TableCell>
-                    <TableCell className="text-muted-foreground">{new Date(donation.date).toLocaleDateString('ru-RU')}</TableCell>
+                    <TableCell className="font-medium">{donation.id || 'N/A'}</TableCell>
+                    <TableCell>{donation.donor_name || 'N/A'}</TableCell>
+                    <TableCell className="text-muted-foreground">{donation.email || 'N/A'}</TableCell>
+                    <TableCell>{donation.location || 'N/A'}</TableCell>
+                    <TableCell className="font-semibold">{donation.trees || 0}</TableCell>
+                    <TableCell className="font-semibold">{(donation.amount || 0).toLocaleString()} ₸</TableCell>
+                    <TableCell>{getStatusBadge(donation.status || 'pending')}</TableCell>
+                    <TableCell className="text-muted-foreground">{donation.date ? new Date(donation.date).toLocaleDateString('ru-RU') : 'N/A'}</TableCell>
                     <TableCell>
                       <div className="flex justify-end gap-2">
                         <Button variant="ghost" size="sm">

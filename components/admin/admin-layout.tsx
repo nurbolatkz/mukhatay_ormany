@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { Button } from "@/components/ui/button"
-import {
+import { 
   LayoutDashboard,
   Heart,
   Users,
@@ -14,14 +14,13 @@ import {
   Settings,
   Menu,
   X,
-  LogOut,
+  LogOut
 } from "lucide-react"
 import Link from "next/link"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import type { AdminView } from "@/app/admin/page"
 import { useAuth } from "@/contexts/auth-context"
 import { useRouter } from "next/navigation"
-
 interface AdminLayoutProps {
   children: React.ReactNode
   currentView: AdminView
@@ -111,8 +110,11 @@ export function AdminLayout({ children, currentView, onViewChange }: AdminLayout
               <div className="container mx-auto px-4 py-4">
                 <div className="flex justify-between items-center mb-8">
                   <div className="text-xl font-bold text-emerald-600">Меню</div>
-                  <button onClick={() => setIsMobileMenuOpen(false)}>
-                    <X />
+                  <button 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="p-2 rounded-md hover:bg-muted"
+                  >
+                    <X className="h-6 w-6" />
                   </button>
                 </div>
                 <nav className="space-y-2">
@@ -140,7 +142,6 @@ export function AdminLayout({ children, currentView, onViewChange }: AdminLayout
               </div>
             </div>
           )}
-
           {/* Main Content */}
           <main className="flex-1 min-w-0">{children}</main>
         </div>
