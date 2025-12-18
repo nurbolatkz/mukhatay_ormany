@@ -14,11 +14,13 @@ RUN pnpm install --frozen-lockfile || pnpm install --no-frozen-lockfile
 COPY . .
 
 # Build the application
-RUN pnpm run build
+# Set memory limits and use webpack explicitly to avoid Turbopack issues
+RUN NODE_OPTIONS="--max-old-space-size=4096" pnpm run build --webpack
 
 # Stage 2: Production image
 FROM node:20-alpine AS runner
 
+# Set working directory
 WORKDIR /app
 
 # Create non-root user
@@ -29,9 +31,6 @@ RUN adduser --system --uid 1001 nextjs
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
-
-# Copy environment example files
-COPY --from=builder /app/.env*.example ./ 2>/dev/null || :
 
 # Change ownership to non-root user
 RUN chown -R nextjs:nodejs ./

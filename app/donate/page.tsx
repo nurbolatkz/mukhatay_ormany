@@ -31,7 +31,8 @@ export interface DonationData {
 
 const STEPS = ["Локация", "Пакет", "Информация", "Оплата"]
 
-export default function DonatePage() {
+// Separate component that uses useSearchParams
+function DonateContent({}) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [currentStep, setCurrentStep] = useState(0)
@@ -95,60 +96,68 @@ export default function DonatePage() {
   }
 
   return (
+    <>
+      <div className="mb-8">
+        <Link href="/">
+          <Button variant="ghost" className="mb-4">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Вернуться на главную
+          </Button>
+        </Link>
+        <h1 className="text-3xl md:text-4xl font-bold mb-2">Посадить дерево</h1>
+        <p className="text-muted-foreground">Сделайте вклад в восстановление лесов Казахстана</p>
+      </div>
+
+      <div className="max-w-4xl mx-auto">
+        <DonationSteps steps={STEPS} currentStep={currentStep} />
+
+        <div className="mt-8">
+          {currentStep === 0 && (
+            <LocationStep
+              selectedLocation={donationData.location}
+              onLocationSelect={(location) => {
+                updateDonationData({ location })
+                handleNext()
+              }}
+            />
+          )}
+
+          {currentStep === 1 && (
+            <PackageStep
+              location={donationData.location!}
+              selectedPackage={donationData.packageType}
+              onPackageSelect={(packageType, treeCount, amount) => {
+                updateDonationData({ packageType, treeCount, amount })
+                handleNext()
+              }}
+              onBack={handleBack}
+            />
+          )}
+
+          {currentStep === 2 && (
+            <DonorInfoStep
+              donorInfo={donationData.donorInfo}
+              onSubmit={(donorInfo) => {
+                updateDonationData({ donorInfo })
+                handleNext()
+              }}
+              onBack={handleBack}
+            />
+          )}
+
+          {currentStep === 3 && <PaymentStep donationData={donationData} onBack={handleBack} />}
+        </div>
+      </div>
+    </>
+  )
+}
+
+export default function DonatePage() {
+  return (
     <ProtectedRoute>
       <div className="min-h-screen bg-gradient-to-b from-emerald-50 to-background dark:from-emerald-950/20 dark:to-background">
         <div className="container mx-auto px-4 py-8">
-          <div className="mb-8">
-            <Link href="/">
-              <Button variant="ghost" className="mb-4">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Вернуться на главную
-              </Button>
-            </Link>
-            <h1 className="text-3xl md:text-4xl font-bold mb-2">Посадить дерево</h1>
-            <p className="text-muted-foreground">Сделайте вклад в восстановление лесов Казахстана</p>
-          </div>
-
-          <div className="max-w-4xl mx-auto">
-            <DonationSteps steps={STEPS} currentStep={currentStep} />
-
-            <div className="mt-8">
-              {currentStep === 0 && (
-                <LocationStep
-                  selectedLocation={donationData.location}
-                  onLocationSelect={(location) => {
-                    updateDonationData({ location })
-                    handleNext()
-                  }}
-                />
-              )}
-
-              {currentStep === 1 && (
-                <PackageStep
-                  location={donationData.location!}
-                  selectedPackage={donationData.packageType}
-                  onPackageSelect={(packageType, treeCount, amount) => {
-                    updateDonationData({ packageType, treeCount, amount })
-                    handleNext()
-                  }}
-                  onBack={handleBack}
-                />
-              )}
-
-              {currentStep === 2 && (
-                <DonorInfoStep
-                  donorInfo={donationData.donorInfo}
-                  onSubmit={(donorInfo) => {
-                    updateDonationData({ donorInfo })
-                    handleNext()
-                  }}
-                  onBack={handleBack}
-                />
-              )}
-
-              {currentStep === 3 && <PaymentStep donationData={donationData} onBack={handleBack} />}
-            </div>
-          </div>
+          <DonateContent />
         </div>
       </div>
     </ProtectedRoute>

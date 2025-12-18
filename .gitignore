@@ -153,6 +153,7 @@ dist/
 downloads/
 eggs/
 .eggs/
+!lib/utils.ts
 lib/
 lib64/
 parts/
