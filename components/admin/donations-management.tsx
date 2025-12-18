@@ -17,6 +17,10 @@ import {
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
+import { Calendar } from "@/components/ui/calendar"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { format } from "date-fns"
+import { ru } from "date-fns/locale"
 
 interface Donation {
   id: string;
@@ -53,6 +57,15 @@ export function DonationsManagement() {
     pending: 0,
     revenue: 0
   })
+  
+  // Advanced filter states
+  const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false)
+  const [dateFrom, setDateFrom] = useState<Date | undefined>(undefined)
+  const [dateTo, setDateTo] = useState<Date | undefined>(undefined)
+  const [minAmount, setMinAmount] = useState("")
+  const [maxAmount, setMaxAmount] = useState("")
+  const [minTrees, setMinTrees] = useState("")
+  const [maxTrees, setMaxTrees] = useState("")
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [selectedDonation, setSelectedDonation] = useState<DonationDetail | null>(null)
   const [editingDonation, setEditingDonation] = useState<Donation | null>(null)
@@ -91,17 +104,41 @@ export function DonationsManagement() {
 
   useEffect(() => {
     const filtered = donations.filter((donation) => {
+      // Basic filters
       const matchesSearch =
         (donation.id || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
         (donation.donor_name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
         (donation.email || '').toLowerCase().includes(searchQuery.toLowerCase())
       const matchesStatus = filterStatus === "all" || donation.status === filterStatus
       const matchesLocation = filterLocation === "all" || donation.location === filterLocation
-      return matchesSearch && matchesStatus && matchesLocation
+      
+      // Advanced filters
+      let matchesDate = true;
+      if (dateFrom || dateTo) {
+        const donationDate = new Date(donation.date);
+        if (dateFrom && donationDate < dateFrom) matchesDate = false;
+        if (dateTo && donationDate > dateTo) matchesDate = false;
+      }
+      
+      let matchesAmount = true;
+      if (minAmount || maxAmount) {
+        const amount = donation.amount || 0;
+        if (minAmount && amount < parseFloat(minAmount)) matchesAmount = false;
+        if (maxAmount && amount > parseFloat(maxAmount)) matchesAmount = false;
+      }
+      
+      let matchesTrees = true;
+      if (minTrees || maxTrees) {
+        const trees = donation.trees || 0;
+        if (minTrees && trees < parseInt(minTrees)) matchesTrees = false;
+        if (maxTrees && trees > parseInt(maxTrees)) matchesTrees = false;
+      }
+      
+      return matchesSearch && matchesStatus && matchesLocation && matchesDate && matchesAmount && matchesTrees;
     })
     
     setFilteredDonations(filtered)
-  }, [donations, searchQuery, filterStatus, filterLocation])
+  }, [donations, searchQuery, filterStatus, filterLocation, dateFrom, dateTo, minAmount, maxAmount, minTrees, maxTrees])
 
   const getStatusBadge = (status: string) => {
     const statusConfig = {
@@ -146,6 +183,15 @@ export function DonationsManagement() {
   const openEditStatusDialog = (donation: Donation) => {
     setEditingDonation(donation)
     setNewStatus(donation.status)
+  }
+  
+  const resetAdvancedFilters = () => {
+    setDateFrom(undefined)
+    setDateTo(undefined)
+    setMinAmount("")
+    setMaxAmount("")
+    setMinTrees("")
+    setMaxTrees("")
   }
 
   const updateDonationStatus = async () => {
@@ -293,13 +339,126 @@ export function DonationsManagement() {
                 <SelectItem value="Mukhatay Ormany">Mukhatay Ormany</SelectItem>
               </SelectContent>
             </Select>
-            <Button variant="outline">
+            <Button variant="outline" onClick={() => setIsFilterDialogOpen(true)}>
               <Filter className="h-4 w-4 mr-2" />
               Фильтры
             </Button>
           </div>
         </CardContent>
       </Card>
+      
+      {/* Advanced Filter Dialog */}
+      <Dialog open={isFilterDialogOpen} onOpenChange={setIsFilterDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Расширенные фильтры</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            {/* Date Range */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Дата от</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={`w-full justify-start text-left font-normal ${!dateFrom && "text-muted-foreground"}`}
+                    >
+                      <Calendar className="mr-2 h-4 w-4" />
+                      {dateFrom ? format(dateFrom, "PPP", { locale: ru }) : "Выберите дату"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <Calendar
+                      mode="single"
+                      selected={dateFrom}
+                      onSelect={setDateFrom}
+                      locale={ru}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <div className="space-y-2">
+                <Label>Дата до</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={`w-full justify-start text-left font-normal ${!dateTo && "text-muted-foreground"}`}
+                    >
+                      <Calendar className="mr-2 h-4 w-4" />
+                      {dateTo ? format(dateTo, "PPP", { locale: ru }) : "Выберите дату"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <Calendar
+                      mode="single"
+                      selected={dateTo}
+                      onSelect={setDateTo}
+                      locale={ru}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+            </div>
+            
+            {/* Amount Range */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Минимальная сумма</Label>
+                <Input
+                  type="number"
+                  placeholder="0"
+                  value={minAmount}
+                  onChange={(e) => setMinAmount(e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Максимальная сумма</Label>
+                <Input
+                  type="number"
+                  placeholder="100000"
+                  value={maxAmount}
+                  onChange={(e) => setMaxAmount(e.target.value)}
+                />
+              </div>
+            </div>
+            
+            {/* Trees Range */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Минимум деревьев</Label>
+                <Input
+                  type="number"
+                  placeholder="0"
+                  value={minTrees}
+                  onChange={(e) => setMinTrees(e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Максимум деревьев</Label>
+                <Input
+                  type="number"
+                  placeholder="1000"
+                  value={maxTrees}
+                  onChange={(e) => setMaxTrees(e.target.value)}
+                />
+              </div>
+            </div>
+            
+            <div className="flex justify-between pt-4">
+              <Button variant="outline" onClick={resetAdvancedFilters}>
+                Сбросить
+              </Button>
+              <Button onClick={() => setIsFilterDialogOpen(false)}>
+                Применить
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Donations Table */}
       <Card className="border-2">
