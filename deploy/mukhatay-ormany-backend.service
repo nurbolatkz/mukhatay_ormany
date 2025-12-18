@@ -1,0 +1,17 @@
+[Unit]
+Description=Mukhatay Ormany Backend Service
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/mukhatay_ormany/backend
+Environment=FLASK_APP=app.py
+Environment=FLASK_ENV=production
+Environment=DATABASE_URL=postgresql://bulletin_user:Raketa2025!@postgres:5432/bulletin_law
+ExecStart=/usr/bin/python3 -m flask run --host=0.0.0.0 --port=5000
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
