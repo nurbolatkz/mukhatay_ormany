@@ -42,6 +42,12 @@ interface LocationFormData {
   status: string
 }
 
+interface ImageUploadData {
+  file: File | null
+  previewUrl: string | null
+  uploading: boolean
+}
+
 export function LocationsManagement() {
   const [locations, setLocations] = useState<Location[]>([])
   const [loading, setLoading] = useState(true)
@@ -57,6 +63,11 @@ export function LocationsManagement() {
     coordinates: "",
     image_url: "",
     status: "active",
+  })
+  const [imageUpload, setImageUpload] = useState<ImageUploadData>({
+    file: null,
+    previewUrl: null,
+    uploading: false,
   })
   const { toast } = useToast()
 
@@ -108,6 +119,14 @@ export function LocationsManagement() {
         image_url: "",
         status: "active",
       })
+      
+      // Reset image upload state
+      setImageUpload({
+        file: null,
+        previewUrl: null,
+        uploading: false,
+      })
+      
       fetchLocations()
     } catch (err) {
       console.error('Error creating location:', err)
@@ -147,6 +166,14 @@ export function LocationsManagement() {
         image_url: "",
         status: "active",
       })
+      
+      // Reset image upload state
+      setImageUpload({
+        file: null,
+        previewUrl: null,
+        uploading: false,
+      })
+      
       fetchLocations()
     } catch (err) {
       console.error('Error updating location:', err)
@@ -188,6 +215,14 @@ export function LocationsManagement() {
       image_url: location.image_url,
       status: location.status,
     })
+    
+    // Reset image upload state
+    setImageUpload({
+      file: null,
+      previewUrl: location.image_url || null,
+      uploading: false,
+    })
+    
     setIsDialogOpen(true)
   }
 
@@ -203,15 +238,66 @@ export function LocationsManagement() {
       image_url: "",
       status: "active",
     })
+    
+    // Reset image upload state
+    setImageUpload({
+      file: null,
+      previewUrl: null,
+      uploading: false,
+    })
+    
     setIsDialogOpen(true)
   }
 
   const handleSubmit = () => {
+    // In a real implementation, if we have a new image file, we would:
+    // 1. Upload the image to a storage service (e.g., AWS S3, Cloudinary)
+    // 2. Get the public URL of the uploaded image
+    // 3. Set formData.image_url to that URL before saving
+    // For now, we'll just use the image_url directly
     if (editingLocation) {
       handleUpdateLocation()
     } else {
       handleCreateLocation()
     }
+  }
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      // Create preview URL
+      const previewUrl = URL.createObjectURL(file)
+      setImageUpload({
+        file,
+        previewUrl,
+        uploading: false,
+      })
+      
+      // Update form data with preview URL
+      setFormData({
+        ...formData,
+        image_url: previewUrl,
+      })
+    }
+  }
+
+  const handleRemoveImage = () => {
+    // Revoke the preview URL to free memory
+    if (imageUpload.previewUrl) {
+      URL.revokeObjectURL(imageUpload.previewUrl)
+    }
+    
+    setImageUpload({
+      file: null,
+      previewUrl: null,
+      uploading: false,
+    })
+    
+    // Clear image URL in form data
+    setFormData({
+      ...formData,
+      image_url: "",
+    })
   }
 
   const formatArea = (hectares: number) => {
@@ -294,12 +380,48 @@ export function LocationsManagement() {
                 />
               </div>
               <div>
-                <Label htmlFor="image_url">URL изображения</Label>
-                <Input
-                  id="image_url"
-                  value={formData.image_url}
-                  onChange={(e) => setFormData({...formData, image_url: e.target.value})}
-                />
+                <Label>Изображение</Label>
+                <div className="space-y-4">
+                  {/* Image Preview */}
+                  {(imageUpload.previewUrl || formData.image_url) && (
+                    <div className="relative">
+                      <img
+                        src={imageUpload.previewUrl || formData.image_url}
+                        alt="Preview"
+                        className="w-full h-48 object-cover rounded-md border"
+                      />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        className="absolute top-2 right-2"
+                        onClick={handleRemoveImage}
+                      >
+                        Удалить
+                      </Button>
+                    </div>
+                  )}
+                  
+                  {/* File Upload */}
+                  <div className="flex items-center gap-2">
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      className="flex-1"
+                    />
+                    <span className="text-sm text-muted-foreground">или</span>
+                    <Input
+                      placeholder="Вставить URL изображения"
+                      value={formData.image_url}
+                      onChange={(e) => setFormData({...formData, image_url: e.target.value})}
+                      className="flex-1"
+                    />
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Поддерживаются форматы JPG, PNG, GIF. Максимальный размер 5MB.
+                  </p>
+                </div>
               </div>
               <div>
                 <Label htmlFor="status">Статус</Label>
