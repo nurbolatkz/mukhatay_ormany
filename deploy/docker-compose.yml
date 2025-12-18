@@ -37,7 +37,7 @@ services:
         condition: service_healthy
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.mukhatay-backend.rule=Host(`mukhatayormany.birqadam.kz`) && (PathPrefix(`/api`) || PathPrefix(`/admin`))"
+      - "traefik.http.routers.mukhatay-backend.rule=Host(`mukhatayormany.birqadam.kz`) && PathPrefix(`/api`)"
       - "traefik.http.routers.mukhatay-backend.entrypoints=websecure"
       - "traefik.http.routers.mukhatay-backend.tls.certresolver=mytlschallenge"
       - "traefik.http.services.mukhatay-backend.loadbalancer.server.port=5000"
