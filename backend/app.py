@@ -14,7 +14,7 @@ import uuid
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///tree_donation.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = 'your_secret_key'  # Change this to a random secret key
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', os.urandom(24))  # Use environment variable or generate random key
 
 # Enable CORS for all routes
 CORS(app)
@@ -84,7 +84,11 @@ def token_required(f):
         try:
             data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=["HS256"])
             current_user = User.query.filter_by(id=data['id']).first()
-        except:
+        except jwt.ExpiredSignatureError:
+            return jsonify({'message': 'Token has expired!'}), 401
+        except jwt.InvalidTokenError:
+            return jsonify({'message': 'Token is invalid!'}), 401
+        except Exception:
             return jsonify({'message': 'Token is invalid!'}), 401
 
         return f(current_user, *args, **kwargs)
@@ -101,7 +105,8 @@ def register_user():
         if existing_user:
             return jsonify({'message': 'Пользователь с таким email уже существует'}), 400
         
-        hashed_password = generate_password_hash(data['password'], method='pbkdf2:sha256')
+        # Use stronger password hashing
+        hashed_password = generate_password_hash(data['password'], method='pbkdf2:sha256', salt_length=12)
         new_user = User(id=str(uuid.uuid4()), full_name=data['full_name'], email=data['email'], password=hashed_password, phone=data['phone'])
         db.session.add(new_user)
         db.session.commit()
@@ -135,7 +140,7 @@ def login_user():
         return jsonify({'message': 'Could not verify'}), 401
 
     if check_password_hash(user.password, password):
-        token = jwt.encode({'id': user.id, 'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, app.config['SECRET_KEY'])
+        token = jwt.encode({'id': user.id, 'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)}, app.config['SECRET_KEY'], algorithm="HS256")
         return jsonify({'token': token})
 
     return jsonify({'message': 'Could not verify'}), 401
@@ -335,7 +340,11 @@ def admin_required(f):
             current_user = User.query.filter_by(id=data['id']).first()
             if current_user.role != 'admin':
                 return jsonify({'message': 'Admin role required!'}), 403
-        except:
+        except jwt.ExpiredSignatureError:
+            return jsonify({'message': 'Token has expired!'}), 401
+        except jwt.InvalidTokenError:
+            return jsonify({'message': 'Token is invalid!'}), 401
+        except Exception:
             return jsonify({'message': 'Token is invalid!'}), 401
 
         return f(current_user, *args, **kwargs)
@@ -451,8 +460,8 @@ def admin_create_user(current_user):
     if existing_user:
         return jsonify({'message': 'User with this email already exists'}), 400
     
-    # Hash password
-    hashed_password = generate_password_hash(data['password'], method='pbkdf2:sha256')
+    # Hash password with stronger settings
+    hashed_password = generate_password_hash(data['password'], method='pbkdf2:sha256', salt_length=12)
     
     # Create new user
     new_user = User(
@@ -603,4 +612,4 @@ if __name__ == '__main__':
     # }
     # users_db.append(test_user)
     
-    app.run(debug=True, host='127.0.0.1', port=5000)
+    app.run(debug=False, host='0.0.0.0', port=5000)

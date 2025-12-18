@@ -13,34 +13,28 @@ class ApiService {
 
   // Set authentication token
   setToken(token) {
-    console.log('API: Setting token:', token);
     this.token = token;
     if (typeof window !== 'undefined') {
       localStorage.setItem('authToken', token);
-      console.log('API: Token stored in localStorage');
     }
   }
 
   // Get authentication token
   getToken() {
     if (this.token) {
-      console.log('API: Returning token from instance:', this.token);
       return this.token;
     }
     
     if (typeof window !== 'undefined') {
       this.token = localStorage.getItem('authToken');
-      console.log('API: Retrieved token from localStorage:', this.token);
       return this.token;
     }
     
-    console.log('API: No token found');
     return null;
   }
 
   // Clear authentication token
   clearToken() {
-    console.log('API: Clearing token');
     this.token = null;
     if (typeof window !== 'undefined') {
       localStorage.removeItem('authToken');
@@ -51,7 +45,6 @@ class ApiService {
   async request(endpoint, options = {}, suppressErrors = false) {
     const url = `${this.baseURL}${endpoint}`;
     
-    console.log('API: Making request to', url, 'with token:', this.token);
     const config = {
       headers: {
         'Content-Type': 'application/json',
@@ -60,8 +53,6 @@ class ApiService {
       },
       ...options,
     };
-    
-    console.log('API: Request config:', config);
 
     try {
       const response = await fetch(url, config);
@@ -74,9 +65,10 @@ class ApiService {
       return await response.json();
     } catch (error) {
       if (!suppressErrors) {
-        console.error(`API request failed: ${error.message}`);
-      } else {
-        console.log(`API request failed (suppressed): ${error.message}`);
+        // In production, we don't log errors to console to prevent information leakage
+        if (process.env.NODE_ENV !== 'production') {
+          console.error(`API request failed: ${error.message}`);
+        }
       }
       throw error;
     }
@@ -107,7 +99,6 @@ class ApiService {
    * @returns {Promise<Object>} Authentication token
    */
   async login(email, password) {
-    console.log('API: Attempting login for email:', email);
     // Encode credentials for Basic Auth
     const credentials = btoa(`${email}:${password}`);
     
@@ -118,13 +109,9 @@ class ApiService {
       },
     });
     
-    console.log('API: Login response received:', response);
     // Set token upon successful login
     if (response.token) {
-      console.log('API: Token found in response, setting token');
       this.setToken(response.token);
-    } else {
-      console.log('API: No token found in response');
     }
     
     return response;
@@ -136,15 +123,16 @@ class ApiService {
    * if the endpoint doesn't exist
    */
   async logout() {
-    console.log('API: Logout called, stack trace:', new Error().stack);
     try {
       // Call backend logout endpoint
       await this.request('/api/auth/logout', {
         method: 'POST',
       });
     } catch (error) {
-      // Log error but continue with client-side logout
-      console.error('Logout endpoint error:', error.message);
+      // In production, we don't log errors to console to prevent information leakage
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Logout endpoint error:', error.message);
+      }
     } finally {
       // Always clear the token on client side
       this.clearToken();
@@ -157,14 +145,15 @@ class ApiService {
    */
   async getUserProfile() {
     try {
-      console.log('API: Fetching user profile with token:', this.token);
       const response = await this.request('/api/users/me', {
         method: 'GET',
       });
-      console.log('API: User profile response:', response);
       return response;
     } catch (error) {
-      console.error('Error fetching user profile:', error);
+      // In production, we don't log errors to console to prevent information leakage
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Error fetching user profile:', error);
+      }
       throw error;
     }
   }
@@ -175,14 +164,15 @@ class ApiService {
    */
   async getUserDonations() {
     try {
-      console.log('API: Fetching user donations with token:', this.token);
       const response = await this.request('/api/users/me/donations', {
         method: 'GET',
       });
-      console.log('API: User donations response:', response);
       return response;
     } catch (error) {
-      console.error('Error fetching user donations:', error);
+      // In production, we don't log errors to console to prevent information leakage
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Error fetching user donations:', error);
+      }
       throw error;
     }
   }
@@ -193,14 +183,15 @@ class ApiService {
    */
   async getLocations() {
     try {
-      console.log('API: Fetching locations');
       const response = await this.request('/api/locations', {
         method: 'GET',
       });
-      console.log('API: Locations response:', response);
       return response;
     } catch (error) {
-      console.error('Error fetching locations:', error);
+      // In production, we don't log errors to console to prevent information leakage
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Error fetching locations:', error);
+      }
       throw error;
     }
   }
@@ -212,15 +203,16 @@ class ApiService {
    */
   async createDonation(donationData) {
     try {
-      console.log('API: Creating donation:', donationData);
       const response = await this.request('/api/donations', {
         method: 'POST',
         body: JSON.stringify(donationData),
       });
-      console.log('API: Donation created:', response);
       return response;
     } catch (error) {
-      console.error('Error creating donation:', error);
+      // In production, we don't log errors to console to prevent information leakage
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Error creating donation:', error);
+      }
       throw error;
     }
   }
@@ -233,15 +225,16 @@ class ApiService {
    */
   async processPayment(donationId, paymentData) {
     try {
-      console.log('API: Processing payment for donation:', donationId, paymentData);
       const response = await this.request(`/api/donations/${donationId}/payment`, {
         method: 'POST',
         body: JSON.stringify(paymentData),
       });
-      console.log('API: Payment processed:', response);
       return response;
     } catch (error) {
-      console.error('Error processing payment:', error);
+      // In production, we don't log errors to console to prevent information leakage
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Error processing payment:', error);
+      }
       throw error;
     }
   }
@@ -254,14 +247,15 @@ class ApiService {
    */
   async adminGetDonations() {
     try {
-      console.log('API: Fetching all donations for admin');
       const response = await this.request('/api/admin/donations', {
         method: 'GET',
       });
-      console.log('API: Admin donations response:', response);
       return response.donations || [];
     } catch (error) {
-      console.error('Error fetching admin donations:', error);
+      // In production, we don't log errors to console to prevent information leakage
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Error fetching admin donations:', error);
+      }
       throw error;
     }
   }
@@ -274,15 +268,16 @@ class ApiService {
    */
   async adminUpdateDonation(donationId, updateData) {
     try {
-      console.log('API: Updating donation:', donationId, updateData);
       const response = await this.request(`/api/admin/donations/${donationId}`, {
         method: 'PUT',
         body: JSON.stringify(updateData),
       });
-      console.log('API: Donation updated:', response);
       return response;
     } catch (error) {
-      console.error('Error updating donation:', error);
+      // In production, we don't log errors to console to prevent information leakage
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Error updating donation:', error);
+      }
       throw error;
     }
   }
@@ -293,14 +288,15 @@ class ApiService {
    */
   async adminGetUsers() {
     try {
-      console.log('API: Fetching all users for admin');
       const response = await this.request('/api/admin/users', {
         method: 'GET',
       });
-      console.log('API: Admin users response:', response);
       return response.users || [];
     } catch (error) {
-      console.error('Error fetching admin users:', error);
+      // In production, we don't log errors to console to prevent information leakage
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Error fetching admin users:', error);
+      }
       throw error;
     }
   }
@@ -312,15 +308,16 @@ class ApiService {
    */
   async adminCreateUser(userData) {
     try {
-      console.log('API: Creating new user:', userData);
       const response = await this.request('/api/admin/users', {
         method: 'POST',
         body: JSON.stringify(userData),
       });
-      console.log('API: User created:', response);
       return response;
     } catch (error) {
-      console.error('Error creating user:', error);
+      // In production, we don't log errors to console to prevent information leakage
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Error creating user:', error);
+      }
       throw error;
     }
   }
@@ -333,15 +330,16 @@ class ApiService {
    */
   async adminUpdateUser(userId, userData) {
     try {
-      console.log('API: Updating user:', userId, userData);
       const response = await this.request(`/api/admin/users/${userId}`, {
         method: 'PUT',
         body: JSON.stringify(userData),
       });
-      console.log('API: User updated:', response);
       return response;
     } catch (error) {
-      console.error('Error updating user:', error);
+      // In production, we don't log errors to console to prevent information leakage
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Error updating user:', error);
+      }
       throw error;
     }
   }
@@ -353,14 +351,15 @@ class ApiService {
    */
   async adminDeleteUser(userId) {
     try {
-      console.log('API: Deleting user:', userId);
       const response = await this.request(`/api/admin/users/${userId}`, {
         method: 'DELETE',
       });
-      console.log('API: User deleted:', response);
       return response;
     } catch (error) {
-      console.error('Error deleting user:', error);
+      // In production, we don't log errors to console to prevent information leakage
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Error deleting user:', error);
+      }
       throw error;
     }
   }
@@ -371,14 +370,15 @@ class ApiService {
    */
   async adminGetLocations() {
     try {
-      console.log('API: Fetching all locations for admin');
       const response = await this.request('/api/admin/locations', {
         method: 'GET',
       });
-      console.log('API: Admin locations response:', response);
       return response.locations || [];
     } catch (error) {
-      console.error('Error fetching admin locations:', error);
+      // In production, we don't log errors to console to prevent information leakage
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Error fetching admin locations:', error);
+      }
       throw error;
     }
   }
@@ -390,15 +390,16 @@ class ApiService {
    */
   async adminCreateLocation(locationData) {
     try {
-      console.log('API: Creating new location:', locationData);
       const response = await this.request('/api/admin/locations', {
         method: 'POST',
         body: JSON.stringify(locationData),
       });
-      console.log('API: Location created:', response);
       return response;
     } catch (error) {
-      console.error('Error creating location:', error);
+      // In production, we don't log errors to console to prevent information leakage
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Error creating location:', error);
+      }
       throw error;
     }
   }
@@ -411,15 +412,16 @@ class ApiService {
    */
   async adminUpdateLocation(locationId, locationData) {
     try {
-      console.log('API: Updating location:', locationId, locationData);
       const response = await this.request(`/api/admin/locations/${locationId}`, {
         method: 'PUT',
         body: JSON.stringify(locationData),
       });
-      console.log('API: Location updated:', response);
       return response;
     } catch (error) {
-      console.error('Error updating location:', error);
+      // In production, we don't log errors to console to prevent information leakage
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Error updating location:', error);
+      }
       throw error;
     }
   }
@@ -431,14 +433,15 @@ class ApiService {
    */
   async adminDeleteLocation(locationId) {
     try {
-      console.log('API: Deleting location:', locationId);
       const response = await this.request(`/api/admin/locations/${locationId}`, {
         method: 'DELETE',
       });
-      console.log('API: Location deleted:', response);
       return response;
     } catch (error) {
-      console.error('Error deleting location:', error);
+      // In production, we don't log errors to console to prevent information leakage
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Error deleting location:', error);
+      }
       throw error;
     }
   }
@@ -449,14 +452,15 @@ class ApiService {
    */
   async adminGetDonationsSummary() {
     try {
-      console.log('API: Fetching donations summary for admin');
       const response = await this.request('/api/admin/reports/donations-summary', {
         method: 'GET',
       });
-      console.log('API: Admin donations summary response:', response);
       return response;
     } catch (error) {
-      console.error('Error fetching admin donations summary:', error);
+      // In production, we don't log errors to console to prevent information leakage
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Error fetching admin donations summary:', error);
+      }
       throw error;
     }
   }
