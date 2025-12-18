@@ -483,7 +483,7 @@ def admin_create_user(current_user):
 def admin_get_donations_summary(current_user):
     total_donations = Donation.query.count()
     processing_count = Donation.query.filter_by(status='processing').count()
-    pending_count = Donation.query.filter_by(status='pending_payment').count()
+    pending_count = Donation.query.filter_by(status='pending').count()
     total_revenue = db.session.query(db.func.sum(Donation.amount)).scalar()
     trees_planted = db.session.query(db.func.sum(Donation.tree_count)).scalar()
     

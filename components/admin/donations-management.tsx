@@ -165,6 +165,19 @@ export function DonationsManagement() {
       setDonations(updatedDonations)
       setFilteredDonations(updatedDonations)
       
+      // Update summary statistics
+      const total = updatedDonations.length
+      const processing = updatedDonations.filter(d => d.status === 'processing').length
+      const pending = updatedDonations.filter(d => d.status === 'pending').length
+      const revenue = updatedDonations.reduce((sum, d) => sum + (d.amount || 0), 0)
+      
+      setSummary({
+        total,
+        processing,
+        pending,
+        revenue
+      })
+      
       toast({
         title: "Успех",
         description: "Статус пожертвования успешно обновлен",
@@ -267,6 +280,7 @@ export function DonationsManagement() {
                 <SelectItem value="completed">Завершено</SelectItem>
                 <SelectItem value="processing">В процессе</SelectItem>
                 <SelectItem value="pending">Ожидание</SelectItem>
+                <SelectItem value="pending_payment">Ожидает оплату</SelectItem>
               </SelectContent>
             </Select>
             <Select value={filterLocation} onValueChange={setFilterLocation}>
