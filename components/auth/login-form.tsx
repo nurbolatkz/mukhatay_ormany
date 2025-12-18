@@ -4,7 +4,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,7 +14,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Eye, EyeOff } from "lucide-react";
 import apiService from "@/services/api";
 
-export function LoginForm() {
+// Separate component that uses useSearchParams
+function LoginFormContent({}) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { login, user } = useAuth();
@@ -189,4 +191,8 @@ export function LoginForm() {
       </CardContent>
     </Card>
   );
+}
+
+export function LoginForm() {
+  return <LoginFormContent />;
 }
