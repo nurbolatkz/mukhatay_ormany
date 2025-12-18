@@ -30,7 +30,7 @@ else
 fi
 
 # Check database connectivity
-DB_STATUS=$(docker-compose -f deploy/docker-compose.yml exec -T postgres pg_isready -U bulletin_user 2>/dev/null)
+DB_STATUS=$(docker-compose -f deploy/docker-compose.yml exec -T postgres pg_isready -U mukhatay_user 2>/dev/null)
 if [[ $? -eq 0 ]]; then
     echo "✅ Database is accessible"
 else

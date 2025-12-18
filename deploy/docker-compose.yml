@@ -27,8 +27,6 @@ services:
     restart: unless-stopped
     networks:
       - n8n-compose_web
-    volumes:
-      - /opt/mukhatay_ormany/backend:/app
     environment:
       - FLASK_ENV=production
       - DATABASE_URL=postgresql://mukhatay_user:StrongPassword2025!@postgres:5432/mukhatay_ormany_db
@@ -50,6 +48,8 @@ services:
     restart: unless-stopped
     networks:
       - n8n-compose_web
+    ports:
+      - "3000:3000"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mukhatay-frontend.rule=Host(`mukhatayormany.birqadam.kz`)"
