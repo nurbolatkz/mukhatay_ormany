@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.8'
 
 services:
   postgres:
@@ -31,17 +31,12 @@ services:
       - FLASK_ENV=production
       - DATABASE_URL=postgresql://mukhatay_user:StrongPassword2025!@postgres:5432/mukhatay_ormany_db
       - SECRET_KEY=your_production_secret_key_here_change_me
+      - FLASK_HOST=0.0.0.0
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     ports:
       - "5000:5000"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.mukhatay-backend.rule=Host(`mukhatayormany.birqadam.kz`) && (PathPrefix(`/api`) || PathPrefix(`/admin`))"
-      - "traefik.http.routers.mukhatay-backend.entrypoints=websecure"
-      - "traefik.http.routers.mukhatay-backend.tls.certresolver=mytlschallenge"
-      - "traefik.http.services.mukhatay-backend.loadbalancer.server.port=5000"
-      - "traefik.http.routers.mukhatay-backend.priority=10"
 
   frontend:
     build:
@@ -51,15 +46,15 @@ services:
     restart: unless-stopped
     networks:
       - app-network
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:5000
+      - NODE_ENV=production
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
     ports:
       - "3000:3000"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.mukhatay-frontend.rule=Host(`mukhatayormany.birqadam.kz`)"
-      - "traefik.http.routers.mukhatay-frontend.entrypoints=websecure"
-      - "traefik.http.routers.mukhatay-frontend.tls.certresolver=mytlschallenge"
-      - "traefik.http.services.mukhatay-frontend.loadbalancer.server.port=3000"
-      - "traefik.http.routers.mukhatay-frontend.priority=1"
+    depends_on:
+      - backend
 
 volumes:
   postgres_data:
