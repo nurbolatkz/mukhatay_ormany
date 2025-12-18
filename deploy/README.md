@@ -65,6 +65,15 @@ To customize these values, copy the example files:
 - `.env.development.example` to `.env.development`
 - `.env.production.example` to `.env.production`
 
+When deploying to production, you should create the actual environment files on the server:
+```bash
+# Create production environment file
+cp .env.production.example .env.production
+
+# Edit the file to customize values if needed
+nano .env.production
+```
+
 ## Useful Commands
 
 Check service status:
