@@ -10,6 +10,8 @@ const nextConfig = {
   output: 'standalone',
   // Add empty turbopack config to silence Turbopack warnings
   turbopack: {},
+  // Configure base path for proper routing
+  basePath: '',
 }
 
 export default nextConfig
