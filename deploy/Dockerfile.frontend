@@ -28,7 +28,10 @@ COPY . .
 RUN git add . && \
     git commit -m "Docker build" || true
 
+# Environment variables for build
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV CI=true
+ENV SKIP_GIT_CHECK=true
 
 # Build with output: 'standalone'
 RUN NODE_OPTIONS="--max-old-space-size=4096" pnpm run build
@@ -38,10 +41,11 @@ FROM node:20-alpine AS runner
 
 WORKDIR /app
 
+# Environment variables for runtime
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 ENV PORT=3000
-ENV HOSTNAME="0.0.0.0"
+ENV HOSTNAME=0.0.0.0
 
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
@@ -50,18 +54,16 @@ RUN addgroup --system --gid 1001 nodejs && \
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
 # Copy standalone server - this is the key fix
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./app
 
 # Copy static files (CRITICAL!)
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+WORKDIR /app/app
+
 USER nextjs
 
 EXPOSE 3000
-
-# Set environment to ensure binding to 0.0.0.0
-ENV PORT=3000
-ENV HOSTNAME=0.0.0.0
 
 # Start Next.js server - this is the key fix
 CMD ["node", "server.js"]
