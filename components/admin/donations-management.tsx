@@ -7,8 +7,16 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Eye, Send, Trash2, Download, Search, Filter } from "lucide-react"
+import { Eye, Send, Trash2, Download, Search, Filter, Edit } from "lucide-react"
 import apiService from "@/services/api"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
+import { useToast } from "@/hooks/use-toast"
 
 interface Donation {
   id: string;
@@ -19,6 +27,16 @@ interface Donation {
   amount: number;
   status: string;
   date: string;
+}
+
+interface DonationDetail extends Donation {
+  donor_info?: {
+    full_name: string;
+    phone: string;
+    company_name: string;
+    message: string;
+    subscribe_updates: boolean;
+  };
 }
 
 export function DonationsManagement() {
@@ -35,6 +53,11 @@ export function DonationsManagement() {
     pending: 0,
     revenue: 0
   })
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [selectedDonation, setSelectedDonation] = useState<DonationDetail | null>(null)
+  const [editingDonation, setEditingDonation] = useState<Donation | null>(null)
+  const [newStatus, setNewStatus] = useState("")
+  const { toast } = useToast()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -92,6 +115,71 @@ export function DonationsManagement() {
                   { label: status || "Неизвестно", className: "bg-gray-600 text-white" }
     
     return <Badge className={config.className}>{config.label}</Badge>
+  }
+
+  const viewDonationDetails = async (donation: Donation) => {
+    try {
+      // In a real implementation, you would fetch detailed donation data from the API
+      // For now, we'll just use the existing data and simulate additional fields
+      const detailedDonation: DonationDetail = {
+        ...donation,
+        donor_info: {
+          full_name: donation.donor_name,
+          phone: "",
+          company_name: "",
+          message: "",
+          subscribe_updates: true
+        }
+      }
+      setSelectedDonation(detailedDonation)
+      setIsDialogOpen(true)
+    } catch (err) {
+      console.error('Error fetching donation details:', err)
+      toast({
+        title: "Ошибка",
+        description: "Не удалось загрузить детали пожертвования",
+        variant: "destructive",
+      })
+    }
+  }
+
+  const openEditStatusDialog = (donation: Donation) => {
+    setEditingDonation(donation)
+    setNewStatus(donation.status)
+  }
+
+  const updateDonationStatus = async () => {
+    if (!editingDonation) return
+    
+    try {
+      // Call the API to update the donation status
+      await apiService.adminUpdateDonation(editingDonation.id, { status: newStatus })
+      
+      // Update the local state
+      const updatedDonations = donations.map(donation => 
+        donation.id === editingDonation.id 
+          ? { ...donation, status: newStatus } 
+          : donation
+      )
+      
+      setDonations(updatedDonations)
+      setFilteredDonations(updatedDonations)
+      
+      toast({
+        title: "Успех",
+        description: "Статус пожертвования успешно обновлен",
+      })
+      
+      setEditingDonation(null)
+      setNewStatus("")
+    } catch (err) {
+      console.error('Error updating donation status:', err)
+      toast({
+        title: "Ошибка",
+        description: "Не удалось обновить статус пожертвования",
+        variant: "destructive",
+      })
+    }
   }
 
   if (loading) {
@@ -230,14 +318,11 @@ export function DonationsManagement() {
                     <TableCell className="text-muted-foreground">{donation.date ? new Date(donation.date).toLocaleDateString('ru-RU') : 'N/A'}</TableCell>
                     <TableCell>
                       <div className="flex justify-end gap-2">
-                        <Button variant="ghost" size="sm">
+                        <Button variant="ghost" size="sm" onClick={() => viewDonationDetails(donation)}>
                           <Eye className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="sm">
-                          <Send className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="sm">
-                          <Trash2 className="h-4 w-4 text-destructive" />
+                        <Button variant="ghost" size="sm" onClick={() => openEditStatusDialog(donation)}>
+                          <Edit className="h-4 w-4" />
                         </Button>
                       </div>
                     </TableCell>
@@ -248,6 +333,134 @@ export function DonationsManagement() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Donation Details Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Детали пожертвования</DialogTitle>
+          </DialogHeader>
+          {selectedDonation && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">ID</Label>
+                  <div className="text-sm">{selectedDonation.id}</div>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Дата</Label>
+                  <div className="text-sm">
+                    {selectedDonation.date ? new Date(selectedDonation.date).toLocaleDateString('ru-RU') : 'N/A'}
+                  </div>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Донор</Label>
+                  <div className="text-sm">{selectedDonation.donor_name}</div>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Email</Label>
+                  <div className="text-sm">{selectedDonation.email}</div>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Локация</Label>
+                  <div className="text-sm">{selectedDonation.location}</div>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Статус</Label>
+                  <div className="text-sm">{getStatusBadge(selectedDonation.status)}</div>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Деревья</Label>
+                  <div className="text-sm">{selectedDonation.trees}</div>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Сумма</Label>
+                  <div className="text-sm">{selectedDonation.amount?.toLocaleString()} ₸</div>
+                </div>
+              </div>
+              
+              {selectedDonation.donor_info && (
+                <div className="border-t pt-4">
+                  <h3 className="font-medium mb-2">Информация о доноре</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Полное имя</Label>
+                      <div className="text-sm">{selectedDonation.donor_info.full_name}</div>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium">Телефон</Label>
+                      <div className="text-sm">{selectedDonation.donor_info.phone || 'Не указан'}</div>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium">Компания</Label>
+                      <div className="text-sm">{selectedDonation.donor_info.company_name || 'Не указана'}</div>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium">Подписка на обновления</Label>
+                      <div className="text-sm">
+                        {selectedDonation.donor_info.subscribe_updates ? 'Да' : 'Нет'}
+                      </div>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Сообщение</Label>
+                      <div className="text-sm">
+                        {selectedDonation.donor_info.message || 'Нет сообщения'}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              <div className="flex justify-end">
+                <Button onClick={() => setIsDialogOpen(false)}>Закрыть</Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Status Dialog */}
+      <Dialog open={!!editingDonation} onOpenChange={(open) => !open && setEditingDonation(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Изменить статус пожертвования</DialogTitle>
+          </DialogHeader>
+          {editingDonation && (
+            <div className="space-y-4">
+              <div>
+                <Label className="text-sm font-medium">ID пожертвования</Label>
+                <div className="text-sm font-medium">{editingDonation.id}</div>
+              </div>
+              <div>
+                <Label className="text-sm font-medium">Текущий статус</Label>
+                <div className="text-sm">{getStatusBadge(editingDonation.status)}</div>
+              </div>
+              <div>
+                <Label htmlFor="status" className="text-sm font-medium">
+                  Новый статус
+                </Label>
+                <Select value={newStatus} onValueChange={setNewStatus}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Выберите статус" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pending">Ожидание</SelectItem>
+                    <SelectItem value="processing">В процессе</SelectItem>
+                    <SelectItem value="pending_payment">Ожидает оплату</SelectItem>
+                    <SelectItem value="completed">Завершено</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setEditingDonation(null)}>
+                  Отмена
+                </Button>
+                <Button onClick={updateDonationStatus}>Сохранить</Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {filteredDonations.length === 0 && (
         <div className="text-center py-12">

@@ -192,7 +192,8 @@ export function UsersManagement() {
     setIsDialogOpen(true)
   }
 
-  const openCreateDialog = () => {
+  const openCreateDialog = (e: React.MouseEvent) => {
+    e.stopPropagation()
     setEditingUser(null)
     setFormData({
       full_name: "",
@@ -232,7 +233,14 @@ export function UsersManagement() {
           </Button>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <Button onClick={openCreateDialog}>
+              <Button 
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  openCreateDialog(e)
+                }}
+              >
                 <Plus className="h-4 w-4 mr-2" />
                 Добавить пользователя
               </Button>

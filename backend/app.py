@@ -221,7 +221,7 @@ def create_donation(current_user):
         user_id=current_user.id,
         tree_count=data['tree_count'],
         amount=data['amount'],
-        status='pending_payment',
+        status='pending',
         donor_info=data['donor_info']
     )
     db.session.add(new_donation)
