@@ -21,7 +21,7 @@ services:
 
   backend:
     build:
-      context: .
+      context: ..
       dockerfile: deploy/Dockerfile.backend
     container_name: mukhatay-ormany-backend
     restart: unless-stopped
@@ -44,7 +44,7 @@ services:
 
   frontend:
     build:
-      context: .
+      context: ..
       dockerfile: deploy/Dockerfile.frontend
     container_name: mukhatay-ormany-frontend
     restart: unless-stopped
