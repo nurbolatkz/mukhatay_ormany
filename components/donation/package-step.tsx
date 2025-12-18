@@ -1,73 +1,111 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Check, Plus } from "lucide-react"
+import { Check, Plus, Loader2 } from "lucide-react"
 import type { Location } from "@/app/donate/page"
+import apiService from "@/services/api"
+
+interface PackageData {
+  id: string
+  name: string
+  tree_count: number
+  price: number
+  description: string
+  popular: boolean
+}
 
 interface PackageStepProps {
-  location: Location
+  location: string
   selectedPackage: string
   onPackageSelect: (packageType: string, treeCount: number, amount: number) => void
   onBack: () => void
 }
 
-const packages = [
-  {
-    id: "single",
-    name: "1 дерево",
-    trees: 1,
-    price: 2500,
-    description: "Идеально для начала",
-    popular: false,
-  },
-  {
-    id: "small",
-    name: "10 деревьев",
-    trees: 10,
-    price: 22500,
-    description: "Небольшой пакет",
-    popular: true,
-  },
-  {
-    id: "medium",
-    name: "50 деревьев",
-    trees: 50,
-    price: 100000,
-    description: "Средний пакет",
-    popular: false,
-  },
-  {
-    id: "large",
-    name: "100 деревьев",
-    trees: 100,
-    price: 190000,
-    description: "Крупный пакет",
-    popular: false,
-  },
-  {
-    id: "corporate",
-    name: "500+ деревьев",
-    trees: 500,
-    price: 900000,
-    description: "Корпоративный проект",
-    popular: false,
-  },
-]
-
 export function PackageStep({ location, selectedPackage, onPackageSelect, onBack }: PackageStepProps) {
-  const locationName = location === "nursery" ? "Forest of Central Asia" : "Mukhatay Ormany"
+  const [packages, setPackages] = useState<PackageData[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [customTreeCount, setCustomTreeCount] = useState(1)
   const [isCustomSelected, setIsCustomSelected] = useState(false)
+  
+  // Get location name from the location ID
+  const locationName = location === "loc_nursery_001" ? "Forest of Central Asia" : "Mukhatay Ormany"
   
   // Calculate price based on 2500₸ per tree (same as single tree package)
   const customPrice = customTreeCount * 2500
 
+  useEffect(() => {
+    const fetchPackages = async () => {
+      try {
+        setLoading(true)
+        // For now, we'll use hardcoded packages since there's no API endpoint for packages
+        // In a real implementation, this would be: const packagesData = await apiService.getPackages()
+        const packagesData = [
+          {
+            id: "small",
+            name: "10 деревьев",
+            tree_count: 10,
+            price: 22500,
+            description: "Небольшой пакет",
+            popular: true,
+          },
+          {
+            id: "medium",
+            name: "50 деревьев",
+            tree_count: 50,
+            price: 100000,
+            description: "Средний пакет",
+            popular: false,
+          },
+          {
+            id: "large",
+            name: "100 деревьев",
+            tree_count: 100,
+            price: 190000,
+            description: "Крупный пакет",
+            popular: false,
+          }
+        ]
+        setPackages(packagesData)
+      } catch (err) {
+        console.error('Error fetching packages:', err)
+        setError('Не удалось загрузить пакеты')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchPackages()
+  }, [])
+
   const handleCustomSelect = () => {
     setIsCustomSelected(true)
     onPackageSelect("custom", customTreeCount, customPrice)
+  }
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="text-center text-red-500 p-8">
+        <p>{error}</p>
+        <button 
+          onClick={() => window.location.reload()} 
+          className="mt-4 px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700"
+        >
+          Повторить попытку
+        </button>
+      </div>
+    )
   }
 
   return (
@@ -86,7 +124,7 @@ export function PackageStep({ location, selectedPackage, onPackageSelect, onBack
             }`}
             onClick={() => {
               setIsCustomSelected(false)
-              onPackageSelect(pkg.id, pkg.trees, pkg.price)
+              onPackageSelect(pkg.id, pkg.tree_count, pkg.price)
             }}
           >
             {pkg.popular && (
@@ -102,7 +140,7 @@ export function PackageStep({ location, selectedPackage, onPackageSelect, onBack
               <div className="text-center">
                 <div className="text-4xl font-bold text-emerald-600">{pkg.price.toLocaleString()} ₸</div>
                 <div className="text-sm text-muted-foreground mt-1">
-                  {(pkg.price / pkg.trees).toLocaleString()} ₸ за дерево
+                  {(pkg.price / pkg.tree_count).toLocaleString()} ₸ за дерево
                 </div>
               </div>
 
