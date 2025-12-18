@@ -11,49 +11,30 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, user, loading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [justLoggedIn, setJustLoggedIn] = useState(false);
-  const [loginProcessed, setLoginProcessed] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
   
   console.log('ProtectedRoute: Received props - isAuthenticated:', isAuthenticated, 'user:', user, 'loading:', loading);
 
   useEffect(() => {
-    console.log("ProtectedRoute: State update - isAuthenticated:", isAuthenticated, "loading:", loading, "justLoggedIn:", justLoggedIn, "loginProcessed:", loginProcessed);
-    
-    // Check if we're coming from a login redirect
-    const returnUrl = searchParams.get('return');
-    const step = searchParams.get('step');
-    
-    if (returnUrl && step) {
-      console.log("ProtectedRoute: Detected donation return URL");
-      setJustLoggedIn(true);
-      // Give a small delay to ensure auth state is updated
-      const timer = setTimeout(() => {
-        setJustLoggedIn(false);
-        setLoginProcessed(true);
-      }, 1000);
-      return () => clearTimeout(timer);
-    } else if (isAuthenticated && !loginProcessed) {
-      console.log("ProtectedRoute: Handling general login case");
-      // Handle general login case
-      setLoginProcessed(true);
-      setJustLoggedIn(true);
-      const timer = setTimeout(() => {
-        setJustLoggedIn(false);
-      }, 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [searchParams, isAuthenticated, loginProcessed, loading]);
-
-  useEffect(() => {
-    console.log("ProtectedRoute: Redirect check - isAuthenticated:", isAuthenticated, "loading:", loading, "justLoggedIn:", justLoggedIn);
+    console.log("ProtectedRoute: State update - isAuthenticated:", isAuthenticated, "loading:", loading);
     
     // If user is not authenticated and not loading, redirect to login page
-    // But don't redirect if we just logged in (give some time for state to update)
-    if (!isAuthenticated && !loading && !justLoggedIn) {
+    if (!isAuthenticated && !loading && !redirecting) {
       console.log("ProtectedRoute: Redirecting to login");
-      router.push("/login");
+      setRedirecting(true);
+      
+      // Check if we're on the donate page
+      const isDonatePage = window.location.pathname.includes('/donate');
+      
+      if (isDonatePage) {
+        // For donate flow, redirect to login with return URL
+        router.push(`/login?return=/donate`);
+      } else {
+        // For other protected routes, redirect to login
+        router.push("/login");
+      }
     }
-  }, [isAuthenticated, loading, router, justLoggedIn]);
+  }, [isAuthenticated, loading, router, redirecting]);
 
   // If user is authenticated and not loading, render children
   if (isAuthenticated && !loading) {

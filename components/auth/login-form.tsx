@@ -54,7 +54,14 @@ function LoginFormContent({}) {
       const returnUrl = searchParams.get('return');
       const step = searchParams.get('step');
       
-      if (returnUrl && returnUrl === '/donate' && step === 'complete') {
+      if (returnUrl && returnUrl === '/donate') {
+        // Redirect back to donation page
+        console.log("LoginForm: Redirecting back to donation page");
+        // Add a small delay to ensure auth state is updated
+        setTimeout(() => {
+          router.push("/donate");
+        }, 100);
+      } else if (returnUrl && returnUrl === '/donate' && step === 'complete') {
         // Check if there's pending donation data
         const pendingDonation = localStorage.getItem('pendingDonation');
         if (pendingDonation) {
