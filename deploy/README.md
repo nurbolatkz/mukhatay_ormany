@@ -57,6 +57,14 @@ The docker-compose file includes Traefik labels for automatic routing:
 The deployment uses the following environment variables:
 - Database: `postgresql://mukhatay_user:StrongPassword2025!@postgres:5432/mukhatay_ormany_db`
 
+For the frontend, the API URL is configured through environment variables:
+- In development: `http://127.0.0.1:5000`
+- In production: `https://mukhatayormany.birqadam.kz`
+
+To customize these values, copy the example files:
+- `.env.development.example` to `.env.development`
+- `.env.production.example` to `.env.production`
+
 ## Useful Commands
 
 Check service status:

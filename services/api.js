@@ -1,7 +1,9 @@
 // services/api.js
 // API service module for handling all backend communications
 
-const API_BASE_URL = 'http://127.0.0.1:5000';
+const API_BASE_URL = typeof window !== 'undefined' && process.env.NEXT_PUBLIC_API_URL 
+  ? process.env.NEXT_PUBLIC_API_URL 
+  : 'http://127.0.0.1:5000';
 
 class ApiService {
   constructor() {
