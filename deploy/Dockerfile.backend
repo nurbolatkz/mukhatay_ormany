@@ -25,8 +25,7 @@ USER app
 EXPOSE 5000
 
 # Initialize database and locations
-RUN python -c "from app import app, db; with app.app_context(): db.create_all()"
+RUN python -c "from app import app, db; import os; os.environ.setdefault('DATABASE_URL', 'postgresql://mukhatay_user:StrongPassword2025!@postgres:5432/mukhatay_user'); os.environ.setdefault('SECRET_KEY', 'temp_key'); with app.app_context(): db.create_all()"
 RUN python init_locations.py
-
 # Run the application
 CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "3", "--timeout", "120", "app:app"]
