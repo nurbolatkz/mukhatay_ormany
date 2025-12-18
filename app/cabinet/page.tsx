@@ -12,8 +12,9 @@ import { ProtectedRoute } from "@/components/auth/protected-route"
 
 export type CabinetView = "overview" | "trees" | "history" | "certificates" | "settings"
 
-export default function CabinetPage() {
-  const [currentView, setCurrentView] = useState<CabinetView>("overview")
+// Separate component that uses useSearchParams
+function CabinetContent({ initialView }: { initialView: CabinetView }) {
+  const [currentView, setCurrentView] = useState<CabinetView>(initialView)
   const searchParams = useSearchParams()
 
   useEffect(() => {
@@ -25,14 +26,20 @@ export default function CabinetPage() {
   }, [searchParams])
 
   return (
+    <CabinetLayout currentView={currentView} onViewChange={setCurrentView}>
+      {currentView === "overview" && <DashboardOverview onNavigate={setCurrentView} />}
+      {currentView === "trees" && <MyTrees />}
+      {currentView === "history" && <DonationHistory />}
+      {currentView === "certificates" && <Certificates />}
+      {currentView === "settings" && <ProfileSettings />}
+    </CabinetLayout>
+  )
+}
+
+export default function CabinetPage() {
+  return (
     <ProtectedRoute>
-      <CabinetLayout currentView={currentView} onViewChange={setCurrentView}>
-        {currentView === "overview" && <DashboardOverview onNavigate={setCurrentView} />}
-        {currentView === "trees" && <MyTrees />}
-        {currentView === "history" && <DonationHistory />}
-        {currentView === "certificates" && <Certificates />}
-        {currentView === "settings" && <ProfileSettings />}
-      </CabinetLayout>
+      <CabinetContent initialView="overview" />
     </ProtectedRoute>
   )
 }
