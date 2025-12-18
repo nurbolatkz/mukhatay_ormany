@@ -22,8 +22,10 @@ export function PaymentStep({ donationData, onBack }: PaymentStepProps) {
   const [paymentMethod, setPaymentMethod] = useState<"kaspi" | "card" | "bank">("kaspi")
   const [isProcessing, setIsProcessing] = useState(false)
 
-  const locationName = donationData.location === "nursery" ? "Forest of Central Asia" : "Mukhatay Ormany"
-  const locationId = donationData.location === "nursery" ? "loc_nursery_001" : "loc_karaganda_002"
+  // Use the actual location ID from the donation data
+  const locationId = donationData.location
+  // Get location name from the location ID
+  const locationName = locationId === "loc_nursery_001" ? "Forest of Central Asia" : "Mukhatay Ormany"
 
   const handlePayment = async () => {
     setIsProcessing(true)

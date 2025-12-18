@@ -17,8 +17,10 @@ import {
   LogOut,
 } from "lucide-react"
 import Link from "next/link"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import type { AdminView } from "@/app/admin/page"
+import { useAuth } from "@/contexts/auth-context"
+import { useRouter } from "next/navigation"
 
 interface AdminLayoutProps {
   children: React.ReactNode
@@ -39,6 +41,13 @@ const navItems = [
 
 export function AdminLayout({ children, currentView, onViewChange }: AdminLayoutProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const { logout, user } = useAuth()
+  const router = useRouter()
+
+  const handleLogout = async () => {
+    await logout()
+    router.push("/")
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-background dark:from-slate-950/20 dark:to-background">
@@ -57,12 +66,12 @@ export function AdminLayout({ children, currentView, onViewChange }: AdminLayout
               <div className="hidden md:block text-sm text-muted-foreground">
                 <span className="font-medium text-foreground">Администратор</span>
               </div>
-              <Link href="/">
+              <button onClick={handleLogout}>
                 <Button variant="ghost" size="sm">
                   <LogOut className="h-4 w-4 mr-2" />
                   Выйти
                 </Button>
-              </Link>
+              </button>
               <button className="md:hidden" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
                 {isMobileMenuOpen ? <X /> : <Menu />}
               </button>

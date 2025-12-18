@@ -12,7 +12,7 @@ import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { ProtectedRoute } from "@/components/auth/protected-route"
 
-export type Location = "nursery" | "karaganda"
+export type Location = string
 
 export interface DonationData {
   location: Location | null
