@@ -1,0 +1,25 @@
+<svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    @media (prefers-color-scheme: light) {
+      .background { fill: #10b981; } /* Emerald green */
+      .tree { fill: #065f46; } /* Darker green */
+      .trunk { fill: #92400e; } /* Brown */
+    }
+    @media (prefers-color-scheme: dark) {
+      .background { fill: #065f46; } /* Darker green */
+      .tree { fill: #10b981; } /* Emerald green */
+      .trunk { fill: #a16207; } /* Lighter brown */
+    }
+  </style>
+  <rect class="background" width="180" height="180" rx="37" />
+  <g transform="translate(90, 90) scale(0.9)">
+    <!-- Trunk -->
+    <rect class="trunk" x="-8" y="20" width="16" height="40" rx="4" />
+    <!-- Tree layers -->
+    <ellipse class="tree" cx="0" cy="0" rx="40" ry="30" />
+    <ellipse class="tree" cx="0" cy="-20" rx="35" ry="25" />
+    <ellipse class="tree" cx="0" cy="-40" rx="30" ry="20" />
+    <!-- Simple star on top -->
+    <polygon class="tree" points="0,-50 -5,-40 5,-40" />
+  </g>
+</svg>
