@@ -193,6 +193,15 @@ export function DonationsManagement() {
     setMinTrees("")
     setMaxTrees("")
   }
+  
+  const hasActiveFilters = () => {
+    return dateFrom !== undefined || dateTo !== undefined || 
+           minAmount !== "" || maxAmount !== "" || 
+           minTrees !== "" || maxTrees !== "" ||
+           (filterStatus !== "all" && filterStatus !== "") ||
+           (filterLocation !== "all" && filterLocation !== "") ||
+           searchQuery !== ""
+  }
 
   const updateDonationStatus = async () => {
     if (!editingDonation) return
@@ -339,11 +348,114 @@ export function DonationsManagement() {
                 <SelectItem value="Mukhatay Ormany">Mukhatay Ormany</SelectItem>
               </SelectContent>
             </Select>
-            <Button variant="outline" onClick={() => setIsFilterDialogOpen(true)}>
+            <Button 
+              variant="outline" 
+              onClick={() => setIsFilterDialogOpen(true)}
+              className={hasActiveFilters() ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-950/30" : ""}
+            >
               <Filter className="h-4 w-4 mr-2" />
               Фильтры
+              {hasActiveFilters() && (
+                <span className="ml-2 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-emerald-500 rounded-full">
+                  ●
+                </span>
+              )}
             </Button>
           </div>
+          
+          {/* Active Filters Display */}
+          {hasActiveFilters() && (
+            <div className="mt-3 flex flex-wrap gap-2">
+              {searchQuery && (
+                <Badge variant="secondary" className="flex items-center gap-1">
+                  Поиск: {searchQuery}
+                  <button 
+                    onClick={() => setSearchQuery("")} 
+                    className="ml-1 hover:bg-secondary-foreground/20 rounded-full p-0.5"
+                  >
+                    ×
+                  </button>
+                </Badge>
+              )}
+              {filterStatus !== "all" && filterStatus !== "" && (
+                <Badge variant="secondary" className="flex items-center gap-1">
+                  Статус: {getStatusBadge(filterStatus).props.children}
+                  <button 
+                    onClick={() => setFilterStatus("all")} 
+                    className="ml-1 hover:bg-secondary-foreground/20 rounded-full p-0.5"
+                  >
+                    ×
+                  </button>
+                </Badge>
+              )}
+              {filterLocation !== "all" && filterLocation !== "" && (
+                <Badge variant="secondary" className="flex items-center gap-1">
+                  Локация: {filterLocation}
+                  <button 
+                    onClick={() => setFilterLocation("all")} 
+                    className="ml-1 hover:bg-secondary-foreground/20 rounded-full p-0.5"
+                  >
+                    ×
+                  </button>
+                </Badge>
+              )}
+              {(dateFrom || dateTo) && (
+                <Badge variant="secondary" className="flex items-center gap-1">
+                  Дата: {dateFrom ? format(dateFrom, "dd.MM.yyyy", { locale: ru }) : "..."} - {dateTo ? format(dateTo, "dd.MM.yyyy", { locale: ru }) : "..."}
+                  <button 
+                    onClick={() => {
+                      setDateFrom(undefined);
+                      setDateTo(undefined);
+                    }} 
+                    className="ml-1 hover:bg-secondary-foreground/20 rounded-full p-0.5"
+                  >
+                    ×
+                  </button>
+                </Badge>
+              )}
+              {(minAmount || maxAmount) && (
+                <Badge variant="secondary" className="flex items-center gap-1">
+                  Сумма: {minAmount || "0"} - {maxAmount || "∞"}
+                  <button 
+                    onClick={() => {
+                      setMinAmount("");
+                      setMaxAmount("");
+                    }} 
+                    className="ml-1 hover:bg-secondary-foreground/20 rounded-full p-0.5"
+                  >
+                    ×
+                  </button>
+                </Badge>
+              )}
+              {(minTrees || maxTrees) && (
+                <Badge variant="secondary" className="flex items-center gap-1">
+                  Деревья: {minTrees || "0"} - {maxTrees || "∞"}
+                  <button 
+                    onClick={() => {
+                      setMinTrees("");
+                      setMaxTrees("");
+                    }} 
+                    className="ml-1 hover:bg-secondary-foreground/20 rounded-full p-0.5"
+                  >
+                    ×
+                  </button>
+                </Badge>
+              )}
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => {
+                  setSearchQuery("");
+                  setFilterStatus("all");
+                  setFilterLocation("all");
+                  resetAdvancedFilters();
+                }}
+                className="h-6 px-2 text-xs"
+              >
+                Очистить все
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
       
@@ -355,106 +467,136 @@ export function DonationsManagement() {
           </DialogHeader>
           <div className="space-y-4">
             {/* Date Range */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Дата от</Label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant={"outline"}
-                      className={`w-full justify-start text-left font-normal ${!dateFrom && "text-muted-foreground"}`}
-                    >
-                      <Calendar className="mr-2 h-4 w-4" />
-                      {dateFrom ? format(dateFrom, "PPP", { locale: ru }) : "Выберите дату"}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar
-                      mode="single"
-                      selected={dateFrom}
-                      onSelect={setDateFrom}
-                      locale={ru}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-              </div>
-              <div className="space-y-2">
-                <Label>Дата до</Label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant={"outline"}
-                      className={`w-full justify-start text-left font-normal ${!dateTo && "text-muted-foreground"}`}
-                    >
-                      <Calendar className="mr-2 h-4 w-4" />
-                      {dateTo ? format(dateTo, "PPP", { locale: ru }) : "Выберите дату"}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar
-                      mode="single"
-                      selected={dateTo}
-                      onSelect={setDateTo}
-                      locale={ru}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
+            <div className="border rounded-lg p-4">
+              <h3 className="font-medium mb-3 flex items-center">
+                <Calendar className="mr-2 h-4 w-4" />
+                Диапазон дат
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Дата от</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={"outline"}
+                        className={`w-full justify-start text-left font-normal ${!dateFrom && "text-muted-foreground"}`}
+                      >
+                        <Calendar className="mr-2 h-4 w-4" />
+                        {dateFrom ? format(dateFrom, "PPP", { locale: ru }) : "Выберите дату"}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0">
+                      <Calendar
+                        mode="single"
+                        selected={dateFrom}
+                        onSelect={setDateFrom}
+                        locale={ru}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                <div className="space-y-2">
+                  <Label>Дата до</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={"outline"}
+                        className={`w-full justify-start text-left font-normal ${!dateTo && "text-muted-foreground"}`}
+                      >
+                        <Calendar className="mr-2 h-4 w-4" />
+                        {dateTo ? format(dateTo, "PPP", { locale: ru }) : "Выберите дату"}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0">
+                      <Calendar
+                        mode="single"
+                        selected={dateTo}
+                        onSelect={setDateTo}
+                        locale={ru}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
               </div>
             </div>
             
             {/* Amount Range */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Минимальная сумма</Label>
-                <Input
-                  type="number"
-                  placeholder="0"
-                  value={minAmount}
-                  onChange={(e) => setMinAmount(e.target.value)}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>Максимальная сумма</Label>
-                <Input
-                  type="number"
-                  placeholder="100000"
-                  value={maxAmount}
-                  onChange={(e) => setMaxAmount(e.target.value)}
-                />
+            <div className="border rounded-lg p-4">
+              <h3 className="font-medium mb-3">
+                Диапазон суммы (₸)
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Минимальная сумма</Label>
+                  <Input
+                    type="number"
+                    placeholder="0"
+                    value={minAmount}
+                    onChange={(e) => setMinAmount(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Максимальная сумма</Label>
+                  <Input
+                    type="number"
+                    placeholder="100000"
+                    value={maxAmount}
+                    onChange={(e) => setMaxAmount(e.target.value)}
+                  />
+                </div>
               </div>
             </div>
             
             {/* Trees Range */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Минимум деревьев</Label>
-                <Input
-                  type="number"
-                  placeholder="0"
-                  value={minTrees}
-                  onChange={(e) => setMinTrees(e.target.value)}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>Максимум деревьев</Label>
-                <Input
-                  type="number"
-                  placeholder="1000"
-                  value={maxTrees}
-                  onChange={(e) => setMaxTrees(e.target.value)}
-                />
+            <div className="border rounded-lg p-4">
+              <h3 className="font-medium mb-3">
+                Диапазон деревьев
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Минимум деревьев</Label>
+                  <Input
+                    type="number"
+                    placeholder="0"
+                    value={minTrees}
+                    onChange={(e) => setMinTrees(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Максимум деревьев</Label>
+                  <Input
+                    type="number"
+                    placeholder="1000"
+                    value={maxTrees}
+                    onChange={(e) => setMaxTrees(e.target.value)}
+                  />
+                </div>
               </div>
             </div>
             
-            <div className="flex justify-between pt-4">
-              <Button variant="outline" onClick={resetAdvancedFilters}>
-                Сбросить
+            <div className="flex flex-col sm:flex-row justify-between gap-2 pt-4">
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  resetAdvancedFilters();
+                  setFilterStatus("all");
+                  setFilterLocation("all");
+                  setSearchQuery("");
+                }}
+                className="sm:mr-auto"
+              >
+                Сбросить все фильтры
               </Button>
-              <Button onClick={() => setIsFilterDialogOpen(false)}>
-                Применить
-              </Button>
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={resetAdvancedFilters}>
+                  Сбросить доп. фильтры
+                </Button>
+                <Button onClick={() => setIsFilterDialogOpen(false)}>
+                  Применить
+                </Button>
+              </div>
             </div>
           </div>
         </DialogContent>

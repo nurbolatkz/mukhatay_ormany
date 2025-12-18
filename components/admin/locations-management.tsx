@@ -321,63 +321,70 @@ export function LocationsManagement() {
               Добавить локацию
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-md">
+          <DialogContent className="max-w-lg w-[90vw] max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>
                 {editingLocation ? "Редактировать локацию" : "Добавить новую локацию"}
               </DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
-              <div>
-                <Label htmlFor="name">Название</Label>
-                <Input
-                  id="name"
-                  value={formData.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="name">Название</Label>
+                  <Input
+                    id="name"
+                    value={formData.name}
+                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="area_hectares">Площадь (га)</Label>
+                  <Input
+                    id="area_hectares"
+                    type="number"
+                    value={formData.area_hectares}
+                    onChange={(e) => setFormData({...formData, area_hectares: e.target.value})}
+                  />
+                </div>
               </div>
+              
               <div>
                 <Label htmlFor="description">Описание</Label>
                 <Textarea
                   id="description"
                   value={formData.description}
                   onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  rows={3}
                 />
               </div>
-              <div>
-                <Label htmlFor="area_hectares">Площадь (га)</Label>
-                <Input
-                  id="area_hectares"
-                  type="number"
-                  value={formData.area_hectares}
-                  onChange={(e) => setFormData({...formData, area_hectares: e.target.value})}
-                />
-              </div>
-              <div>
-                <Label htmlFor="capacity_trees">Вместимость (деревья)</Label>
-                <Input
-                  id="capacity_trees"
-                  type="number"
-                  value={formData.capacity_trees}
-                  onChange={(e) => setFormData({...formData, capacity_trees: e.target.value})}
-                />
-              </div>
-              <div>
-                <Label htmlFor="planted_trees">Посажено деревьев</Label>
-                <Input
-                  id="planted_trees"
-                  type="number"
-                  value={formData.planted_trees}
-                  onChange={(e) => setFormData({...formData, planted_trees: e.target.value})}
-                />
-              </div>
-              <div>
-                <Label htmlFor="coordinates">Координаты</Label>
-                <Input
-                  id="coordinates"
-                  value={formData.coordinates}
-                  onChange={(e) => setFormData({...formData, coordinates: e.target.value})}
-                />
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label htmlFor="capacity_trees">Вместимость (деревья)</Label>
+                  <Input
+                    id="capacity_trees"
+                    type="number"
+                    value={formData.capacity_trees}
+                    onChange={(e) => setFormData({...formData, capacity_trees: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="planted_trees">Посажено деревьев</Label>
+                  <Input
+                    id="planted_trees"
+                    type="number"
+                    value={formData.planted_trees}
+                    onChange={(e) => setFormData({...formData, planted_trees: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="coordinates">Координаты</Label>
+                  <Input
+                    id="coordinates"
+                    value={formData.coordinates}
+                    onChange={(e) => setFormData({...formData, coordinates: e.target.value})}
+                  />
+                </div>
               </div>
               <div>
                 <Label>Изображение</Label>
@@ -403,27 +410,31 @@ export function LocationsManagement() {
                   )}
                   
                   {/* File Upload */}
-                  <div className="flex items-center gap-2">
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageChange}
-                      className="flex-1"
-                    />
-                    <span className="text-sm text-muted-foreground">или</span>
-                    <Input
-                      placeholder="Вставить URL изображения"
-                      value={formData.image_url}
-                      onChange={(e) => setFormData({...formData, image_url: e.target.value})}
-                      className="flex-1"
-                    />
+                  <div className="space-y-2">
+                    <div>
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className="w-full"
+                      />
+                    </div>
+                    <div className="text-center text-sm text-muted-foreground">или</div>
+                    <div>
+                      <Input
+                        placeholder="Вставить URL изображения"
+                        value={formData.image_url}
+                        onChange={(e) => setFormData({...formData, image_url: e.target.value})}
+                        className="w-full"
+                      />
+                    </div>
                   </div>
                   <p className="text-xs text-muted-foreground">
                     Поддерживаются форматы JPG, PNG, GIF. Максимальный размер 5MB.
                   </p>
                 </div>
               </div>
-              <div>
+              <div className="max-w-xs">
                 <Label htmlFor="status">Статус</Label>
                 <Select value={formData.status} onValueChange={(value) => setFormData({...formData, status: value})}>
                   <SelectTrigger>
