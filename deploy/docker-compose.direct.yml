@@ -1,0 +1,57 @@
+version: '3.3'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: mukhatay-ormany-postgres
+    restart: unless-stopped
+    networks:
+      - app-network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=mukhatay_ormany_db
+      - POSTGRES_USER=mukhatay_user
+      - POSTGRES_PASSWORD=StrongPassword2025!
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mukhatay_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.backend
+    container_name: mukhatay-ormany-backend
+    restart: unless-stopped
+    networks:
+      - app-network
+    environment:
+      - FLASK_ENV=production
+      - DATABASE_URL=postgresql://mukhatay_user:StrongPassword2025!@postgres:5432/mukhatay_ormany_db
+      - SECRET_KEY=your_production_secret_key_here_change_me
+    depends_on:
+      - postgres
+    ports:
+      - "5000:5000"
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.frontend
+    container_name: mukhatay-ormany-frontend
+    restart: unless-stopped
+    networks:
+      - app-network
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:5000
+
+volumes:
+  postgres_data:
+
+networks:
+  app-network:
+    driver: bridge
