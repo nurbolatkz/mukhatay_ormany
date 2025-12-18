@@ -10,11 +10,11 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=bulletin_law
-      - POSTGRES_USER=bulletin_user
-      - POSTGRES_PASSWORD=Raketa2025!
+      - POSTGRES_DB=mukhatay_ormany_db
+      - POSTGRES_USER=mukhatay_user
+      - POSTGRES_PASSWORD=StrongPassword2025!
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U bulletin_user"]
+      test: ["CMD-SHELL", "pg_isready -U mukhatay_user"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -31,7 +31,7 @@ services:
       - /opt/mukhatay_ormany/backend:/app
     environment:
       - FLASK_ENV=production
-      - DATABASE_URL=postgresql://bulletin_user:Raketa2025!@postgres:5432/bulletin_law
+      - DATABASE_URL=postgresql://mukhatay_user:StrongPassword2025!@postgres:5432/mukhatay_ormany_db
     depends_on:
       postgres:
         condition: service_healthy

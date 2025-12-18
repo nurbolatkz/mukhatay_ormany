@@ -55,7 +55,7 @@ The docker-compose file includes Traefik labels for automatic routing:
 ## Environment Variables
 
 The deployment uses the following environment variables:
-- Database: `postgresql://bulletin_user:Raketa2025!@postgres:5432/bulletin_law`
+- Database: `postgresql://mukhatay_user:StrongPassword2025!@postgres:5432/mukhatay_ormany_db`
 
 ## Useful Commands
 

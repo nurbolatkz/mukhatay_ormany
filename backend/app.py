@@ -581,7 +581,9 @@ def admin_delete_location(current_user, location_id):
     return jsonify({'message': 'Location deleted successfully'})
 
 
-
+@app.route('/api/health', methods=['GET'])
+def health_check():
+    return jsonify({'status': 'healthy', 'timestamp': datetime.datetime.utcnow().isoformat() + 'Z'})
 
 
 if __name__ == '__main__':
