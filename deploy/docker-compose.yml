@@ -41,7 +41,7 @@ services:
       - "traefik.http.routers.mukhatay-backend.entrypoints=websecure"
       - "traefik.http.routers.mukhatay-backend.tls.certresolver=mytlschallenge"
       - "traefik.http.services.mukhatay-backend.loadbalancer.server.port=5000"
-      - "traefik.http.routers.mukhatay-backend.priority=10"
+      - "traefik.http.routers.mukhatay-backend.priority=5"
 
   frontend:
     build:
@@ -62,7 +62,7 @@ services:
       - "traefik.http.routers.mukhatay-frontend.entrypoints=websecure"
       - "traefik.http.routers.mukhatay-frontend.tls.certresolver=mytlschallenge"
       - "traefik.http.services.mukhatay-frontend.loadbalancer.server.port=3000"
-      - "traefik.http.routers.mukhatay-frontend.priority=5"
+      - "traefik.http.routers.mukhatay-frontend.priority=20"
       # CORS headers if needed
       - "traefik.http.middlewares.mukhatay-cors.headers.accesscontrolallowmethods=GET,OPTIONS,PUT,POST,DELETE,PATCH"
       - "traefik.http.middlewares.mukhatay-cors.headers.accesscontrolalloworiginlist=https://mukhatayormany.birqadam.kz"
