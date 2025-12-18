@@ -6,6 +6,8 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  // Add empty turbopack config to silence Turbopack warnings
+  turbopack: {},
   webpack: (config) => {
     config.resolve.alias['@'] = require('path').resolve(__dirname);
     return config;
