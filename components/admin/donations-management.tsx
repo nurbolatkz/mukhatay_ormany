@@ -69,9 +69,9 @@ export function DonationsManagement() {
   useEffect(() => {
     const filtered = donations.filter((donation) => {
       const matchesSearch =
-        donation.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        donation.donor_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        donation.email.toLowerCase().includes(searchQuery.toLowerCase())
+        (donation.id || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (donation.donor_name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (donation.email || '').toLowerCase().includes(searchQuery.toLowerCase())
       const matchesStatus = filterStatus === "all" || donation.status === filterStatus
       const matchesLocation = filterLocation === "all" || donation.location === filterLocation
       return matchesSearch && matchesStatus && matchesLocation
@@ -85,8 +85,12 @@ export function DonationsManagement() {
       completed: { label: "Завершено", className: "bg-emerald-600 text-white" },
       processing: { label: "В процессе", className: "bg-yellow-600 text-white" },
       pending: { label: "Ожидание", className: "bg-orange-600 text-white" },
+      pending_payment: { label: "Ожидает оплату", className: "bg-blue-600 text-white" },
     }
-    const config = statusConfig[status as keyof typeof statusConfig]
+    
+    const config = statusConfig[status as keyof typeof statusConfig] || 
+                  { label: status || "Неизвестно", className: "bg-gray-600 text-white" }
+    
     return <Badge className={config.className}>{config.label}</Badge>
   }
 
