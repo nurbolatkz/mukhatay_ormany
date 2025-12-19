@@ -488,7 +488,7 @@ export function DonationsManagement() {
                         {dateFrom ? format(dateFrom, "PPP", { locale: ru }) : "Выберите дату"}
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0 z-50" align="start">
+                    <PopoverContent className="w-auto p-0 z-50" align="start" side="bottom" avoidCollisions>
                       <Calendar
                         mode="single"
                         selected={dateFrom}
@@ -514,7 +514,7 @@ export function DonationsManagement() {
                         {dateTo ? format(dateTo, "PPP", { locale: ru }) : "Выберите дату"}
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0 z-50" align="start">
+                    <PopoverContent className="w-auto p-0 z-50" align="start" side="bottom" avoidCollisions>
                       <Calendar
                         mode="single"
                         selected={dateTo}
