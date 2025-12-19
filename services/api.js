@@ -199,11 +199,13 @@ class ApiService {
   /**
    * Create a new donation
    * @param {Object} donationData - Donation data
+   * @param {boolean} isGuest - Whether this is a guest donation
    * @returns {Promise<Object>} Created donation
    */
-  async createDonation(donationData) {
+  async createDonation(donationData, isGuest = false) {
     try {
-      const response = await this.request('/api/donations', {
+      const endpoint = isGuest ? '/api/guest-donations' : '/api/donations';
+      const response = await this.request(endpoint, {
         method: 'POST',
         body: JSON.stringify(donationData),
       });
@@ -221,11 +223,13 @@ class ApiService {
    * Process payment for a donation
    * @param {string} donationId - Donation ID
    * @param {Object} paymentData - Payment data
+   * @param {boolean} isGuest - Whether this is a guest donation
    * @returns {Promise<Object>} Payment response
    */
-  async processPayment(donationId, paymentData) {
+  async processPayment(donationId, paymentData, isGuest = false) {
     try {
-      const response = await this.request(`/api/donations/${donationId}/payment`, {
+      const endpoint = isGuest ? `/api/guest-donations/${donationId}/payment` : `/api/donations/${donationId}/payment`;
+      const response = await this.request(endpoint, {
         method: 'POST',
         body: JSON.stringify(paymentData),
       });

@@ -27,12 +27,18 @@ function LoginFormContent({}) {
   const [showDonationMessage, setShowDonationMessage] = useState(false);
 
   useEffect(() => {
+    // Pre-fill email if provided in URL params
+    const emailParam = searchParams.get('email');
+    if (emailParam) {
+      setEmail(decodeURIComponent(emailParam));
+    }
+    
     // Check if there's pending donation data
     const pendingDonation = localStorage.getItem('pendingDonation');
     if (pendingDonation) {
       setShowDonationMessage(true);
     }
-  }, []);
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,6 +59,7 @@ function LoginFormContent({}) {
       // Check if there's a return URL
       const returnUrl = searchParams.get('return');
       const step = searchParams.get('step');
+      const isGuestDonation = searchParams.get('guest_donation') === 'true';
       
       if (returnUrl && returnUrl === '/donate') {
         // Redirect back to donation page
@@ -81,6 +88,12 @@ function LoginFormContent({}) {
             router.push("/cabinet");
           }
         }
+      } else if (isGuestDonation) {
+        // For guest donations, redirect to cabinet to show donation history
+        console.log("LoginForm: Redirecting guest donation to /cabinet");
+        setTimeout(() => {
+          router.push("/cabinet?view=history");
+        }, 300);
       } else {
         // Redirect based on user role
         console.log("LoginForm: Redirecting based on user role");

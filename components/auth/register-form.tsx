@@ -77,10 +77,16 @@ export function RegisterForm() {
       // Show success message
       setSuccess(true);
       
+      // Check if this is a guest donation registration
+      const isGuestDonation = searchParams.get('guest_donation') === 'true';
+      
       // Redirect to login page after a delay, preserving return URL if present
       setTimeout(() => {
         if (returnUrl && step) {
           router.push(`/login?return=${returnUrl}&step=${step}`);
+        } else if (isGuestDonation) {
+          // For guest donations, redirect to login with email pre-filled
+          router.push(`/login?email=${encodeURIComponent(formData.email)}&guest_donation=true`);
         } else {
           router.push("/login");
         }

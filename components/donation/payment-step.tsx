@@ -48,7 +48,9 @@ export function PaymentStep({ donationData, onBack }: PaymentStepProps) {
       }
       
       console.log("[v0] Creating donation in backend:", donationPayload)
-      const createdDonation = await apiService.createDonation(donationPayload)
+      // Check if user is authenticated to determine if this is a guest donation
+      const isGuest = !user;
+      const createdDonation = await apiService.createDonation(donationPayload, isGuest)
       console.log("[v0] Donation created:", createdDonation)
       
       // Process payment
@@ -57,10 +59,10 @@ export function PaymentStep({ donationData, onBack }: PaymentStepProps) {
       }
       
       console.log("[v0] Processing payment for donation:", createdDonation.id, paymentPayload)
-      const paymentResult = await apiService.processPayment(createdDonation.id, paymentPayload)
+      const paymentResult = await apiService.processPayment(createdDonation.id, paymentPayload, isGuest)
       console.log("[v0] Payment processed:", paymentResult)
       
-      // Save donation to user's history
+      // Save donation to localStorage with email for future linking
       const donationRecord = {
         id: createdDonation.id,
         date: new Date().toLocaleDateString('ru-RU'),
@@ -68,7 +70,8 @@ export function PaymentStep({ donationData, onBack }: PaymentStepProps) {
         trees: donationData.treeCount,
         amount: donationData.amount,
         status: "Завершено",
-        statusColor: "emerald"
+        statusColor: "emerald",
+        email: donationData.donorInfo.email // Store email for linking
       }
       
       const userDonations = JSON.parse(localStorage.getItem('userDonations') || '[]')
@@ -81,8 +84,13 @@ export function PaymentStep({ donationData, onBack }: PaymentStepProps) {
       alert("Платёж успешно обработан! Спасибо за ваш вклад в восстановление лесов!")
       setIsProcessing(false)
       
-      // Redirect to user cabinet with history view selected
-      router.push('/cabinet?view=history')
+      // For guest users, redirect to login/register with email pre-filled
+      if (!user) {
+        router.push(`/login?email=${encodeURIComponent(donationData.donorInfo.email)}&guest_donation=true`)
+      } else {
+        // For authenticated users, redirect to user cabinet
+        router.push('/cabinet?view=history')
+      }
     } catch (error) {
       console.error("[v0] Error processing payment:", error)
       alert("Произошла ошибка при обработке платежа. Пожалуйста, попробуйте еще раз.")

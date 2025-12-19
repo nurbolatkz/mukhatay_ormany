@@ -58,6 +58,7 @@ class Donation(db.Model):
     location_id = db.Column(db.String, db.ForeignKey('location.id'))
     package_id = db.Column(db.String, db.ForeignKey('package.id'))
     user_id = db.Column(db.String, db.ForeignKey('user.id'))
+    email = db.Column(db.String)  # For guest donations linking
     tree_count = db.Column(db.Integer)
     amount = db.Column(db.Integer)
     status = db.Column(db.String)
@@ -110,6 +111,14 @@ def register_user():
         new_user = User(id=str(uuid.uuid4()), full_name=data['full_name'], email=data['email'], password=hashed_password, phone=data['phone'])
         db.session.add(new_user)
         db.session.commit()
+        
+        # Link any guest donations with the same email
+        guest_donations = Donation.query.filter_by(email=data['email'], user_id=None).all()
+        for donation in guest_donations:
+            donation.user_id = new_user.id
+        if guest_donations:
+            db.session.commit()
+        
         return jsonify({'message': 'Новый пользователь создан!'})
     except Exception as e:
         # Handle database integrity errors (like duplicate emails)
@@ -141,6 +150,14 @@ def login_user():
 
     if check_password_hash(user.password, password):
         token = jwt.encode({'id': user.id, 'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)}, app.config['SECRET_KEY'], algorithm="HS256")
+        
+        # Link any guest donations with the same email
+        guest_donations = Donation.query.filter_by(email=email, user_id=None).all()
+        for donation in guest_donations:
+            donation.user_id = user.id
+        if guest_donations:
+            db.session.commit()
+        
         return jsonify({'token': token})
 
     return jsonify({'message': 'Could not verify'}), 401
@@ -219,6 +236,29 @@ def create_donation(current_user):
         location_id=data['location_id'],
         package_id=data['package_id'],
         user_id=current_user.id,
+        email=current_user.email,  # Store user's email for consistency
+        tree_count=data['tree_count'],
+        amount=data['amount'],
+        status='pending',
+        donor_info=data['donor_info']
+    )
+    db.session.add(new_donation)
+    db.session.commit()
+    return jsonify({'id': new_donation.id, 'status': new_donation.status}), 201
+
+@app.route('/api/guest-donations', methods=['POST'])
+def create_guest_donation():
+    data = request.get_json()
+    
+    # Extract email from donor_info
+    donor_email = data.get('donor_info', {}).get('email')
+    
+    new_donation = Donation(
+        id=str(uuid.uuid4()),
+        location_id=data['location_id'],
+        package_id=data['package_id'],
+        user_id=None,  # No user for guest donations
+        email=donor_email,  # Store email for linking later
         tree_count=data['tree_count'],
         amount=data['amount'],
         status='pending',
@@ -254,9 +294,44 @@ def process_payment(current_user, donation_id):
     }
     return jsonify(response)
 
+@app.route('/api/guest-donations/<string:donation_id>/payment', methods=['POST'])
+def process_guest_payment(donation_id):
+    donation = Donation.query.get_or_404(donation_id)
+    # For guest donations, we don't check user ownership
+    # but we ensure it's actually a guest donation (user_id is None)
+    if donation.user_id is not None:
+        return jsonify({'message': 'Permission denied'}), 403
+    
+    donation.status = 'completed'
+    
+    new_certificate = Certificate(
+        id=str(uuid.uuid4()),
+        donation_id=donation.id,
+        pdf_url=f"/certificates/{donation.id}.pdf"
+    )
+    db.session.add(new_certificate)
+    db.session.commit()
+
+    response = {
+        "success": True,
+        "donation_id": donation.id,
+        "status": donation.status,
+        "certificate_id": new_certificate.id,
+        "updated_at": datetime.datetime.utcnow().isoformat() + 'Z'
+    }
+    return jsonify(response)
+
 @app.route('/api/users/me/donations', methods=['GET'])
 @token_required
 def get_user_donations(current_user):
+    # First, link any guest donations with the same email
+    guest_donations = Donation.query.filter_by(email=current_user.email, user_id=None).all()
+    for donation in guest_donations:
+        donation.user_id = current_user.id
+    if guest_donations:
+        db.session.commit()
+    
+    # Now get all donations for the user
     donations = Donation.query.filter_by(user_id=current_user.id).all()
     output = []
     for donation in donations:
