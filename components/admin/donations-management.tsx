@@ -478,55 +478,33 @@ export function DonationsManagement() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Дата от</Label>
-                  <Popover onOpenChange={(open) => open && setActiveDateInput("from")}>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={"outline"}
-                        className={`w-full justify-start text-left font-normal ${!dateFrom && "text-muted-foreground"} ${activeDateInput === "from" ? "ring-2 ring-emerald-500 border-emerald-500" : ""}`}
-                      >
-                        <Calendar className="mr-2 h-4 w-4" />
-                        {dateFrom ? format(dateFrom, "PPP", { locale: ru }) : "Выберите дату"}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0 z-50" align="start" side="bottom" avoidCollisions>
-                      <Calendar
-                        mode="single"
-                        selected={dateFrom}
-                        onSelect={(date) => {
-                          setDateFrom(date);
-                          setActiveDateInput(null);
-                        }}
-                        locale={ru}
-                        className={activeDateInput === "from" ? "border-2 border-emerald-500 rounded" : ""}
-                      />
-                    </PopoverContent>
-                  </Popover>
+                  <Input
+                    type="date"
+                    value={dateFrom ? format(dateFrom, "yyyy-MM-dd") : ""}
+                    onChange={(e) => {
+                      if (e.target.value) {
+                        setDateFrom(new Date(e.target.value));
+                      } else {
+                        setDateFrom(undefined);
+                      }
+                    }}
+                    className="w-full"
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label>Дата до</Label>
-                  <Popover onOpenChange={(open) => open && setActiveDateInput("to")}>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={"outline"}
-                        className={`w-full justify-start text-left font-normal ${!dateTo && "text-muted-foreground"} ${activeDateInput === "to" ? "ring-2 ring-emerald-500 border-emerald-500" : ""}`}
-                      >
-                        <Calendar className="mr-2 h-4 w-4" />
-                        {dateTo ? format(dateTo, "PPP", { locale: ru }) : "Выберите дату"}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0 z-50" align="start" side="bottom" avoidCollisions>
-                      <Calendar
-                        mode="single"
-                        selected={dateTo}
-                        onSelect={(date) => {
-                          setDateTo(date);
-                          setActiveDateInput(null);
-                        }}
-                        locale={ru}
-                        className={activeDateInput === "to" ? "border-2 border-emerald-500 rounded" : ""}
-                      />
-                    </PopoverContent>
-                  </Popover>
+                  <Input
+                    type="date"
+                    value={dateTo ? format(dateTo, "yyyy-MM-dd") : ""}
+                    onChange={(e) => {
+                      if (e.target.value) {
+                        setDateTo(new Date(e.target.value));
+                      } else {
+                        setDateTo(undefined);
+                      }
+                    }}
+                    className="w-full"
+                  />
                 </div>
               </div>
             </div>
