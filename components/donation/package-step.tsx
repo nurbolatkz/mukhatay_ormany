@@ -244,6 +244,7 @@ export function PackageStep({ location, selectedPackage, onPackageSelect, onBack
                   <div className="sr-only" aria-live="polite">
                     Текущее количество деревьев: {customTreeCount}
                   </div>
+                </div>
                 <Button 
                   type="button"
                   variant="outline" 
