@@ -209,8 +209,8 @@ export function PackageStep({ location, selectedPackage, onPackageSelect, onBack
                 </Button>
                   <Input
                     type="number"
-                      min="1"
-                      value={customTreeCount}
+                    min="1"
+                    value={customTreeCount}
                       onChange={(e) => {
                         const value = e.target.value;
                         // Prevent negative numbers and non-numeric values
@@ -239,12 +239,11 @@ export function PackageStep({ location, selectedPackage, onPackageSelect, onBack
                           setCustomTreeCount(1);
                         }
                       }}
-                    />
-                    <div className="sr-only" aria-live="polite">
-                      Текущее количество деревьев: {customTreeCount}
-                    </div>
+                  />
+                  <div className="sr-only" aria-live="polite">
+                    Текущее количество деревьев: {customTreeCount}
                   </div>
-                </div>
+                  </div>
                 <Button 
                   type="button"
                   variant="outline" 
