@@ -66,6 +66,8 @@ export function DonationsManagement() {
   const [maxAmount, setMaxAmount] = useState("")
   const [minTrees, setMinTrees] = useState("")
   const [maxTrees, setMaxTrees] = useState("")
+  // Track which date input is active for better UX
+  const [activeDateInput, setActiveDateInput] = useState<"from" | "to" | null>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [selectedDonation, setSelectedDonation] = useState<DonationDetail | null>(null)
   const [editingDonation, setEditingDonation] = useState<Donation | null>(null)
@@ -192,6 +194,7 @@ export function DonationsManagement() {
     setMaxAmount("")
     setMinTrees("")
     setMaxTrees("")
+    setActiveDateInput(null)
   }
   
   const hasActiveFilters = () => {
@@ -461,7 +464,7 @@ export function DonationsManagement() {
       
       {/* Advanced Filter Dialog */}
       <Dialog open={isFilterDialogOpen} onOpenChange={setIsFilterDialogOpen}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-lg w-[95vw] max-h-[85vh] overflow-y-auto sm:max-h-[80vh]">
           <DialogHeader>
             <DialogTitle>Расширенные фильтры</DialogTitle>
           </DialogHeader>
@@ -475,46 +478,52 @@ export function DonationsManagement() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Дата от</Label>
-                  <Popover>
+                  <Popover onOpenChange={(open) => open && setActiveDateInput("from")}>
                     <PopoverTrigger asChild>
                       <Button
                         variant={"outline"}
-                        className={`w-full justify-start text-left font-normal ${!dateFrom && "text-muted-foreground"}`}
+                        className={`w-full justify-start text-left font-normal ${!dateFrom && "text-muted-foreground"} ${activeDateInput === "from" ? "ring-2 ring-emerald-500 border-emerald-500" : ""}`}
                       >
                         <Calendar className="mr-2 h-4 w-4" />
                         {dateFrom ? format(dateFrom, "PPP", { locale: ru }) : "Выберите дату"}
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
+                    <PopoverContent className="w-auto p-0 z-50" align="start">
                       <Calendar
                         mode="single"
                         selected={dateFrom}
-                        onSelect={setDateFrom}
+                        onSelect={(date) => {
+                          setDateFrom(date);
+                          setActiveDateInput(null);
+                        }}
                         locale={ru}
-                        initialFocus
+                        className={activeDateInput === "from" ? "border-2 border-emerald-500 rounded" : ""}
                       />
                     </PopoverContent>
                   </Popover>
                 </div>
                 <div className="space-y-2">
                   <Label>Дата до</Label>
-                  <Popover>
+                  <Popover onOpenChange={(open) => open && setActiveDateInput("to")}>
                     <PopoverTrigger asChild>
                       <Button
                         variant={"outline"}
-                        className={`w-full justify-start text-left font-normal ${!dateTo && "text-muted-foreground"}`}
+                        className={`w-full justify-start text-left font-normal ${!dateTo && "text-muted-foreground"} ${activeDateInput === "to" ? "ring-2 ring-emerald-500 border-emerald-500" : ""}`}
                       >
                         <Calendar className="mr-2 h-4 w-4" />
                         {dateTo ? format(dateTo, "PPP", { locale: ru }) : "Выберите дату"}
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
+                    <PopoverContent className="w-auto p-0 z-50" align="start">
                       <Calendar
                         mode="single"
                         selected={dateTo}
-                        onSelect={setDateTo}
+                        onSelect={(date) => {
+                          setDateTo(date);
+                          setActiveDateInput(null);
+                        }}
                         locale={ru}
-                        initialFocus
+                        className={activeDateInput === "to" ? "border-2 border-emerald-500 rounded" : ""}
                       />
                     </PopoverContent>
                   </Popover>
@@ -523,7 +532,7 @@ export function DonationsManagement() {
             </div>
             
             {/* Amount Range */}
-            <div className="border rounded-lg p-4">
+            <div className="border rounded-lg p-4 mt-4">
               <h3 className="font-medium mb-3">
                 Диапазон суммы (₸)
               </h3>
@@ -550,7 +559,7 @@ export function DonationsManagement() {
             </div>
             
             {/* Trees Range */}
-            <div className="border rounded-lg p-4">
+            <div className="border rounded-lg p-4 mt-4">
               <h3 className="font-medium mb-3">
                 Диапазон деревьев
               </h3>
@@ -593,7 +602,10 @@ export function DonationsManagement() {
                 <Button variant="outline" onClick={resetAdvancedFilters}>
                   Сбросить доп. фильтры
                 </Button>
-                <Button onClick={() => setIsFilterDialogOpen(false)}>
+                <Button onClick={() => {
+                  setIsFilterDialogOpen(false);
+                  setActiveDateInput(null);
+                }}>
                   Применить
                 </Button>
               </div>

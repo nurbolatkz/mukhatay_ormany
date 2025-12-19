@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Check, Plus, Loader2 } from "lucide-react"
+import { Check, Plus, Minus, Loader2 } from "lucide-react"
 import type { Location } from "@/app/donate/page"
 import apiService from "@/services/api"
 
@@ -188,14 +188,82 @@ export function PackageStep({ location, selectedPackage, onPackageSelect, onBack
               </div>
               
               <div className="flex items-center gap-2">
-                <Input
-                  type="number"
-                  min="1"
-                  value={customTreeCount}
-                  onChange={(e) => setCustomTreeCount(Math.max(1, parseInt(e.target.value) || 1))}
-                  className="text-center"
-                  onClick={(e) => e.stopPropagation()}
-                />
+                <Button 
+                  type="button"
+                  variant="outline" 
+                  size="icon"
+                  className="h-10 w-10 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCustomTreeCount(prev => Math.max(1, prev - 1));
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.stopPropagation();
+                      setCustomTreeCount(prev => Math.max(1, prev - 1));
+                    }
+                  }}
+                  aria-label="Уменьшить количество деревьев"
+                >
+                  <Minus className="h-4 w-4" />
+                </Button>
+                  <Input
+                    type="number"
+                      min="1"
+                      value={customTreeCount}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        // Prevent negative numbers and non-numeric values
+                        if (value === '' || isNaN(parseInt(value))) {
+                          setCustomTreeCount(1);
+                        } else {
+                          const numValue = parseInt(value);
+                          if (numValue >= 1) {
+                            setCustomTreeCount(numValue);
+                          } else {
+                            setCustomTreeCount(1);
+                          }
+                        }
+                      }}
+                      onKeyPress={(e) => {
+                        // Prevent entering negative signs or other non-numeric characters
+                        if (e.key === '-' || e.key === 'e' || e.key === '+' || e.key === '.') {
+                          e.preventDefault();
+                        }
+                      }}
+                      className="text-center w-20"
+                      onClick={(e) => e.stopPropagation()}
+                      onBlur={(e) => {
+                        // Ensure minimum value when input loses focus
+                        if (e.target.value === '' || parseInt(e.target.value) < 1) {
+                          setCustomTreeCount(1);
+                        }
+                      }}
+                    />
+                    <div className="sr-only" aria-live="polite">
+                      Текущее количество деревьев: {customTreeCount}
+                    </div>
+                  </div>
+                </div>
+                <Button 
+                  type="button"
+                  variant="outline" 
+                  size="icon"
+                  className="h-10 w-10 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCustomTreeCount(prev => prev + 1);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.stopPropagation();
+                      setCustomTreeCount(prev => prev + 1);
+                    }
+                  }}
+                  aria-label="Увеличить количество деревьев"
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
                 <span className="text-sm whitespace-nowrap">деревьев</span>
               </div>
               
