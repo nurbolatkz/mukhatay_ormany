@@ -50,24 +50,29 @@ export function CabinetLayout({ children, currentView, onViewChange }: CabinetLa
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-emerald-50 to-background dark:from-emerald-950/20 dark:to-background">
+    <div className="min-h-screen bg-[#f8f9f5] dark:bg-[#182014]">
       {/* Header */}
       <header className="bg-background/80 backdrop-blur-lg border-b border-border sticky top-0 z-40">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             <Link href="/" className="flex items-center gap-2">
-              <div className="text-xl font-bold text-emerald-600">Mukhatay Ormany</div>
+              <div className="text-xl font-bold text-[#1a3d2e] dark:text-white">Mukhatay Ormany</div>
             </Link>
 
             <div className="flex items-center gap-4">
-              <div className="hidden md:block text-sm text-muted-foreground">
-                Добро пожаловать, <span className="font-medium text-foreground">{user?.full_name || "Пользователь"}</span>
+              <div className="hidden md:block text-sm text-[#6b7280] dark:text-white/80">
+                Добро пожаловать, <span className="font-medium text-[#1a3d2e] dark:text-white">{user?.full_name || "Пользователь"}</span>
               </div>
-              <Button variant="ghost" size="sm" onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                handleLogout(e);
-              }}>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleLogout(e);
+                }}
+                className="text-[#2d5a45] hover:text-primary dark:text-[#f4e31e] dark:hover:text-primary"
+              >
                 <LogOut className="h-4 w-4 mr-2" />
                 Выйти
               </Button>
@@ -90,10 +95,10 @@ export function CabinetLayout({ children, currentView, onViewChange }: CabinetLa
                   <button
                     key={item.id}
                     onClick={() => onViewChange(item.id)}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 ${
                       currentView === item.id
-                        ? "bg-emerald-600 text-white"
-                        : "text-foreground/80 hover:bg-muted hover:text-foreground"
+                        ? "bg-[#f4e31e] text-[#1a3d2e] font-semibold"
+                        : "text-[#6b7280] hover:bg-[#e8ebe7] hover:text-[#1a3d2e] dark:text-white/70 dark:hover:bg-white/10 dark:hover:text-white"
                     }`}
                   >
                     <Icon className="h-5 w-5" />
@@ -109,7 +114,7 @@ export function CabinetLayout({ children, currentView, onViewChange }: CabinetLa
             <div className="md:hidden fixed inset-0 z-50 bg-background/95 backdrop-blur-lg">
               <div className="container mx-auto px-4 py-4">
                 <div className="flex justify-between items-center mb-8">
-                  <div className="text-xl font-bold text-emerald-600">Меню</div>
+                  <div className="text-xl font-bold text-[#1a3d2e] dark:text-white">Меню</div>
                   <button onClick={() => setIsMobileMenuOpen(false)}>
                     <X />
                   </button>
@@ -124,10 +129,10 @@ export function CabinetLayout({ children, currentView, onViewChange }: CabinetLa
                           onViewChange(item.id)
                           setIsMobileMenuOpen(false)
                         }}
-                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 ${
                           currentView === item.id
-                            ? "bg-emerald-600 text-white"
-                            : "text-foreground/80 hover:bg-muted hover:text-foreground"
+                            ? "bg-[#f4e31e] text-[#1a3d2e] font-semibold"
+                            : "text-[#6b7280] hover:bg-[#e8ebe7] hover:text-[#1a3d2e] dark:text-white/70 dark:hover:bg-white/10 dark:hover:text-white"
                         }`}
                       >
                         <Icon className="h-5 w-5" />
