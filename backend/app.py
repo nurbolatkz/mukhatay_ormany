@@ -388,11 +388,15 @@ def get_user_certificates(current_user):
     output = []
     for certificate in certificates:
         donation = Donation.query.get(certificate.donation_id)
+        # Handle case where donation might not exist
+        tree_count = donation.tree_count if donation else 0
+        location_id = donation.location_id if donation else 'Unknown Location'
+        
         certificate_data = {
             "id": certificate.id,
             "donation_id": certificate.donation_id,
-            "trees": donation.tree_count,
-            "location": donation.location_id,
+            "trees": tree_count,
+            "location": location_id,
             "date": certificate.created_date.isoformat() + 'Z' if certificate.created_date else None,
             "pdf_url": certificate.pdf_url
         }
@@ -435,11 +439,17 @@ def admin_get_donations(current_user):
     for donation in donations:
         user = User.query.get(donation.user_id)
         location = Location.query.get(donation.location_id)
+        
+        # Handle case where user or location might not exist
+        donor_name = user.full_name if user else 'Unknown User'
+        email = user.email if user else 'Unknown Email'
+        location_name = location.name if location else 'Unknown Location'
+        
         donation_data = {
             'id': donation.id,
-            'donor_name': user.full_name,
-            'email': user.email,
-            'location': location.name,
+            'donor_name': donor_name,
+            'email': email,
+            'location': location_name,
             'trees': donation.tree_count,
             'amount': donation.amount,
             'status': donation.status,
