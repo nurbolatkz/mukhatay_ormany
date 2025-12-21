@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Eye, Send, Trash2, Download, Search, Filter, Edit } from "lucide-react"
+import { Eye, Send, Trash2, Download, Search, Edit } from "lucide-react"
 import apiService from "@/services/api"
 import {
   Dialog,
@@ -17,9 +17,7 @@ import {
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
-import { Calendar } from "@/components/ui/calendar"
-import { format } from "date-fns"
-import { ru } from "date-fns/locale"
+// Removed unused imports as per user request
 
 interface Donation {
   id: string;
@@ -57,16 +55,7 @@ export function DonationsManagement() {
     revenue: 0
   })
   
-  // Advanced filter states
-  const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false)
-  const [dateFrom, setDateFrom] = useState<Date | undefined>(undefined)
-  const [dateTo, setDateTo] = useState<Date | undefined>(undefined)
-  const [minAmount, setMinAmount] = useState("")
-  const [maxAmount, setMaxAmount] = useState("")
-  const [minTrees, setMinTrees] = useState("")
-  const [maxTrees, setMaxTrees] = useState("")
-  // Track which date input is active for better UX
-  const [activeDateInput, setActiveDateInput] = useState<"from" | "to" | null>(null)
+  // Advanced filter states (removed as per user request)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [selectedDonation, setSelectedDonation] = useState<DonationDetail | null>(null)
   const [editingDonation, setEditingDonation] = useState<Donation | null>(null)
@@ -113,33 +102,11 @@ export function DonationsManagement() {
       const matchesStatus = filterStatus === "all" || donation.status === filterStatus
       const matchesLocation = filterLocation === "all" || donation.location === filterLocation
       
-      // Advanced filters
-      let matchesDate = true;
-      if (dateFrom || dateTo) {
-        const donationDate = new Date(donation.date);
-        if (dateFrom && donationDate < dateFrom) matchesDate = false;
-        if (dateTo && donationDate > dateTo) matchesDate = false;
-      }
-      
-      let matchesAmount = true;
-      if (minAmount || maxAmount) {
-        const amount = donation.amount || 0;
-        if (minAmount && amount < parseFloat(minAmount)) matchesAmount = false;
-        if (maxAmount && amount > parseFloat(maxAmount)) matchesAmount = false;
-      }
-      
-      let matchesTrees = true;
-      if (minTrees || maxTrees) {
-        const trees = donation.trees || 0;
-        if (minTrees && trees < parseInt(minTrees)) matchesTrees = false;
-        if (maxTrees && trees > parseInt(maxTrees)) matchesTrees = false;
-      }
-      
-      return matchesSearch && matchesStatus && matchesLocation && matchesDate && matchesAmount && matchesTrees;
+      return matchesSearch && matchesStatus && matchesLocation;
     })
     
     setFilteredDonations(filtered)
-  }, [donations, searchQuery, filterStatus, filterLocation, dateFrom, dateTo, minAmount, maxAmount, minTrees, maxTrees])
+  }, [donations, searchQuery, filterStatus, filterLocation])
 
   const getStatusBadge = (status: string) => {
     const statusConfig = {
@@ -186,21 +153,8 @@ export function DonationsManagement() {
     setNewStatus(donation.status)
   }
   
-  const resetAdvancedFilters = () => {
-    setDateFrom(undefined)
-    setDateTo(undefined)
-    setMinAmount("")
-    setMaxAmount("")
-    setMinTrees("")
-    setMaxTrees("")
-    setActiveDateInput(null)
-  }
-  
   const hasActiveFilters = () => {
-    return dateFrom !== undefined || dateTo !== undefined || 
-           minAmount !== "" || maxAmount !== "" || 
-           minTrees !== "" || maxTrees !== "" ||
-           (filterStatus !== "all" && filterStatus !== "") ||
+    return (filterStatus !== "all" && filterStatus !== "") ||
            (filterLocation !== "all" && filterLocation !== "") ||
            searchQuery !== ""
   }
@@ -281,10 +235,6 @@ export function DonationsManagement() {
           <h1 className="text-3xl font-bold mb-2">Управление пожертвованиями</h1>
           <p className="text-muted-foreground">Просмотр и управление всеми пожертвованиями</p>
         </div>
-        <Button className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full">
-          <Download className="h-4 w-4 mr-2" />
-          Экспорт
-        </Button>
       </div>
 
       {/* Stats Summary */}
@@ -350,19 +300,6 @@ export function DonationsManagement() {
                 <SelectItem value="Mukhatay Ormany">Mukhatay Ormany</SelectItem>
               </SelectContent>
             </Select>
-            <Button 
-              variant="outline" 
-              onClick={() => setIsFilterDialogOpen(true)}
-              className={hasActiveFilters() ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-950/30" : ""}
-            >
-              <Filter className="h-4 w-4 mr-2" />
-              Фильтры
-              {hasActiveFilters() && (
-                <span className="ml-2 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-emerald-500 rounded-full">
-                  ●
-                </span>
-              )}
-            </Button>
           </div>
           
           {/* Active Filters Display */}
@@ -403,7 +340,7 @@ export function DonationsManagement() {
               )}
               {(dateFrom || dateTo) && (
                 <Badge variant="secondary" className="flex items-center gap-1">
-                  Дата: {dateFrom ? format(dateFrom, "dd.MM.yyyy", { locale: ru }) : "..."} - {dateTo ? format(dateTo, "dd.MM.yyyy", { locale: ru }) : "..."}
+                  Дата: {dateFrom ? dateFrom.toLocaleDateString('ru-RU') : "..."} - {dateTo ? dateTo.toLocaleDateString('ru-RU') : "..."}
                   <button 
                     onClick={() => {
                       setDateFrom(undefined);
@@ -450,7 +387,7 @@ export function DonationsManagement() {
                   setSearchQuery("");
                   setFilterStatus("all");
                   setFilterLocation("all");
-                  resetAdvancedFilters();
+                  // resetAdvancedFilters() - Removed as per user request
                 }}
                 className="h-6 px-2 text-xs"
               >
@@ -461,135 +398,7 @@ export function DonationsManagement() {
         </CardContent>
       </Card>
       
-      {/* Advanced Filter Dialog */}
-      <Dialog open={isFilterDialogOpen} onOpenChange={setIsFilterDialogOpen}>
-        <DialogContent className="max-w-lg w-[95vw] max-h-[85vh] overflow-y-auto sm:max-h-[80vh]">
-          <DialogHeader>
-            <DialogTitle>Расширенные фильтры</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            {/* Date Range */}
-            <div className="border rounded-lg p-4">
-              <h3 className="font-medium mb-3 flex items-center">
-                <Calendar className="mr-2 h-4 w-4" />
-                Диапазон дат
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Дата от</Label>
-                  <Input
-                    type="date"
-                    value={dateFrom ? format(dateFrom, "yyyy-MM-dd") : ""}
-                    onChange={(e) => {
-                      if (e.target.value) {
-                        setDateFrom(new Date(e.target.value));
-                      } else {
-                        setDateFrom(undefined);
-                      }
-                    }}
-                    className="w-full"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Дата до</Label>
-                  <Input
-                    type="date"
-                    value={dateTo ? format(dateTo, "yyyy-MM-dd") : ""}
-                    onChange={(e) => {
-                      if (e.target.value) {
-                        setDateTo(new Date(e.target.value));
-                      } else {
-                        setDateTo(undefined);
-                      }
-                    }}
-                    className="w-full"
-                  />
-                </div>
-              </div>
-            </div>
-            
-            {/* Amount Range */}
-            <div className="border rounded-lg p-4 mt-4">
-              <h3 className="font-medium mb-3">
-                Диапазон суммы (₸)
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Минимальная сумма</Label>
-                  <Input
-                    type="number"
-                    placeholder="0"
-                    value={minAmount}
-                    onChange={(e) => setMinAmount(e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Максимальная сумма</Label>
-                  <Input
-                    type="number"
-                    placeholder="100000"
-                    value={maxAmount}
-                    onChange={(e) => setMaxAmount(e.target.value)}
-                  />
-                </div>
-              </div>
-            </div>
-            
-            {/* Trees Range */}
-            <div className="border rounded-lg p-4 mt-4">
-              <h3 className="font-medium mb-3">
-                Диапазон деревьев
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Минимум деревьев</Label>
-                  <Input
-                    type="number"
-                    placeholder="0"
-                    value={minTrees}
-                    onChange={(e) => setMinTrees(e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Максимум деревьев</Label>
-                  <Input
-                    type="number"
-                    placeholder="1000"
-                    value={maxTrees}
-                    onChange={(e) => setMaxTrees(e.target.value)}
-                  />
-                </div>
-              </div>
-            </div>
-            
-            <div className="flex flex-col sm:flex-row justify-between gap-2 pt-4">
-              <Button 
-                variant="outline" 
-                onClick={() => {
-                  resetAdvancedFilters();
-                  setFilterStatus("all");
-                  setFilterLocation("all");
-                  setSearchQuery("");
-                }}
-                className="sm:mr-auto"
-              >
-                Сбросить все фильтры
-              </Button>
-              <div className="flex gap-2">
-                <Button variant="outline" onClick={resetAdvancedFilters}>
-                  Сбросить доп. фильтры
-                </Button>
-                <Button onClick={() => {
-                  setIsFilterDialogOpen(false);
-                  setActiveDateInput(null);
-                }}>
-                  Применить
-                </Button>
-              </div>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* Advanced Filter Dialog - Removed as per user request */}
 
       {/* Donations Table */}
       <Card className="border-2 rounded-2xl">

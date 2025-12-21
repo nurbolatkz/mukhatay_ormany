@@ -316,7 +316,7 @@ export function LocationsManagement() {
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-emerald-600 hover:bg-emerald-700 text-white" onClick={openCreateDialog}>
+            <Button className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full" onClick={openCreateDialog}>
               <Plus className="h-4 w-4 mr-2" />
               Добавить локацию
             </Button>
@@ -327,7 +327,187 @@ export function LocationsManagement() {
                 {editingLocation ? "Редактировать локацию" : "Добавить новую локацию"}
               </DialogTitle>
             </DialogHeader>
-            <div className="space-y-4 py-2">
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="name">Название</Label>
+                  <Input
+                    id="name"
+                    value={formData.name}
+                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="status">Статус</Label>
+                  <Select value={formData.status} onValueChange={(value) => setFormData({...formData, status: value})}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="active">Активна</SelectItem>
+                      <SelectItem value="inactive">Неактивна</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              
+              <div>
+                <Label htmlFor="description">Описание</Label>
+                <Textarea
+                  id="description"
+                  value={formData.description}
+                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  rows={3}
+                />
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label htmlFor="area_hectares">Площадь (га)</Label>
+                  <Input
+                    id="area_hectares"
+                    type="number"
+                    value={formData.area_hectares}
+                    onChange={(e) => setFormData({...formData, area_hectares: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="capacity_trees">Вместимость (деревья)</Label>
+                  <Input
+                    id="capacity_trees"
+                    type="number"
+                    value={formData.capacity_trees}
+                    onChange={(e) => setFormData({...formData, capacity_trees: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="planted_trees">Посажено деревьев</Label>
+                  <Input
+                    id="planted_trees"
+                    type="number"
+                    value={formData.planted_trees}
+                    onChange={(e) => setFormData({...formData, planted_trees: e.target.value})}
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <Label htmlFor="coordinates">Координаты</Label>
+                <Input
+                  id="coordinates"
+                  value={formData.coordinates}
+                  onChange={(e) => setFormData({...formData, coordinates: e.target.value})}
+                />
+              </div>
+              
+              <div>
+                <Label>Изображение</Label>
+                <div className="space-y-4">
+                  {/* Image Preview */}
+                  {(imageUpload.previewUrl || formData.image_url) && (
+                    <div className="relative">
+                      <img
+                        src={imageUpload.previewUrl || formData.image_url}
+                        alt="Preview"
+                        className="w-full h-48 object-cover rounded-md border"
+                      />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        className="absolute top-2 right-2"
+                        onClick={handleRemoveImage}
+                      >
+                        Удалить
+                      </Button>
+                    </div>
+                  )}
+                  
+                  {/* File Upload */}
+                  <div className="space-y-2">
+                    <div>
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className="w-full"
+                      />
+                    </div>
+                    <div className="text-center text-sm text-muted-foreground">или</div>
+                    <div>
+                      <Input
+                        placeholder="Вставить URL изображения"
+                        value={formData.image_url}
+                        onChange={(e) => setFormData({...formData, image_url: e.target.value})}
+                        className="w-full"
+                      />
+                    </div>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Поддерживаются форматы JPG, PNG, GIF. Максимальный размер 5MB.
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" className="rounded-full" onClick={() => setIsDialogOpen(false)}>
+                  Отмена
+                </Button>
+                <Button className="rounded-full" onClick={handleSubmit}>
+                  {editingLocation ? "Сохранить" : "Создать"}
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
+      
+      {/* Stats Summary */}
+      <div className="grid md:grid-cols-4 gap-4">
+        <Card className="border-2 rounded-2xl">
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold text-emerald-600">{locations.length}</div>
+            <p className="text-sm text-muted-foreground">Всего локаций</p>
+          </CardContent>
+        </Card>
+        <Card className="border-2 rounded-2xl">
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold text-emerald-600">
+              {locations.filter(loc => loc.status === 'active').length}
+            </div>
+            <p className="text-sm text-muted-foreground">Активных</p>
+          </CardContent>
+        </Card>
+        <Card className="border-2 rounded-2xl">
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold text-orange-600">
+              {locations.reduce((sum, loc) => sum + loc.planted_trees, 0).toLocaleString()}
+            </div>
+            <p className="text-sm text-muted-foreground">Посажено деревьев</p>
+          </CardContent>
+        </Card>
+        <Card className="border-2 rounded-2xl">
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold text-emerald-600">
+              {locations.reduce((sum, loc) => sum + loc.area_hectares, 0).toLocaleString()} га
+            </div>
+            <p className="text-sm text-muted-foreground">Общая площадь</p>
+          </CardContent>
+        </Card>
+      </div>
+          <DialogTrigger asChild>
+            <Button className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full" onClick={openCreateDialog}>
+              <Plus className="h-4 w-4 mr-2" />
+              Добавить локацию
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-lg w-[90vw] max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>
+                {editingLocation ? "Редактировать локацию" : "Добавить новую локацию"}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="name">Название</Label>
@@ -447,16 +627,17 @@ export function LocationsManagement() {
                 </Select>
               </div>
               <div className="flex justify-end gap-2">
-                <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                <Button variant="outline" className="rounded-full" onClick={() => setIsDialogOpen(false)}>
                   Отмена
                 </Button>
-                <Button onClick={handleSubmit}>
+                <Button className="rounded-full" onClick={handleSubmit}>
                   {editingLocation ? "Сохранить" : "Создать"}
                 </Button>
               </div>
             </div>
           </DialogContent>
         </Dialog>
+      </div>
       </div>
 
       {loading ? (
@@ -466,43 +647,43 @@ export function LocationsManagement() {
       ) : error ? (
         <div className="p-8 text-center text-red-500">
           <p>{error}</p>
-          <Button onClick={fetchLocations} className="mt-4">Повторить попытку</Button>
+          <Button onClick={fetchLocations} className="mt-4 rounded-full">Повторить попытку</Button>
         </div>
       ) : (
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-4">
           {locations.map((location) => (
-            <Card key={location.id} className="border-2 overflow-hidden rounded-2xl">
-              <div className="aspect-video bg-muted relative overflow-hidden">
+            <Card key={location.id} className="border-2 overflow-hidden rounded-2xl hover:shadow-lg transition-shadow">
+              <div className="h-32 bg-muted relative overflow-hidden">
                 <img
                   src={location.image_url || "/placeholder.svg"}
                   alt={location.name}
                   className="object-cover w-full h-full"
                 />
-                <Badge className="absolute top-4 right-4 bg-emerald-600 text-white">
+                <Badge className="absolute top-2 right-2 bg-emerald-600 text-white text-xs">
                   {location.status === "active" ? "Активна" : "Неактивна"}
                 </Badge>
               </div>
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
+              <CardHeader className="p-4">
+                <CardTitle className="flex items-center justify-between text-lg">
                   <span>{location.name}</span>
                   <span className="text-sm font-normal text-muted-foreground">{location.id.substring(0, 8)}</span>
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-3 p-4">
                 <p className="text-muted-foreground">{location.description}</p>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <div className="text-2xl font-bold text-emerald-600">{formatArea(location.area_hectares)}</div>
+                    <div className="text-xl font-bold text-emerald-600">{formatArea(location.area_hectares)}</div>
                     <p className="text-sm text-muted-foreground">Площадь</p>
                   </div>
                   <div>
-                    <div className="text-2xl font-bold text-emerald-600">{location.planted_trees.toLocaleString()}</div>
+                    <div className="text-xl font-bold text-emerald-600">{location.planted_trees.toLocaleString()}</div>
                     <p className="text-sm text-muted-foreground">Посажено деревьев</p>
                   </div>
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-1">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Заполненность:</span>
                     <span className="font-medium">{Math.round((location.planted_trees / location.capacity_trees) * 100)}%</span>
@@ -523,12 +704,12 @@ export function LocationsManagement() {
                   <span>{location.coordinates}</span>
                 </div>
 
-                <div className="flex gap-2 pt-2">
-                  <Button variant="outline" className="flex-1 bg-transparent" onClick={() => openEditDialog(location)}>
+                <div className="flex gap-2 pt-1">
+                  <Button variant="outline" size="sm" className="flex-1 rounded-full" onClick={() => openEditDialog(location)}>
                     <Edit className="h-4 w-4 mr-2" />
                     Редактировать
                   </Button>
-                  <Button variant="outline" className="flex-1 bg-transparent" onClick={() => handleDeleteLocation(location.id)}>
+                  <Button variant="outline" size="sm" className="flex-1 rounded-full" onClick={() => handleDeleteLocation(location.id)}>
                     <Trash2 className="h-4 w-4 mr-2 text-destructive" />
                     Удалить
                   </Button>
