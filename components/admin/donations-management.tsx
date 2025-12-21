@@ -592,7 +592,7 @@ export function DonationsManagement() {
       </Dialog>
 
       {/* Donations Table */}
-      <Card className="border-2">
+      <Card className="border-2 rounded-2xl">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <Table>

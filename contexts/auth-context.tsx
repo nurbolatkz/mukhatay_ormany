@@ -104,9 +104,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     console.log('AuthContext: Logout called');
-    await apiService.logout();
-    setUser(null);
-    setIsAuthenticated(false);
+    try {
+      await apiService.logout();
+    } catch (error) {
+      console.error('AuthContext: Error during logout:', error);
+      // Even if logout fails, we still want to clear local state
+    } finally {
+      // Always clear local authentication state
+      setUser(null);
+      setIsAuthenticated(false);
+      console.log('AuthContext: User logged out and state cleared');
+    }
   };
 
   const register = async (userData: { full_name: string; email: string; password: string; phone: string }) => {

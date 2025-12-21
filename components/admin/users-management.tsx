@@ -358,7 +358,7 @@ export function UsersManagement() {
       </div>
 
       {/* Search */}
-      <Card className="border-2">
+      <Card className="border-2 rounded-2xl">
         <CardContent className="p-4">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -373,7 +373,7 @@ export function UsersManagement() {
       </Card>
 
       {/* Users Table */}
-      <Card className="border-2">
+      <Card className="border-2 rounded-2xl">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             {loading ? (

@@ -8,7 +8,7 @@ import { MyTrees } from "@/components/cabinet/my-trees"
 import { DonationHistory } from "@/components/cabinet/donation-history"
 import { Certificates } from "@/components/cabinet/certificates"
 import { ProfileSettings } from "@/components/cabinet/profile-settings"
-import { ProtectedRoute } from "@/components/auth/protected-route"
+import { CabinetProtectedRoute } from "@/components/cabinet/cabinet-protected-route"
 
 export type CabinetView = "overview" | "trees" | "history" | "certificates" | "settings"
 
@@ -38,8 +38,8 @@ function CabinetContent({ initialView }: { initialView: CabinetView }) {
 
 export default function CabinetPage() {
   return (
-    <ProtectedRoute>
+    <CabinetProtectedRoute>
       <CabinetContent initialView="overview" />
-    </ProtectedRoute>
+    </CabinetProtectedRoute>
   )
 }

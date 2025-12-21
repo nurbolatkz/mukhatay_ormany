@@ -31,7 +31,7 @@ export default function TestLoginPage() {
 
   const handleLogout = async () => {
     await logout();
-    router.push("/login");
+    router.push("/");
   };
 
   return (
