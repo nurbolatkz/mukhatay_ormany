@@ -52,19 +52,19 @@ function LoginFormContent({}) {
       console.log("LoginForm: Login successful");
       
       // Use the user data returned by login to check role
+      console.log("LoginForm: Full user data:", loggedInUser);
       const isAdmin = loggedInUser?.role === 'admin';
-      console.log("LoginForm: Logged in user data, isAdmin:", isAdmin);
+      console.log("LoginForm: Checking if user is admin, role:", loggedInUser?.role, "isAdmin:", isAdmin);
       
       // Check if there's a return URL
       const returnUrl = searchParams.get('return');
       const step = searchParams.get('step');
       const isGuestDonation = searchParams.get('guest_donation') === 'true';
       
-      if (returnUrl && returnUrl === '/donate') {
-        // Redirect back to donation page
-        console.log("LoginForm: Redirecting back to donation page");
-        router.push("/donate");
-      } else if (returnUrl && returnUrl === '/donate' && step === 'complete') {
+      console.log("LoginForm: Redirection parameters - returnUrl:", returnUrl, "step:", step, "isGuestDonation:", isGuestDonation);
+      
+      if (returnUrl && returnUrl === '/donate' && step === 'complete') {
+        console.log("LoginForm: Matched returnUrl '/donate' and step 'complete'");
         // Check if there's pending donation data
         const pendingDonation = localStorage.getItem('pendingDonation');
         if (pendingDonation) {
@@ -81,16 +81,24 @@ function LoginFormContent({}) {
             router.push("/cabinet");
           }
         }
+      } else if (returnUrl && returnUrl === '/donate') {
+        console.log("LoginForm: Matched returnUrl '/donate'");
+        // Redirect back to donation page
+        console.log("LoginForm: Redirecting back to donation page");
+        router.push("/donate");
       } else if (isGuestDonation) {
+        console.log("LoginForm: Matched guest donation");
         // For guest donations, redirect to cabinet to show donation history
         console.log("LoginForm: Redirecting guest donation to /cabinet");
         router.push("/cabinet?view=history");
       } else {
         // Redirect based on user role
-        console.log("LoginForm: Redirecting based on user role");
+        console.log("LoginForm: Redirecting based on user role, isAdmin:", isAdmin);
         if (isAdmin) {
+          console.log("LoginForm: Pushing to /admin");
           router.push("/admin");
         } else {
+          console.log("LoginForm: Pushing to /cabinet");
           router.push("/cabinet");
         }
       }
