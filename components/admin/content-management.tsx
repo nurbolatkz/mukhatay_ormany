@@ -65,7 +65,7 @@ export function ContentManagement() {
 
           <div className="grid md:grid-cols-3 gap-6">
             {photos.map((photo) => (
-              <Card key={photo.id} className="border-2 overflow-hidden">
+              <Card key={photo.id} className="border-2 overflow-hidden rounded-2xl">
                 <div className="aspect-video bg-muted relative overflow-hidden">
                   <img
                     src={photo.image || "/placeholder.svg"}
@@ -103,7 +103,7 @@ export function ContentManagement() {
 
           <div className="space-y-4">
             {videos.map((video) => (
-              <Card key={video.id} className="border-2">
+              <Card key={video.id} className="border-2 rounded-2xl">
                 <CardContent className="p-6">
                   <div className="flex items-center gap-6">
                     <div className="w-32 h-20 bg-muted rounded-lg flex items-center justify-center flex-shrink-0">
@@ -142,7 +142,7 @@ export function ContentManagement() {
 
           <div className="space-y-4">
             {news.map((article) => (
-              <Card key={article.id} className="border-2">
+              <Card key={article.id} className="border-2 rounded-2xl">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">

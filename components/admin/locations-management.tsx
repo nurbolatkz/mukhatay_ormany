@@ -471,7 +471,7 @@ export function LocationsManagement() {
       ) : (
         <div className="grid md:grid-cols-2 gap-6">
           {locations.map((location) => (
-            <Card key={location.id} className="border-2 overflow-hidden">
+            <Card key={location.id} className="border-2 overflow-hidden rounded-2xl">
               <div className="aspect-video bg-muted relative overflow-hidden">
                 <img
                   src={location.image_url || "/placeholder.svg"}
