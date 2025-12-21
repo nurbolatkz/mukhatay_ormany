@@ -80,7 +80,7 @@ export function MyTrees() {
       </div>
 
       {/* Filters */}
-      <Card className="border-2">
+      <Card className="border-2 rounded-2xl">
         <CardContent className="p-4">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
@@ -107,8 +107,8 @@ export function MyTrees() {
       {/* Trees Grid */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredTrees.map((tree) => (
-          <Card key={tree.id} className="border-2 hover:shadow-lg transition-shadow overflow-hidden">
-            <div className="aspect-video bg-muted relative overflow-hidden">
+          <Card key={tree.id} className="border-2 hover:shadow-lg transition-shadow overflow-hidden rounded-2xl">
+            <div className="aspect-video bg-muted relative overflow-hidden rounded-t-2xl">
               <img src={tree.image || "/placeholder.svg"} alt={tree.species} className="object-cover w-full h-full" />
               <Badge
                 className={`absolute top-2 right-2 ${

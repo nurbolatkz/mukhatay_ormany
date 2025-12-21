@@ -97,7 +97,7 @@ export function DonationHistory() {
 
       {/* Summary Cards */}
       <div className="grid md:grid-cols-3 gap-6">
-        <Card className="border-2">
+        <Card className="border-2 rounded-2xl">
           <CardContent className="p-6">
             <div className="text-2xl font-bold text-emerald-600">
               {donations.reduce((total, donation) => total + donation.trees, 0)}
@@ -105,7 +105,7 @@ export function DonationHistory() {
             <p className="text-sm text-muted-foreground">Всего деревьев</p>
           </CardContent>
         </Card>
-        <Card className="border-2">
+        <Card className="border-2 rounded-2xl">
           <CardContent className="p-6">
             <div className="text-2xl font-bold text-emerald-600">
               {donations.reduce((total, donation) => total + donation.amount, 0).toLocaleString()} ₸
@@ -113,7 +113,7 @@ export function DonationHistory() {
             <p className="text-sm text-muted-foreground">Общая сумма</p>
           </CardContent>
         </Card>
-        <Card className="border-2">
+        <Card className="border-2 rounded-2xl">
           <CardContent className="p-6">
             <div className="text-2xl font-bold text-emerald-600">{donations.length}</div>
             <p className="text-sm text-muted-foreground">Пожертвований</p>
@@ -122,7 +122,7 @@ export function DonationHistory() {
       </div>
 
       {/* Desktop Table */}
-      <Card className="border-2 hidden md:block">
+      <Card className="border-2 hidden md:block rounded-2xl">
         <CardContent className="p-0">
           <Table>
             <TableHeader>
@@ -178,7 +178,7 @@ export function DonationHistory() {
       {/* Mobile Cards */}
       <div className="md:hidden space-y-4">
         {donations.map((donation, index) => (
-          <Card key={`${donation.id}-${index}`} className="border-2">
+          <Card key={`${donation.id}-${index}`} className="border-2 rounded-2xl">
             <CardContent className="p-4 space-y-3">
               <div className="flex items-center justify-between">
                 <span className="font-medium">{donation.id}</span>

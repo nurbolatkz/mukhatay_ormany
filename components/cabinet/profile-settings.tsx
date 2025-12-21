@@ -55,7 +55,7 @@ export function ProfileSettings() {
       </div>
 
       {/* Personal Information */}
-      <Card className="border-2">
+      <Card className="border-2 rounded-2xl">
         <CardHeader>
           <CardTitle>Личная информация</CardTitle>
         </CardHeader>
@@ -99,7 +99,7 @@ export function ProfileSettings() {
               />
             </div>
 
-            <Button type="submit" className="bg-emerald-600 hover:bg-emerald-700 text-white">
+            <Button type="submit" className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full">
               Сохранить изменения
             </Button>
           </form>
@@ -107,7 +107,7 @@ export function ProfileSettings() {
       </Card>
 
       {/* Notifications */}
-      <Card className="border-2">
+      <Card className="border-2 rounded-2xl">
         <CardHeader>
           <CardTitle>Уведомления</CardTitle>
         </CardHeader>
@@ -145,12 +145,12 @@ export function ProfileSettings() {
             </label>
           </div>
 
-          <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">Сохранить настройки</Button>
+          <Button className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full">Сохранить настройки</Button>
         </CardContent>
       </Card>
 
       {/* Change Password */}
-      <Card className="border-2">
+      <Card className="border-2 rounded-2xl">
         <CardHeader>
           <CardTitle>Изменить пароль</CardTitle>
         </CardHeader>
@@ -186,7 +186,7 @@ export function ProfileSettings() {
               />
             </div>
 
-            <Button type="submit" className="bg-emerald-600 hover:bg-emerald-700 text-white">
+            <Button type="submit" className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full">
               Изменить пароль
             </Button>
           </form>
@@ -194,7 +194,7 @@ export function ProfileSettings() {
       </Card>
 
       {/* Danger Zone */}
-      <Card className="border-2 border-destructive">
+      <Card className="border-2 border-destructive rounded-2xl">
         <CardHeader>
           <CardTitle className="text-destructive flex items-center gap-2">
             <AlertCircle className="h-5 w-5" />
@@ -205,7 +205,7 @@ export function ProfileSettings() {
           <p className="text-sm text-muted-foreground">
             Удаление аккаунта приведёт к безвозвратной потере всех данных, включая историю пожертвований и сертификаты.
           </p>
-          <Button variant="destructive">Удалить аккаунт</Button>
+          <Button variant="destructive" className="rounded-full">Удалить аккаунт</Button>
         </CardContent>
       </Card>
     </div>

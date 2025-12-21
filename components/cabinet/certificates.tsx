@@ -41,8 +41,8 @@ export function Certificates() {
 
       <div className="grid md:grid-cols-2 gap-6">
         {certificates.map((cert) => (
-          <Card key={cert.id} className="border-2 hover:shadow-lg transition-shadow overflow-hidden">
-            <div className="aspect-[3/2] bg-muted relative overflow-hidden">
+          <Card key={cert.id} className="border-2 hover:shadow-lg transition-shadow overflow-hidden rounded-2xl">
+            <div className="aspect-[3/2] bg-muted relative overflow-hidden rounded-t-2xl">
               <img
                 src={cert.image || "/placeholder.svg"}
                 alt={`Сертификат ${cert.id}`}
@@ -66,11 +66,11 @@ export function Certificates() {
               </div>
 
               <div className="flex gap-2">
-                <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white">
+                <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full">
                   <Download className="h-4 w-4 mr-2" />
                   Скачать PDF
                 </Button>
-                <Button variant="outline">
+                <Button variant="outline" className="rounded-full">
                   <Share2 className="h-4 w-4" />
                 </Button>
               </div>
@@ -80,12 +80,12 @@ export function Certificates() {
       </div>
 
       {certificates.length === 0 && (
-        <Card className="border-2">
+        <Card className="border-2 rounded-2xl">
           <CardContent className="p-12 text-center">
             <Award className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-xl font-semibold mb-2">Нет сертификатов</h3>
             <p className="text-muted-foreground mb-6">Сертификаты появятся после завершения посадки деревьев</p>
-            <Button className="bg-emerald-600 hover:bg-emerald-700 text-white" asChild>
+            <Button className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full" asChild>
               <a href="/donate">Посадить деревья</a>
             </Button>
           </CardContent>
