@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Mukhatay Ormany - Новости</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+    
+    <style>
+        /* Custom CSS */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #111827; 
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #374151; 
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4B5563; 
+        }
+        
+        .line-clamp-2 {
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+        }
+        
+        .line-clamp-3 {
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 3;
+        }
+    </style>
+    
+    <script>
+        // Tailwind Configuration
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#FFD700", // Bright yellow from the screenshot
+                        "background-light": "#F3F4F6",
+                        "background-dark": "#111827", // Very dark gray/almost black
+                        "surface-dark": "#1F2937",
+                        "text-light": "#111827",
+                        "text-dark": "#F9FAFB",
+                    },
+                    fontFamily: {
+                        display: ["Inter", "sans-serif"],
+                        body: ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.5rem",
+                        'xl': '1rem',
+                        '2xl': '1.5rem',
+                    },
+                },
+            },
+        };
+        
+        // Toggle Dark/Light Mode
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+        
+        // Check for saved theme preference
+        document.addEventListener('DOMContentLoaded', function() {
+            const theme = localStorage.getItem('theme');
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+            
+            // Add mobile menu toggle functionality
+            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+            const mobileMenu = document.querySelector('.mobile-menu');
+            
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+            
+            // Newsletter form submission
+            const newsletterForm = document.querySelector('.newsletter-form');
+            if (newsletterForm) {
+                newsletterForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const email = this.querySelector('input[type="email"]').value;
+                    if (email) {
+                        alert(`Спасибо за подписку! На адрес ${email} будут отправляться новости.`);
+                        this.reset();
+                    }
+                });
+            }
+            
+            // Plant tree button action
+            const plantTreeBtn = document.querySelector('.plant-tree-btn');
+            if (plantTreeBtn) {
+                plantTreeBtn.addEventListener('click', function() {
+                    alert('Форма посадки дерева будет открыта в ближайшее время!');
+                });
+            }
+            
+            // Select location button action
+            const selectLocationBtn = document.querySelector('.select-location-btn');
+            if (selectLocationBtn) {
+                selectLocationBtn.addEventListener('click', function() {
+                    alert('Карта локаций для посадки деревьев будет доступна скоро!');
+                });
+            }
+        });
+    </script>
+</head>
+<body class="font-body bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark transition-colors duration-300">
+    
+    <!-- Navigation -->
+    <nav class="absolute top-0 w-full z-50 px-6 py-6 flex justify-between items-center text-white">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-black font-bold">
+                <span class="material-icons-round text-2xl">forest</span>
+            </div>
+            <span class="font-bold text-xl tracking-tight">Mukhatay Ormany</span>
+        </div>
+        
+        <div class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-200">
+            <a class="hover:text-primary transition-colors" href="#">О нас</a>
+            <a class="hover:text-primary transition-colors" href="#">Проекты</a>
+            <a class="hover:text-primary transition-colors" href="#">FAQ</a>
+            <span class="text-gray-500">|</span>
+            <button onclick="toggleDarkMode()" class="hover:text-primary transition-colors flex items-center gap-1">
+                <span class="material-icons-round text-sm">dark_mode</span>
+                Тема
+            </button>
+            <span class="text-gray-500">|</span>
+            <a class="hover:text-primary transition-colors" href="#">KZ / RU</a>
+        </div>
+        
+        <button class="hidden md:block px-6 py-2 border border-gray-500 rounded-full hover:bg-white hover:text-black transition-all text-sm font-medium">
+            Войти
+        </button>
+        
+        <button class="mobile-menu-btn md:hidden text-white">
+            <span class="material-icons-round text-3xl">menu</span>
+        </button>
+        
+        <!-- Mobile Menu -->
+        <div class="mobile-menu hidden absolute top-full left-0 w-full bg-background-dark/95 backdrop-blur-lg px-6 py-4 md:hidden">
+            <div class="flex flex-col gap-4">
+                <a class="text-white hover:text-primary transition-colors py-2 border-b border-gray-700" href="#">О нас</a>
+                <a class="text-white hover:text-primary transition-colors py-2 border-b border-gray-700" href="#">Проекты</a>
+                <a class="text-white hover:text-primary transition-colors py-2 border-b border-gray-700" href="#">FAQ</a>
+                <button onclick="toggleDarkMode()" class="text-white hover:text-primary transition-colors py-2 border-b border-gray-700 flex items-center gap-2">
+                    <span class="material-icons-round text-sm">dark_mode</span>
+                    Сменить тему
+                </button>
+                <a class="text-white hover:text-primary transition-colors py-2 border-b border-gray-700" href="#">KZ / RU</a>
+                <button class="px-6 py-2 border border-gray-500 rounded-full hover:bg-white hover:text-black transition-all text-sm font-medium mt-2">
+                    Войти
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Header/Hero Section -->
+    <header class="relative min-h-[85vh] flex flex-col items-center justify-center text-center px-4 overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img alt="Misty forest mountains" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsUhYyaCDZjP2SoGS16FwJORUHkyegpYljEqOw7Zyp5VsHFyO2cWizd8h-JNKLNbWYCi-92x9mqz40P-sM7ayLldNS_3R3Rt__AEAwoV2LNzsFiiXcD8EGu3JvXR8epyXG8d1BqUvm9c0y76q14vqWz_BnH19kGxBreAwHC0rZ9riCXcqdtRECWQj14pVwAtBY4KVQeFCEg8ArLaodYZcXmys0CLgXeM-6AF_uN1riuabjkq5KguANfuSsHfGCQKUv9C3ndHJx2Z3w"/>
+            <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-background-dark"></div>
+        </div>
+        
+        <div class="relative z-10 max-w-5xl mx-auto mt-16">
+            <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/20 mb-8">
+                <span class="material-icons-round text-primary text-sm">eco</span>
+                <span class="text-xs font-medium text-primary tracking-wide uppercase">Экологическая инициатива Казахстана</span>
+            </div>
+            
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6">
+                Mukhatay Ormany — <br/>
+                лесовосстановление и <br/>
+                <span class="text-primary">посадка деревьев</span> в <br/>
+                Казахстане
+            </h1>
+            
+            <p class="text-gray-200 text-lg md:text-xl max-w-3xl mx-auto mb-10 leading-relaxed font-light">
+                Мы реализуем реальные экологические проекты на собственных территориях — от выращивания саженцев до высадки и долгосрочного ухода за лесами.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button class="plant-tree-btn px-8 py-4 bg-primary text-black font-bold rounded-full hover:bg-yellow-400 transition-colors flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(255,215,0,0.3)]">
+                    <span class="material-icons-round text-xl">park</span>
+                    Посадить дерево
+                </button>
+                <button class="select-location-btn px-8 py-4 bg-white/10 backdrop-blur-md border border-white/20 text-white font-medium rounded-full hover:bg-white/20 transition-colors flex items-center justify-center gap-2">
+                    <span class="material-icons-round text-xl">map</span>
+                    Выбрать локацию
+                </button>
+            </div>
+        </div>
+        
+        <!-- Statistics Cards -->
+        <div class="relative z-10 w-full max-w-6xl mx-auto mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 px-4">
+            <div class="bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl p-6 text-center group hover:border-primary/50 transition-all duration-300">
+                <div class="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-primary transition-colors duration-300">
+                    <span class="material-icons-round text-primary group-hover:text-black">forest</span>
+                </div>
+                <h3 class="text-3xl font-bold text-white mb-1">10,000+</h3>
+                <p class="text-gray-400 text-sm">Деревьев посажено</p>
+            </div>
+            
+            <div class="bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl p-6 text-center group hover:border-primary/50 transition-all duration-300">
+                <div class="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-primary transition-colors duration-300">
+                    <span class="material-icons-round text-primary group-hover:text-black">landscape</span>
+                </div>
+                <h3 class="text-3xl font-bold text-white mb-1">50+</h3>
+                <p class="text-gray-400 text-sm">Гектаров восстановлено</p>
+            </div>
+            
+            <div class="bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl p-6 text-center group hover:border-primary/50 transition-all duration-300">
+                <div class="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-primary transition-colors duration-300">
+                    <span class="material-icons-round text-primary group-hover:text-black">groups</span>
+                </div>
+                <h3 class="text-3xl font-bold text-white mb-1">1,200</h3>
+                <p class="text-gray-400 text-sm">Волонтеров</p>
+            </div>
+        </div>
+    </header>
+    
+    <!-- News Section -->
+    <section class="py-20 px-4 md:px-8 bg-white dark:bg-background-dark relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
+            <div class="absolute top-20 -left-20 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-20 -right-20 w-96 h-96 bg-green-500/5 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+                <div>
+                    <div class="flex items-center gap-2 mb-3">
+                        <div class="h-px w-8 bg-primary"></div>
+                        <span class="text-primary font-semibold tracking-wider text-sm uppercase">Актуальное</span>
+                    </div>
+                    <h2 class="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white">
+                        Новости и события
+                    </h2>
+                    <p class="mt-4 text-gray-600 dark:text-gray-400 max-w-xl">
+                        Следите за нашими последними инициативами, отчетами с полей и предстоящими мероприятиями по озеленению Казахстана.
+                    </p>
+                </div>
+                
+                <a class="group flex items-center gap-2 text-gray-900 dark:text-white font-medium hover:text-primary dark:hover:text-primary transition-colors" href="#">
+                    Все новости
+                    <span class="bg-gray-100 dark:bg-surface-dark p-2 rounded-full group-hover:bg-primary group-hover:text-black transition-all">
+                        <span class="material-icons-round text-sm transform group-hover:rotate-45 transition-transform">arrow_forward</span>
+                    </span>
+                </a>
+            </div>
+            
+            <!-- News Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature Article -->
+                <article class="col-span-1 md:col-span-2 relative group rounded-2xl overflow-hidden cursor-pointer h-[400px] md:h-[500px]">
+                    <img alt="Volunteers planting trees in field" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuArITSLPTu_Hpo6BN__A6Psk2o8uQg8JqnItfjTzvesuQsVwvQ8_hLZx4RZcsblOVOwme39m0kWqDH5O7VsPaNLMNV7YcC1-mX4np8-ihQyj6_-QhdruPTZo_-RzcNYZzQtDkiIBFeQrRJOa3LZPeBi460K-3oC93HL_qD5m_4bv02CiA_ueMyQmxKiAc_IAWM1z6ew0cGqbYC7w4Af-YI3aCcq0wlSvSYDMtmrn1B8QBRe5RnwZgJJOkZMvFARXrIWUc0Faw7F90CQ"/>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+                    
+                    <div class="absolute top-4 left-4 md:top-6 md:left-6 flex gap-2">
+                        <span class="px-3 py-1 bg-primary text-black text-xs font-bold rounded-full uppercase tracking-wide">Отчет</span>
+                        <span class="px-3 py-1 bg-black/50 backdrop-blur-md text-white text-xs font-medium rounded-full border border-white/10">12 Октября 2023</span>
+                    </div>
+                    
+                    <div class="absolute bottom-0 left-0 w-full p-6 md:p-8">
+                        <h3 class="text-2xl md:text-4xl font-bold text-white mb-3 group-hover:text-primary transition-colors leading-tight">
+                            Завершён осенний этап посадки: 5,000 новых саженцев в Алматинской области
+                        </h3>
+                        <p class="text-gray-300 line-clamp-2 md:line-clamp-3 mb-6 max-w-2xl">
+                            Команда Mukhatay Ormany совместно с волонтерами успешно завершила масштабную высадку хвойных пород. Читайте подробный отчет о проделанной работе и планах на весну.
+                        </p>
+                        <div class="flex items-center gap-2 text-white font-medium text-sm group-hover:gap-4 transition-all">
+                            Читать полностью <span class="material-icons-round text-primary">arrow_forward</span>
+                        </div>
+                    </div>
+                </article>
+                
+                <!-- Article 1 -->
+                <article class="flex flex-col h-full bg-gray-50 dark:bg-surface-dark rounded-2xl overflow-hidden hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 group border border-gray-200 dark:border-gray-700 dark:hover:border-primary/30">
+                    <div class="h-48 overflow-hidden relative">
+                        <img alt="Seedlings close up" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlSHlSVbbecZ2ZRhftKP4xFYWXM-25jBPxMoT49e9ZYt5MRWbMLrRRoG38QfMwMDudrHFAAYoCy0QVVc51WKbRSywT3gQLTWYp48D0YF9elujovhysDqrWnSn4QjjQZXv0NlQis-5-g9S8WSnRBIy-7ij5phipOdg1vuf_JJi9hsvmHeFYLOSZSJjTzDtaHJPdj7rxzGu-HoHBqtB85cc_oFyLZaiN8lKUGtbV_sLJKvzTZCloPwKPj1RyozUyGRWmCR2TEPAiO-BI"/>
+                        <div class="absolute top-4 left-4">
+                            <span class="px-3 py-1 bg-green-600 text-white text-xs font-bold rounded-full uppercase tracking-wide">Эко-просвет</span>
+                        </div>
+                    </div>
+                    
+                    <div class="p-6 flex flex-col flex-grow">
+                        <div class="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-xs mb-3">
+                            <span class="material-icons-round text-sm">event</span>
+                            <span>28 Сентября 2023</span>
+                        </div>
+                        
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-primary transition-colors">
+                            Как мы выращиваем саженцы: от семени до леса
+                        </h3>
+                        
+                        <p class="text-gray-600 dark:text-gray-400 text-sm line-clamp-3 mb-4 flex-grow">
+                            Узнайте о технологиях, которые мы применяем в наших питомниках для обеспечения высокой выживаемости деревьев в суровом климате.
+                        </p>
+                        
+                        <a class="inline-flex items-center text-primary font-medium text-sm hover:underline" href="#">
+                            Подробнее
+                        </a>
+                    </div>
+                </article>
+                
+                <!-- Article 2 -->
+                <article class="flex flex-col h-full bg-gray-50 dark:bg-surface-dark rounded-2xl overflow-hidden hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 group border border-gray-200 dark:border-gray-700 dark:hover:border-primary/30">
+                    <div class="h-48 overflow-hidden relative">
+                        <img alt="People gathering in park" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDG8d-ihgmgzkVtQFHnk9dRDyXExAXz7E36ntok69XcWxQaDEdfbfUxaHm5eQPoR0YimhMvqTti34Oy5SouM97vDQNT83UJF2EFIaqntz9QRy70PB2epg_2GSM5sQDCMEkc64TmBz99PHItHRbL-kZSd0c0x_Dufox0e8r04v8XlJUQXf1YblVeMO86w_MIItcUm80zNHNlfElJERctMvhprjm1epEAv7cTrE94HyJTazKNScssVNUeOMV1t2pTsn6gbtPTW6g0npGU"/>
+                        <div class="absolute top-4 left-4">
+                            <span class="px-3 py-1 bg-yellow-600 text-white text-xs font-bold rounded-full uppercase tracking-wide">Событие</span>
+                        </div>
+                    </div>
+                    
+                    <div class="p-6 flex flex-col flex-grow">
+                        <div class="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-xs mb-3">
+                            <span class="material-icons-round text-sm">schedule</span>
+                            <span>15 Ноября 2023</span>
+                        </div>
+                        
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-primary transition-colors">
+                            Приглашаем на День открытых дверей в питомнике
+                        </h3>
+                        
+                        <p class="text-gray-600 dark:text-gray-400 text-sm line-clamp-3 mb-4 flex-grow">
+                            Приходите всей семьей, чтобы увидеть процесс выращивания деревьев и принять участие в мастер-классах по уходу за растениями.
+                        </p>
+                        
+                        <a class="inline-flex items-center text-primary font-medium text-sm hover:underline" href="#">
+                            Зарегистрироваться
+                        </a>
+                    </div>
+                </article>
+                
+                <!-- Article 3 -->
+                <article class="flex flex-col h-full bg-gray-50 dark:bg-surface-dark rounded-2xl overflow-hidden hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 group border border-gray-200 dark:border-gray-700 dark:hover:border-primary/30">
+                    <div class="h-48 overflow-hidden relative">
+                        <img alt="Handshake in office" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcfoqBfBfDXzbkv28xS4l1DldMw8kqw8hS_V7jfdFQh2TO_I10hqkyA5anvenERDpUtFzDoK1Ho08G6V9xiIDrk3z_Naq9QX_QJj2p8Wk_0bUrmeZbs7q1butF44vjJKSP4gPrjntI45Zla-hd6blSHis-kRWKIGuD7XhCDBTIwPJrRZ77BzRDL6VK6GNExqHcGnAuzW3XrLkZhxE3_4TAhYLg3gqx4yF8D-yLoS-QK_KcYgEiQd3iCRZkuUylvC7YtbQT46ZkPJt9"/>
+                        <div class="absolute top-4 left-4">
+                            <span class="px-3 py-1 bg-blue-600 text-white text-xs font-bold rounded-full uppercase tracking-wide">Партнерство</span>
+                        </div>
+                    </div>
+                    
+                    <div class="p-6 flex flex-col flex-grow">
+                        <div class="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-xs mb-3">
+                            <span class="material-icons-round text-sm">handshake</span>
+                            <span>05 Сентября 2023</span>
+                        </div>
+                        
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-primary transition-colors">
+                            Новый стратегический партнер: поддержка бизнеса
+                        </h3>
+                        
+                        <p class="text-gray-600 dark:text-gray-400 text-sm line-clamp-3 mb-4 flex-grow">
+                            Крупная логистическая компания присоединилась к нашей миссии по озеленению, выделив грант на посадку 2000 деревьев.
+                        </p>
+                        
+                        <a class="inline-flex items-center text-primary font-medium text-sm hover:underline" href="#">
+                            Подробнее
+                        </a>
+                    </div>
+                </article>
+                
+                <!-- Newsletter Card -->
+                <div class="col-span-1 md:col-span-1 flex flex-col justify-center bg-primary rounded-2xl p-8 relative overflow-hidden group">
+                    <div class="absolute -right-10 -bottom-10 opacity-20 transform rotate-12 group-hover:scale-110 transition-transform duration-500">
+                        <span class="material-icons-round text-9xl text-black">mail</span>
+                    </div>
+                    
+                    <h3 class="text-2xl font-bold text-black mb-2 relative z-10">Будьте в курсе!</h3>
+                    <p class="text-black/80 text-sm mb-6 relative z-10">
+                        Подпишитесь на нашу рассылку, чтобы получать новости о новых проектах и возможностях волонтерства.
+                    </p>
+                    
+                    <form class="newsletter-form relative z-10 flex flex-col gap-3">
+                        <input class="w-full bg-white/20 backdrop-blur-sm border border-black/10 rounded-lg px-4 py-3 placeholder-black/50 text-black focus:outline-none focus:ring-2 focus:ring-black/30" placeholder="Ваш Email" type="email" required/>
+                        <button class="w-full bg-black text-white font-bold py-3 rounded-lg hover:bg-gray-800 transition-colors flex justify-center items-center gap-2" type="submit">
+                            Подписаться <span class="material-icons-round text-sm">send</span>
+                        </button>
+                    </form>
+                    
+                    <p class="text-xs text-black/60 mt-4 relative z-10">
+                        Нажимая кнопку, вы соглашаетесь с нашей политикой конфиденциальности.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-50 dark:bg-surface-dark border-t border-gray-200 dark:border-gray-800 py-12 px-4 md:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-black font-bold">
+                            <span class="material-icons-round text-2xl">forest</span>
+                        </div>
+                        <span class="font-bold text-xl tracking-tight dark:text-white">Mukhatay Ormany</span>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm">
+                        Экологическая инициатива по восстановлению лесов и посадке деревьев в Казахстане.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-gray-900 dark:text-white mb-4">Навигация</h4>
+                    <ul class="space-y-2">
+                        <li><a class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors text-sm" href="#">О нас</a></li>
+                        <li><a class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors text-sm" href="#">Проекты</a></li>
+                        <li><a class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors text-sm" href="#">Новости</a></li>
+                        <li><a class="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors text-sm" href="#">Волонтерство</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-gray-900 dark:text-white mb-4">Контакты</h4>
+                    <ul class="space-y-2">
+                        <li class="flex items-center gap-2 text-gray-600 dark:text-gray-400 text-sm">
+                            <span class="material-icons-round text-sm">email</span>
+                            info@mukhatay-ornamy.kz
+                        </li>
+                        <li class="flex items-center gap-2 text-gray-600 dark:text-gray-400 text-sm">
+                            <span class="material-icons-round text-sm">phone</span>
+                            +7 (777) 123-45-67
+                        </li>
+                        <li class="flex items-center gap-2 text-gray-600 dark:text-gray-400 text-sm">
+                            <span class="material-icons-round text-sm">location_on</span>
+                            Алматы, Казахстан
+                        </li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-gray-900 dark:text-white mb-4">Социальные сети</h4>
+                    <div class="flex gap-3">
+                        <a class="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-700 dark:text-gray-300 hover:bg-primary hover:text-black transition-colors" href="#">
+                            <span class="material-icons-round">facebook</span>
+                        </a>
+                        <a class="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-700 dark:text-gray-300 hover:bg-primary hover:text-black transition-colors" href="#">
+                            <span class="material-icons-round">instagram</span>
+                        </a>
+                        <a class="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-700 dark:text-gray-300 hover:bg-primary hover:text-black transition-colors" href="#">
+                            <span class="material-icons-round">telegram</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-200 dark:border-gray-800 mt-8 pt-8 text-center text-gray-500 dark:text-gray-400 text-sm">
+                <p>© 2023 Mukhatay Ormany. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

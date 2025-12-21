@@ -1,95 +1,90 @@
-import { Building2, Award, TrendingUp, Users } from "lucide-react"
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
-
 const benefits = [
   {
-    icon: <Building2 className="h-8 w-8 text-emerald-600" />,
+    icon: "business_center",
     title: "Корпоративные посадки",
     description: "Организуем посадку любого масштаба для вашей компании",
   },
   {
-    icon: <Award className="h-8 w-8 text-emerald-600" />,
+    icon: "badge",
     title: "Именные участки",
     description: "Ваш именной лес с табличкой и координатами",
   },
   {
-    icon: <TrendingUp className="h-8 w-8 text-emerald-600" />,
+    icon: "analytics",
     title: "ESG / CSR отчётность",
     description: "Полная документация для корпоративной отчётности",
-  },
-  {
-    icon: <Users className="h-8 w-8 text-emerald-600" />,
-    title: "Совместные инициативы",
-    description: "Партнёрские экологические проекты и мероприятия",
   },
 ]
 
 export function CorporateSection() {
   return (
-    <section id="corporate" className="py-20 bg-gradient-to-b from-background to-emerald-50 dark:to-emerald-950/10">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-balance">Для компаний и организаций</h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto text-pretty">
-            Станьте частью масштабного экологического проекта. Укрепите репутацию и выполните ESG/CSR обязательства
-            через реальное лесовосстановление
-          </p>
+    <section id="corporate" className="py-20 bg-[#1a3d2e] relative overflow-hidden">
+      {/* Gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#1a3d2e] via-[#22553a] to-[#1a3d2e]"></div>
+      
+      {/* Subtle pattern */}
+      <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'radial-gradient(circle at 15% 50%, rgba(255,255,255,0.1) 0%, transparent 20%), radial-gradient(circle at 85% 30%, rgba(255,255,255,0.1) 0%, transparent 20%)' }}></div>
+      
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">Для компаний и <span className="text-primary">организаций</span></h2>
+          <p className="text-lg text-white/80 max-w-3xl mx-auto">ESG и CSR программы</p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        {/* Benefits Cards: 3 columns */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 max-w-5xl mx-auto">
           {benefits.map((benefit, index) => (
-            <Card
+            <div 
               key={index}
-              className="border-2 hover:shadow-lg transition-all hover:-translate-y-1 animate-fade-in-up"
-              style={{ animationDelay: `${index * 0.1}s` }}
+              className="bg-white p-12 rounded-3xl transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_30px_80px_rgba(0,0,0,0.18)] border border-white/10 max-w-sm mx-auto"
+              style={{ animationDelay: `${index * 100}ms` }}
             >
-              <CardContent className="p-6 text-center">
-                <div className="inline-flex items-center justify-center mb-4">{benefit.icon}</div>
-                <h3 className="font-semibold mb-2">{benefit.title}</h3>
-                <p className="text-sm text-muted-foreground">{benefit.description}</p>
-              </CardContent>
-            </Card>
+              <div className="w-20 h-20 rounded-2xl bg-primary flex items-center justify-center mb-6 shadow-[0_4px_16px_rgba(244,227,30,0.25)] transition-all duration-300 hover:rotate-6 hover:scale-110">
+                <span className="material-symbols-outlined text-background !text-5xl">{benefit.icon}</span>
+              </div>
+              <h3 className="text-2xl font-bold text-foreground mb-4">{benefit.title}</h3>
+              <p className="text-base text-gray-500 leading-[1.65]">{benefit.description}</p>
+            </div>
           ))}
         </div>
 
-        <div className="bg-card border-2 rounded-xl p-8 md:p-12 max-w-4xl mx-auto">
-          <h3 className="text-2xl font-bold mb-6 text-center">Преимущества партнёрства</h3>
-          <ul className="space-y-4 mb-8">
-            <li className="flex items-start gap-3">
-              <div className="h-6 w-6 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <div className="h-3 w-3 rounded-full bg-emerald-600" />
-              </div>
-              <span>Реальный вклад в устойчивое развитие и восстановление экосистем</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <div className="h-6 w-6 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <div className="h-3 w-3 rounded-full bg-emerald-600" />
-              </div>
-              <span>Материалы для ESG/CSR отчётности с фото- и видеодокументацией</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <div className="h-6 w-6 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <div className="h-3 w-3 rounded-full bg-emerald-600" />
-              </div>
-              <span>Укрепление репутации и демонстрация ответственности</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <div className="h-6 w-6 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <div className="h-3 w-3 rounded-full bg-emerald-600" />
-              </div>
-              <span>Возможность вовлечения сотрудников в экологические инициативы</span>
-            </li>
-          </ul>
-
-          <div className="text-center">
-            <Link href="/contact?type=corporate">
-              <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700 text-white">
-                Стать партнёром проекта
-              </Button>
-            </Link>
+        {/* Formats List: 2 columns */}
+        <div className="mb-16 max-w-4xl mx-auto">
+          <h3 className="text-2xl font-bold text-white mb-8 text-center">Форматы сотрудничества</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex items-start gap-4">
+              <span className="material-symbols-outlined text-primary mt-1 !text-xl">check_circle</span>
+              <span className="text-white">Корпоративные посадки для сотрудников</span>
+            </div>
+            <div className="flex items-start gap-4">
+              <span className="material-symbols-outlined text-primary mt-1 !text-xl">check_circle</span>
+              <span className="text-white">Именные леса и аллеи</span>
+            </div>
+            <div className="flex items-start gap-4">
+              <span className="material-symbols-outlined text-primary mt-1 !text-xl">check_circle</span>
+              <span className="text-white">Спонсорство конкретных участков</span>
+            </div>
+            <div className="flex items-start gap-4">
+              <span className="material-symbols-outlined text-primary mt-1 !text-xl">check_circle</span>
+              <span className="text-white">Долгосрочные ESG/CSR программы</span>
+            </div>
+            <div className="flex items-start gap-4">
+              <span className="material-symbols-outlined text-primary mt-1 !text-xl">check_circle</span>
+              <span className="text-white">Образовательные и волонтерские программы</span>
+            </div>
+            <div className="flex items-start gap-4">
+              <span className="material-symbols-outlined text-primary mt-1 !text-xl">check_circle</span>
+              <span className="text-white">Совместные экологические инициативы</span>
+            </div>
           </div>
+        </div>
+
+        {/* CTA Section (Centered) */}
+        <div className="text-center">
+          <button className="bg-primary text-background font-bold text-lg px-10 py-5 rounded-full mb-6 transition-all duration-300 hover:scale-105 hover:shadow-lg">
+            Стать партнёром
+          </button>
+          <p className="text-white cursor-pointer hover:text-primary transition-colors duration-300">Скачать презентацию для партнеров</p>
         </div>
       </div>
     </section>

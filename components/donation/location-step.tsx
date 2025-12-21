@@ -45,7 +45,7 @@ export function LocationStep({ selectedLocation, onLocationSelect }: LocationSte
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     )
   }
@@ -56,7 +56,7 @@ export function LocationStep({ selectedLocation, onLocationSelect }: LocationSte
         <p>{error}</p>
         <button 
           onClick={() => window.location.reload()} 
-          className="mt-4 px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700"
+          className="mt-4 px-4 py-2 bg-primary text-background-dark rounded-full hover:bg-primary/90 transition-all"
         >
           Повторить попытку
         </button>
@@ -66,73 +66,86 @@ export function LocationStep({ selectedLocation, onLocationSelect }: LocationSte
 
   return (
     <div className="space-y-6">
-      <div className="text-center">
-        <h2 className="text-2xl font-bold mb-2">Выберите локацию посадки</h2>
-        <p className="text-muted-foreground">Где вы хотите посадить деревья?</p>
+      <div className="text-center mb-12">
+        <h2 className="text-3xl font-extrabold leading-tight tracking-tight text-foreground mb-4">Выберите <span className="text-primary">локацию</span> посадки</h2>
+        <p className="mx-auto max-w-2xl text-base text-foreground/70">Где вы хотите посадить деревья? Все локации находятся под нашим пристальным вниманием и заботой.</p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 mb-12">
         {locations.map((location) => (
-          <Card
+          <label 
             key={location.id}
-            className={`cursor-pointer transition-all hover:shadow-xl hover:-translate-y-1 border-2 ${
-              selectedLocation === location.id ? "border-emerald-600 shadow-lg" : "border-border"
-            }`}
-            onClick={() => onLocationSelect(location.id)}
+            className="group relative cursor-pointer"
           >
-            <CardHeader>
-              <div className="mb-4 flex justify-center">
+            <input 
+              type="radio" 
+              name="location" 
+              value={location.id}
+              checked={selectedLocation === location.id}
+              onChange={() => onLocationSelect(location.id)}
+              className="peer sr-only"
+            />
+            <div className={`relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card/20 p-6 backdrop-blur-md transition-all duration-300 peer-checked:border-primary peer-checked:bg-white/5 peer-checked:shadow-[0_0_30px_rgba(249,245,6,0.15)] hover:border-foreground/30 hover:-translate-y-1 hover:bg-card/30 ${selectedLocation === location.id ? 'border-primary bg-white/5 shadow-[0_0_30px_rgba(249,245,6,0.15)]' : ''}`}>
+              <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/5 border border-border text-primary group-hover:scale-110 transition-transform duration-300">
                 {location.name.includes('Forest') ? (
-                  <Leaf className="h-16 w-16 text-emerald-600" />
+                  <Leaf className="h-8 w-8" />
                 ) : (
-                  <TreePine className="h-16 w-16 text-teal-600" />
+                  <TreePine className="h-8 w-8" />
                 )}
               </div>
-              <CardTitle className="text-2xl text-center mb-2">{location.name}</CardTitle>
-              <p className="text-center text-muted-foreground font-medium">
+              <h3 className="text-xl font-bold text-foreground mb-2">{location.name}</h3>
+              <p className="text-sm text-foreground/60 mb-4">
                 {location.name.includes('Forest') ? "Питомник" : "Карагандинская область"}
               </p>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center gap-2 text-muted-foreground justify-center">
+              
+              <div className="flex items-center gap-2 text-foreground/60 mb-4">
                 <MapPin className="h-4 w-4" />
                 <span className="text-sm">{location.coordinates}</span>
               </div>
 
-              <div className="bg-muted rounded-lg p-4 text-center">
-                <div className="text-2xl font-bold text-emerald-600">
+              <div className="bg-card/5 rounded-lg p-4 text-center border border-border/50 mb-4">
+                <div className="text-2xl font-bold text-primary">
                   {location.area_hectares >= 1000 
                     ? `${(location.area_hectares / 1000).toFixed(1)} тыс. га` 
                     : `${location.area_hectares} га`}
                 </div>
-                <div className="text-sm text-muted-foreground">площадь проекта</div>
+                <div className="text-sm text-foreground/60">площадь проекта</div>
               </div>
 
-              <p className="text-sm text-muted-foreground text-center">{location.description}</p>
+              <p className="text-sm text-foreground/70 mb-4">{location.description}</p>
 
-              <ul className="space-y-2">
-                <li className="flex items-center gap-2 text-sm">
-                  <div className="h-5 w-5 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center flex-shrink-0">
-                    <div className="h-2 w-2 rounded-full bg-emerald-600" />
-                  </div>
+              <ul className="space-y-2 mb-6 flex-grow">
+                <li className="flex items-start gap-3 text-sm text-foreground/80">
+                  <span className="material-symbols-outlined !text-lg text-primary shrink-0">check</span>
                   <span>Доступно круглый год</span>
                 </li>
-                <li className="flex items-center gap-2 text-sm">
-                  <div className="h-5 w-5 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center flex-shrink-0">
-                    <div className="h-2 w-2 rounded-full bg-emerald-600" />
-                  </div>
+                <li className="flex items-start gap-3 text-sm text-foreground/80">
+                  <span className="material-symbols-outlined !text-lg text-primary shrink-0">check</span>
                   <span>Быстрый старт</span>
                 </li>
-                <li className="flex items-center gap-2 text-sm">
-                  <div className="h-5 w-5 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center flex-shrink-0">
-                    <div className="h-2 w-2 rounded-full bg-emerald-600" />
-                  </div>
+                <li className="flex items-start gap-3 text-sm text-foreground/80">
+                  <span className="material-symbols-outlined !text-lg text-primary shrink-0">check</span>
                   <span>Идеально для частных лиц</span>
                 </li>
               </ul>
-            </CardContent>
-          </Card>
+              
+              <div className={`mt-auto w-full rounded-xl border py-2 text-center text-sm font-semibold transition-colors group-hover:bg-primary group-hover:text-background-dark ${selectedLocation === location.id ? 'bg-primary text-background-dark border-primary' : 'border-border text-foreground'}`}>
+                Выбрать локацию
+              </div>
+            </div>
+          </label>
         ))}
+      </div>
+
+      <div className="flex flex-col items-center justify-center gap-6">
+        <button 
+          className="group relative flex h-14 w-full max-w-sm items-center justify-center gap-2 overflow-hidden rounded-full bg-primary px-8 text-base font-bold text-background-dark transition-all hover:scale-105 hover:shadow-[0_0_20px_rgba(249,245,6,0.5)] disabled:opacity-50 disabled:cursor-not-allowed"
+          onClick={() => selectedLocation && onLocationSelect(selectedLocation)}
+          disabled={!selectedLocation}
+        >
+          <span>Продолжить</span>
+          <span className="material-symbols-outlined transition-transform group-hover:translate-x-1">arrow_forward</span>
+        </button>
       </div>
     </div>
   )

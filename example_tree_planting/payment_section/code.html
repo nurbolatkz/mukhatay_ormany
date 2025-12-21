@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mukhatay Ormany - Secure Payment</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f9f506",
+                        "background-light": "#f8f8f5",
+                        "background-dark": "#23220f",
+                    },
+                    fontFamily: {
+                        "display": ["Spline Sans", "Noto Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#181811] dark:text-white antialiased overflow-x-hidden selection:bg-primary selection:text-black">
+<div class="relative flex min-h-screen w-full flex-col">
+<header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+<div class="absolute inset-0 bg-background-dark/30 backdrop-blur-md border-b border-white/10"></div>
+<div class="relative mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+<div class="flex items-center gap-3">
+<div class="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-black">
+<span class="material-symbols-outlined !text-[24px]">forest</span>
+</div>
+<h2 class="text-white text-lg font-bold leading-tight tracking-tight hidden sm:block">Mukhatay Ormany</h2>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-white/90 hover:text-primary text-sm font-medium transition-colors" href="#">О нас</a>
+<a class="text-white/90 hover:text-primary text-sm font-medium transition-colors" href="#">Проекты</a>
+<a class="text-white/90 hover:text-primary text-sm font-medium transition-colors" href="#">FAQ</a>
+<div class="h-4 w-px bg-white/20"></div>
+<a class="text-white/90 hover:text-primary text-sm font-medium transition-colors" href="#">KZ / RU</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="hidden sm:flex group h-10 items-center justify-center rounded-full bg-white/10 px-5 text-sm font-bold text-white backdrop-blur-sm transition-all hover:bg-white/20 border border-white/10">
+<span>Войти</span>
+</button>
+<button class="md:hidden flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</div>
+</header>
+<main class="relative flex flex-grow flex-col">
+<div class="absolute inset-0 z-0 fixed">
+<div class="absolute inset-0 bg-gradient-to-b from-black/60 via-background-dark/80 to-background-dark z-10"></div>
+<img alt="Misty pine forest landscape in mountains" class="h-full w-full object-cover object-center" data-alt="Misty pine forest landscape in mountains" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBg99ryJEKE-HA-QcHou8c1TEQvAxxF0bp1cIP69Ca7td9LyqC5PHFAgCV6kYjfa4k8UdLBdef1ZMItLJwvOYT-ZKSkKNsFisxEtCuVpQ0_aW9q_7zrUP6vdehplgpu0vL6ppPXL5nuJHBq-vntdnPIsO0VefALqBXWytaFlnVSasWjAwp4dIIoIaN2IlC2mwjyc7ccwRo4_nQZfysedQNRq5dD97K_PYACcbuuYaJSYsA6fSdBDI-xdL9OIYhYiSExgqcNuo5Djhvy"/>
+</div>
+<div class="relative z-20 mx-auto w-full max-w-7xl px-4 pt-32 pb-20 sm:px-6 lg:px-8">
+<div class="mb-8 flex items-center gap-2 text-sm text-white/50">
+<span class="hover:text-white cursor-pointer">Главная</span>
+<span class="material-symbols-outlined !text-[12px]">chevron_right</span>
+<span class="hover:text-white cursor-pointer">Донат</span>
+<span class="material-symbols-outlined !text-[12px]">chevron_right</span>
+<span class="text-primary">Оплата</span>
+</div>
+<div class="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-12">
+<div class="lg:col-span-7">
+<h1 class="mb-2 text-3xl font-extrabold text-white sm:text-4xl">Оплата участия</h1>
+<p class="mb-8 text-white/60">Выберите удобный способ оплаты для завершения перевода.</p>
+<div class="space-y-4">
+<div class="relative overflow-hidden rounded-2xl border-2 border-primary bg-background-dark/60 backdrop-blur-sm p-6 shadow-lg transition-all">
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-3">
+<div class="flex h-6 w-6 items-center justify-center rounded-full border-[6px] border-primary bg-transparent"></div>
+<span class="text-xl font-bold text-white">Kaspi QR</span>
+</div>
+<span class="rounded-full bg-[#f14635]/20 border border-[#f14635]/50 px-3 py-1 text-xs font-bold text-[#f14635]">0% КОМИССИЯ</span>
+</div>
+<div class="flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
+<div class="group relative flex h-48 w-48 shrink-0 items-center justify-center rounded-2xl bg-white p-3 shadow-[0_0_30px_rgba(255,255,255,0.1)]">
+<span class="material-symbols-outlined text-[140px] text-black opacity-90">qr_code_2</span>
+<div class="absolute inset-0 flex items-center justify-center rounded-2xl bg-primary/10 opacity-0 transition-opacity group-hover:opacity-100">
+<div class="h-full w-0.5 bg-primary animate-[spin_2s_linear_infinite]"></div>
+</div>
+</div>
+<div class="flex flex-col gap-3 text-center sm:text-left">
+<h4 class="text-lg font-bold text-white">Сканируйте для оплаты</h4>
+<p class="text-sm leading-relaxed text-white/70">
+                               Откройте приложение <strong>Kaspi.kz</strong>, выберите сканер QR и наведите камеру на код.
+                           </p>
+<div class="mt-2 flex flex-wrap items-center justify-center sm:justify-start gap-3">
+<div class="flex items-center gap-1 rounded-md bg-white/5 px-2 py-1 text-xs text-primary">
+<span class="material-symbols-outlined !text-[16px]">verified_user</span>
+<span>Мгновенно</span>
+</div>
+<div class="flex items-center gap-1 rounded-md bg-white/5 px-2 py-1 text-xs text-primary">
+<span class="material-symbols-outlined !text-[16px]">eco</span>
+<span>Eco-friendly</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<label class="group relative flex cursor-pointer items-center justify-between rounded-2xl border border-white/10 bg-white/5 p-6 transition-all hover:bg-white/10 hover:border-white/30 hover:shadow-lg">
+<div class="flex items-center gap-4">
+<input class="h-5 w-5 border-white/30 bg-transparent text-primary focus:ring-primary focus:ring-offset-0" name="payment_method" type="radio"/>
+<span class="text-lg font-medium text-white/80 group-hover:text-white">Банковская карта</span>
+</div>
+<div class="flex gap-2">
+<div class="flex h-8 w-12 items-center justify-center rounded bg-white/10">
+<span class="text-[10px] font-bold text-white">VISA</span>
+</div>
+<div class="flex h-8 w-12 items-center justify-center rounded bg-white/10">
+<div class="h-3 w-3 rounded-full bg-white/50 -mr-1"></div>
+<div class="h-3 w-3 rounded-full bg-white/30"></div>
+</div>
+</div>
+</label>
+<label class="group relative flex cursor-pointer items-center justify-between rounded-2xl border border-white/10 bg-white/5 p-6 transition-all hover:bg-white/10 hover:border-white/30 hover:shadow-lg">
+<div class="flex items-center gap-4">
+<input class="h-5 w-5 border-white/30 bg-transparent text-primary focus:ring-primary focus:ring-offset-0" name="payment_method" type="radio"/>
+<span class="text-lg font-medium text-white/80 group-hover:text-white">Банковский перевод</span>
+</div>
+<span class="material-symbols-outlined text-white/50">account_balance</span>
+</label>
+</div>
+<div class="mt-8 flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-4 rounded-xl bg-white/5 border border-white/5 p-4 text-white/50">
+<span class="material-symbols-outlined text-3xl text-primary/80">lock_person</span>
+<div class="text-center sm:text-left text-xs leading-relaxed">
+<p class="font-bold uppercase tracking-wider text-white/70">Гарантия безопасности</p>
+<p>Ваши данные защищены сквозным шифрованием SSL. Мы не храним ваши платежные реквизиты.</p>
+</div>
+</div>
+</div>
+<div class="lg:col-span-5">
+<div class="sticky top-28 rounded-3xl border border-white/10 bg-black/40 backdrop-blur-xl shadow-2xl overflow-hidden">
+<div class="bg-white/5 p-6 sm:p-8 border-b border-white/5">
+<h3 class="text-xl font-bold text-white">Ваш заказ</h3>
+<p class="text-sm text-white/50">Пожалуйста, проверьте данные перед оплатой</p>
+</div>
+<div class="p-6 sm:p-8 space-y-6">
+<div class="flex gap-4">
+<div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary border border-primary/20">
+<span class="material-symbols-outlined">forest</span>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<div>
+<p class="text-xs font-bold uppercase tracking-wider text-white/40">Пакет</p>
+<p class="font-bold text-white text-lg">Роща (10 деревьев)</p>
+</div>
+<p class="font-bold text-white">25 000 ₸</p>
+</div>
+<p class="mt-1 text-sm text-white/60">Включает посадку и уход в течение 5 лет</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/5 text-white/70 border border-white/10">
+<span class="material-symbols-outlined">map</span>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<div>
+<p class="text-xs font-bold uppercase tracking-wider text-white/40">Локация</p>
+<p class="font-bold text-white">Заилийский Алатау</p>
+</div>
+</div>
+<p class="mt-1 text-sm text-white/60">Сектор B-14, Алматинская область</p>
+</div>
+</div>
+<div class="h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+<div class="space-y-3">
+<div class="flex justify-between text-sm text-white/60">
+<span>Сумма взноса</span>
+<span>25 000 ₸</span>
+</div>
+<div class="flex justify-between text-sm text-white/60">
+<span>Комиссия платформы</span>
+<span class="text-primary">0 ₸</span>
+</div>
+</div>
+<div class="rounded-2xl bg-white/5 p-4 border border-white/5">
+<div class="flex items-end justify-between">
+<div>
+<p class="text-sm font-medium text-white/50">Итого к оплате</p>
+<p class="text-3xl font-extrabold text-white tracking-tight">25 000 ₸</p>
+</div>
+<div class="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-black">
+<span class="material-symbols-outlined !text-[20px]">check</span>
+</div>
+</div>
+</div>
+<button class="group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-xl bg-primary py-4 text-center text-lg font-bold text-background-dark transition-all hover:shadow-[0_0_30px_rgba(249,245,6,0.3)] hover:-translate-y-0.5">
+<div class="absolute inset-0 bg-white/20 translate-y-full transition-transform group-hover:translate-y-0"></div>
+<span class="relative z-10">Подтвердить и оплатить</span>
+<span class="material-symbols-outlined relative z-10 transition-transform group-hover:translate-x-1">arrow_forward</span>
+</button>
+<p class="text-center text-[10px] text-white/30">
+                        Нажимая кнопку, вы соглашаетесь с <a class="underline hover:text-white" href="#">Условиями использования</a> и <a class="underline hover:text-white" href="#">Политикой конфиденциальности</a>
+</p>
+</div>
+</div>
+<div class="mt-6 flex items-center justify-center gap-2 text-sm text-white/40">
+<span class="material-symbols-outlined text-primary">emoji_events</span>
+<span>Вы получите <strong>250 XP</strong> после оплаты</span>
+</div>
+</div>
+</div>
+</div>
+<div class="absolute bottom-0 left-0 hidden lg:block opacity-20 pointer-events-none">
+<span class="material-symbols-outlined text-[300px] text-primary transform -rotate-12 translate-y-1/3 -translate-x-1/4">forest</span>
+</div>
+</main>
+</div>
+</body></html>

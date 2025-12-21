@@ -89,7 +89,7 @@ export function PackageStep({ location, selectedPackage, onPackageSelect, onBack
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     )
   }
@@ -100,7 +100,7 @@ export function PackageStep({ location, selectedPackage, onPackageSelect, onBack
         <p>{error}</p>
         <button 
           onClick={() => window.location.reload()} 
-          className="mt-4 px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700"
+          className="mt-4 px-4 py-2 bg-primary text-background-dark rounded-full hover:bg-primary/90 transition-all"
         >
           Повторить попытку
         </button>
@@ -110,89 +110,107 @@ export function PackageStep({ location, selectedPackage, onPackageSelect, onBack
 
   return (
     <div className="space-y-6">
-      <div className="text-center">
-        <h2 className="text-2xl font-bold mb-2">Выберите пакет</h2>
-        <p className="text-muted-foreground">Локация: {locationName}</p>
+      <div className="text-center mb-12">
+        <h2 className="text-3xl font-extrabold leading-tight tracking-tight text-foreground mb-4">Выберите ваш <span className="text-primary">вклад в лес</span></h2>
+        <p className="mx-auto max-w-2xl text-base text-foreground/70">Вы не просто донатите — вы выращиваете лес. Выберите пакет, чтобы начать свой путь восстановления природы Казахстана.</p>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-12">
         {packages.map((pkg) => (
-          <Card
+          <label 
             key={pkg.id}
-            className={`cursor-pointer transition-all hover:shadow-xl hover:-translate-y-1 border-2 relative ${
-              selectedPackage === pkg.id && !isCustomSelected ? "border-emerald-600 shadow-lg" : "border-border"
-            }`}
-            onClick={() => {
-              setIsCustomSelected(false)
-              onPackageSelect(pkg.id, pkg.tree_count, pkg.price)
-            }}
+            className="group relative cursor-pointer"
           >
-            {pkg.popular && (
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                <div className="bg-emerald-600 text-white text-xs font-semibold px-3 py-1 rounded-full">Популярно</div>
+            <input 
+              type="radio" 
+              name="package" 
+              value={pkg.id}
+              checked={selectedPackage === pkg.id && !isCustomSelected}
+              onChange={() => {
+                setIsCustomSelected(false)
+                onPackageSelect(pkg.id, pkg.tree_count, pkg.price)
+              }}
+              className="peer sr-only"
+            />
+            <div className={`relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card/20 p-6 backdrop-blur-md transition-all duration-300 peer-checked:border-primary peer-checked:bg-white/5 peer-checked:shadow-[0_0_30px_rgba(249,245,6,0.15)] hover:border-foreground/30 hover:-translate-y-1 hover:bg-card/30 ${selectedPackage === pkg.id && !isCustomSelected ? 'border-primary bg-white/5 shadow-[0_0_30px_rgba(249,245,6,0.15)]' : ''}`}>
+              {pkg.popular && (
+                <div className="absolute -right-12 top-6 rotate-45 bg-primary py-1 px-12 text-[10px] font-bold uppercase tracking-widest text-background-dark shadow-sm">
+                  Популярный
+                </div>
+              )}
+              <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/5 border border-border text-primary group-hover:scale-110 transition-transform duration-300">
+                <span className="material-symbols-outlined !text-3xl">
+                  {pkg.id === 'small' ? 'spa' : pkg.id === 'medium' ? 'park' : 'forest'}
+                </span>
               </div>
-            )}
-            <CardHeader>
-              <CardTitle className="text-2xl text-center">{pkg.name}</CardTitle>
-              <p className="text-center text-sm text-muted-foreground">{pkg.description}</p>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="text-center">
-                <div className="text-4xl font-bold text-emerald-600">{pkg.price.toLocaleString()} ₸</div>
-                <div className="text-sm text-muted-foreground mt-1">
-                  {(pkg.price / pkg.tree_count).toLocaleString()} ₸ за дерево
-                </div>
+              <h3 className="text-xl font-bold text-foreground mb-2">{pkg.name}</h3>
+              <p className="text-3xl font-extrabold text-primary mb-6">{pkg.price.toLocaleString()} ₸</p>
+              <ul className="space-y-3 mb-8 flex-grow">
+                <li className="flex items-start gap-3 text-sm text-foreground/80">
+                  <span className="material-symbols-outlined !text-lg text-primary shrink-0">check</span>
+                  <span>Выращивание саженца</span>
+                </li>
+                <li className="flex items-start gap-3 text-sm text-foreground/80">
+                  <span className="material-symbols-outlined !text-lg text-primary shrink-0">check</span>
+                  <span>Посадка дерева</span>
+                </li>
+                <li className="flex items-start gap-3 text-sm text-foreground/80">
+                  <span className="material-symbols-outlined !text-lg text-primary shrink-0">check</span>
+                  <span>Уход в течение 3 лет</span>
+                </li>
+                <li className="flex items-start gap-3 text-sm text-foreground/80">
+                  <span className="material-symbols-outlined !text-lg text-primary shrink-0">check</span>
+                  <span>Фото-отчет</span>
+                </li>
+              </ul>
+              <div className={`mt-auto w-full rounded-xl border py-2 text-center text-sm font-semibold transition-colors group-hover:bg-primary group-hover:text-background-dark ${selectedPackage === pkg.id && !isCustomSelected ? 'bg-primary text-background-dark border-primary' : 'border-border text-foreground'}`}>
+                Выбрать
               </div>
-
-              <div className="space-y-2 pt-4">
-                <div className="flex items-start gap-2">
-                  <Check className="h-5 w-5 text-emerald-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-sm">Выращивание саженцев</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Check className="h-5 w-5 text-emerald-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-sm">Посадка деревьев</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Check className="h-5 w-5 text-emerald-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-sm">Долгосрочный уход</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Check className="h-5 w-5 text-emerald-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-sm">Сертификат и отчётность</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+            </div>
+          </label>
         ))}
         
         {/* Custom tree count option */}
-        <Card
-          className={`cursor-pointer transition-all hover:shadow-xl hover:-translate-y-1 border-2 relative ${
-            isCustomSelected ? "border-emerald-600 shadow-lg" : "border-border"
-          }`}
-          onClick={() => setIsCustomSelected(true)}
-        >
-          <CardHeader>
-            <CardTitle className="text-2xl text-center flex items-center justify-center gap-2">
-              <Plus className="h-5 w-5" />
-              Своё количество
-            </CardTitle>
-            <p className="text-center text-sm text-muted-foreground">Выберите своё количество деревьев</p>
-          </CardHeader>
-          <CardContent className="space-y-4">
+        <label className="group relative cursor-pointer">
+          <input 
+            type="radio" 
+            name="package" 
+            value="custom"
+            checked={isCustomSelected}
+            onChange={() => setIsCustomSelected(true)}
+            className="peer sr-only"
+          />
+          <div className={`relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card/20 p-6 backdrop-blur-md transition-all duration-300 peer-checked:border-primary peer-checked:bg-white/5 peer-checked:shadow-[0_0_30px_rgba(249,245,6,0.15)] hover:border-foreground/30 hover:-translate-y-1 hover:bg-card/30 ${isCustomSelected ? 'border-primary bg-white/5 shadow-[0_0_30px_rgba(249,245,6,0.15)]' : ''}`}>
+            <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/5 border border-border text-primary group-hover:scale-110 transition-transform duration-300">
+              <Plus className="h-8 w-8" />
+            </div>
+            <h3 className="text-xl font-bold text-foreground mb-2">Своё количество</h3>
+            <div className="text-2xl font-extrabold text-primary mb-6 pt-1">На выбор</div>
+            <ul className="space-y-3 mb-8 flex-grow">
+              <li className="flex items-start gap-3 text-sm text-foreground/80">
+                <span className="material-symbols-outlined !text-lg text-primary shrink-0">check</span>
+                <span>Любое количество деревьев</span>
+              </li>
+              <li className="flex items-start gap-3 text-sm text-foreground/80">
+                <span className="material-symbols-outlined !text-lg text-primary shrink-0">check</span>
+                <span>Индивидуальный подход</span>
+              </li>
+              <li className="flex items-start gap-3 text-sm text-foreground/80">
+                <span className="material-symbols-outlined !text-lg text-primary shrink-0">check</span>
+                <span>Гибкая стоимость</span>
+              </li>
+              <li className="flex items-start gap-3 text-sm text-foreground/80">
+                <span className="material-symbols-outlined !text-lg text-primary shrink-0">check</span>
+                <span>Персональный менеджер</span>
+              </li>
+            </ul>
             <div className="space-y-4">
-              <div className="text-center">
-                <div className="text-4xl font-bold text-emerald-600">{customPrice.toLocaleString()} ₸</div>
-                <div className="text-sm text-muted-foreground mt-1">2&nbsp;500 ₸ за дерево</div>
-              </div>
-              
               <div className="flex items-center gap-2">
                 <Button 
                   type="button"
                   variant="outline" 
                   size="icon"
-                  className="h-10 w-10 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+                  className="h-10 w-10 rounded-full border-border bg-white/5 text-foreground hover:bg-white/10 hover:border-foreground/50 focus:ring-2 focus:ring-primary focus:ring-offset-2"
                   onClick={(e) => {
                     e.stopPropagation();
                     setCustomTreeCount(prev => Math.max(1, prev - 1));
@@ -232,7 +250,7 @@ export function PackageStep({ location, selectedPackage, onPackageSelect, onBack
                         e.preventDefault();
                       }
                     }}
-                    className="text-center w-20"
+                    className="text-center w-20 bg-background/5 border-border rounded-full"
                     onClick={(e) => e.stopPropagation()}
                     onBlur={(e) => {
                       // Ensure minimum value when input loses focus
@@ -249,7 +267,7 @@ export function PackageStep({ location, selectedPackage, onPackageSelect, onBack
                   type="button"
                   variant="outline" 
                   size="icon"
-                  className="h-10 w-10 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+                  className="h-10 w-10 rounded-full border-border bg-white/5 text-foreground hover:bg-white/10 hover:border-foreground/50 focus:ring-2 focus:ring-primary focus:ring-offset-2"
                   onClick={(e) => {
                     e.stopPropagation();
                     setCustomTreeCount(prev => prev + 1);
@@ -264,11 +282,11 @@ export function PackageStep({ location, selectedPackage, onPackageSelect, onBack
                 >
                   <Plus className="h-4 w-4" />
                 </Button>
-                <span className="text-sm whitespace-nowrap">деревьев</span>
+                <span className="text-sm whitespace-nowrap text-foreground/80">деревьев</span>
               </div>
               
               <Button 
-                className="w-full bg-emerald-600 hover:bg-emerald-700"
+                className="w-full rounded-xl bg-primary py-2 text-center text-sm font-semibold text-background-dark transition-all hover:scale-105 hover:shadow-[0_0_20px_rgba(249,245,6,0.5)]"
                 onClick={(e) => {
                   e.stopPropagation()
                   handleCustomSelect()
@@ -277,33 +295,39 @@ export function PackageStep({ location, selectedPackage, onPackageSelect, onBack
                 Выбрать
               </Button>
             </div>
-            
-            <div className="space-y-2 pt-4">
-              <div className="flex items-start gap-2">
-                <Check className="h-5 w-5 text-emerald-600 flex-shrink-0 mt-0.5" />
-                <span className="text-sm">Выращивание саженцев</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <Check className="h-5 w-5 text-emerald-600 flex-shrink-0 mt-0.5" />
-                <span className="text-sm">Посадка деревьев</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <Check className="h-5 w-5 text-emerald-600 flex-shrink-0 mt-0.5" />
-                <span className="text-sm">Долгосрочный уход</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <Check className="h-5 w-5 text-emerald-600 flex-shrink-0 mt-0.5" />
-                <span className="text-sm">Сертификат и отчётность</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+          </div>
+        </label>
       </div>
 
-      <div className="flex justify-between pt-4">
-        <Button variant="outline" onClick={onBack}>
-          Назад
+      <div className="flex flex-col items-center justify-center gap-6">
+        <div className="flex items-center gap-3 rounded-full bg-white/5 px-4 py-2 border border-border backdrop-blur-sm">
+          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-bold text-background-dark">?</span>
+          <p className="text-sm text-foreground/80">В цену включен уход за саженцами в течение 3-х лет</p>
+        </div>
+        <Button 
+          className="group relative flex h-14 w-full max-w-sm items-center justify-center gap-2 overflow-hidden rounded-full bg-primary px-8 text-base font-bold text-background-dark transition-all hover:scale-105 hover:shadow-[0_0_20px_rgba(249,245,6,0.5)]"
+          onClick={() => {
+            if (isCustomSelected) {
+              handleCustomSelect()
+            } else if (selectedPackage) {
+              // Find the selected package to trigger the callback
+              const pkg = packages.find(p => p.id === selectedPackage)
+              if (pkg) {
+                onPackageSelect(pkg.id, pkg.tree_count, pkg.price)
+              }
+            }
+          }}
+          disabled={!selectedPackage && !isCustomSelected}
+        >
+          <span>Продолжить</span>
+          <span className="material-symbols-outlined transition-transform group-hover:translate-x-1">arrow_forward</span>
         </Button>
+        <button 
+          className="text-sm font-medium text-foreground/40 hover:text-foreground transition-colors underline decoration-foreground/20 underline-offset-4"
+          onClick={onBack}
+        >
+          Назад
+        </button>
       </div>
     </div>
   )

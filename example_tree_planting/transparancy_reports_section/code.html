@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ru"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mukhatay Ormany - Отчетность и Прозрачность</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#FDE047", // Yellow-300 equivalent matching the button
+                        "primary-hover": "#FACC15",
+                        "background-light": "#F3F4F6", // Gray-100
+                        "background-dark": "#111827", // Gray-900
+                        "surface-dark": "#1F2937", // Gray-800
+                        "surface-dark-light": "#374151", // Gray-700
+                    },
+                    fontFamily: {
+                        display: ["Inter", "sans-serif"],
+                        body: ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.5rem",
+                        'xl': '1rem',
+                        '2xl': '1.5rem',
+                    },
+                    backgroundImage: {
+                        'forest-overlay': "linear-gradient(to bottom, rgba(17, 24, 39, 0.8), rgba(17, 24, 39, 0.95)), url('https://images.unsplash.com/photo-1511497584788-876760111969?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')",
+                    }
+                },
+            },
+        };
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4b5563;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6b7280;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-gray-800 dark:text-gray-100 font-display antialiased selection:bg-primary selection:text-black">
+<nav class="fixed w-full z-50 transition-all duration-300 bg-background-dark/80 backdrop-blur-md border-b border-white/10">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex items-center justify-between h-20">
+<div class="flex items-center gap-3">
+<div class="bg-primary rounded-full p-2 flex items-center justify-center h-10 w-10 text-black">
+<span class="material-symbols-outlined">forest</span>
+</div>
+<span class="text-xl font-bold text-white tracking-tight">Mukhatay Ormany</span>
+</div>
+<div class="hidden md:block">
+<div class="ml-10 flex items-baseline space-x-8">
+<a class="text-gray-300 hover:text-primary transition-colors px-3 py-2 rounded-md text-sm font-medium" href="#">О нас</a>
+<a class="text-gray-300 hover:text-primary transition-colors px-3 py-2 rounded-md text-sm font-medium" href="#">Проекты</a>
+<a class="text-primary px-3 py-2 rounded-md text-sm font-medium border-b-2 border-primary" href="#">Отчетность</a>
+<a class="text-gray-300 hover:text-primary transition-colors px-3 py-2 rounded-md text-sm font-medium" href="#">FAQ</a>
+<div class="h-4 w-[1px] bg-gray-600 mx-2"></div>
+<a class="text-gray-300 hover:text-white transition-colors text-sm font-medium" href="#">KZ / RU</a>
+</div>
+</div>
+<div>
+<a class="bg-white/10 hover:bg-white/20 text-white px-6 py-2 rounded-full text-sm font-medium transition-all border border-white/20" href="#">Войти</a>
+</div>
+</div>
+</div>
+</nav>
+<header class="relative pt-32 pb-20 bg-forest-overlay bg-cover bg-center bg-fixed">
+<div class="absolute top-0 right-0 p-12 opacity-10 pointer-events-none">
+<span class="material-symbols-outlined text-9xl text-white transform rotate-12">park</span>
+</div>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+<div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-primary text-sm font-medium mb-6">
+<span class="material-symbols-outlined text-base">verified</span>
+                Прозрачность на каждом этапе
+            </div>
+<h1 class="text-4xl md:text-6xl font-extrabold text-white tracking-tight mb-6 leading-tight">
+                Отчетность и <span class="text-primary">Прозрачность</span>
+</h1>
+<p class="mt-4 max-w-2xl mx-auto text-xl text-gray-300">
+                Мы открыто делимся результатами нашей работы. Смотрите фотоотчеты, видео с посадок и изучайте официальные документы.
+            </p>
+</div>
+</header>
+<main class="bg-background-dark relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-20">
+<div class="bg-surface-dark/50 border border-white/5 rounded-2xl p-6 text-center hover:bg-surface-dark transition-all duration-300 group">
+<div class="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-primary transition-colors duration-300">
+<span class="material-symbols-outlined text-primary group-hover:text-black">forest</span>
+</div>
+<h3 class="text-3xl font-bold text-white mb-1">12,450</h3>
+<p class="text-sm text-gray-400">Деревьев посажено</p>
+</div>
+<div class="bg-surface-dark/50 border border-white/5 rounded-2xl p-6 text-center hover:bg-surface-dark transition-all duration-300 group">
+<div class="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-primary transition-colors duration-300">
+<span class="material-symbols-outlined text-primary group-hover:text-black">landscape</span>
+</div>
+<h3 class="text-3xl font-bold text-white mb-1">58 га</h3>
+<p class="text-sm text-gray-400">Территории озеленено</p>
+</div>
+<div class="bg-surface-dark/50 border border-white/5 rounded-2xl p-6 text-center hover:bg-surface-dark transition-all duration-300 group">
+<div class="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-primary transition-colors duration-300">
+<span class="material-symbols-outlined text-primary group-hover:text-black">diversity_3</span>
+</div>
+<h3 class="text-3xl font-bold text-white mb-1">1,820</h3>
+<p class="text-sm text-gray-400">Волонтеров участвовало</p>
+</div>
+<div class="bg-surface-dark/50 border border-white/5 rounded-2xl p-6 text-center hover:bg-surface-dark transition-all duration-300 group">
+<div class="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-primary transition-colors duration-300">
+<span class="material-symbols-outlined text-primary group-hover:text-black">savings</span>
+</div>
+<h3 class="text-3xl font-bold text-white mb-1">₸45M</h3>
+<p class="text-sm text-gray-400">Собранных средств</p>
+</div>
+</div>
+<div class="flex flex-wrap justify-center gap-4 mb-12 border-b border-white/10 pb-4">
+<button class="px-6 py-2 rounded-full bg-primary text-black font-semibold text-sm transition-all shadow-lg shadow-primary/20">
+                    Фото и Видео
+                </button>
+<button class="px-6 py-2 rounded-full bg-surface-dark text-gray-300 hover:text-white hover:bg-surface-dark-light border border-white/5 font-medium text-sm transition-all">
+                    Сезонные отчеты
+                </button>
+<button class="px-6 py-2 rounded-full bg-surface-dark text-gray-300 hover:text-white hover:bg-surface-dark-light border border-white/5 font-medium text-sm transition-all">
+                    Документация
+                </button>
+<button class="px-6 py-2 rounded-full bg-surface-dark text-gray-300 hover:text-white hover:bg-surface-dark-light border border-white/5 font-medium text-sm transition-all">
+                    Планы 2024
+                </button>
+</div>
+<div class="mb-20">
+<div class="flex justify-between items-end mb-8">
+<div>
+<h2 class="text-2xl font-bold text-white mb-2">Галерея событий</h2>
+<p class="text-gray-400 text-sm">Хроника наших посадок и мероприятий</p>
+</div>
+<a class="text-primary hover:text-white text-sm font-medium flex items-center gap-1 transition-colors" href="#">
+                        Смотреть все <span class="material-symbols-outlined text-base">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[300px]">
+<div class="md:col-span-2 relative group rounded-2xl overflow-hidden cursor-pointer">
+<img alt="Planting event main" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkwTb7syUHbpscwPhGmXxhuhEYm2B_ly3MBiLNbfzD0S2iI1QLp-O6Y8pZ8dUnwOt8jEM8kuLEipWyymwX1ALgRPAGfLKpGhTH8lEztjd9_M7yDjJss3pwQzgMYgBOAGU50HTBbwOeZD73_CCroH-h8FRyRJbcor-vd0QuwDfKTNe0_-SCYVxKatwdm5MrQwJ-6uM85E5pomNiMC3ZYrm31pFRiIOI3wTBjdrCHIHaZ832rFld0K6OqQxJlz2lF4Ad3dtifGCrr1fr"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-6">
+<span class="bg-primary text-black text-xs font-bold px-2 py-1 rounded mb-2 inline-block">Видео отчет</span>
+<h3 class="text-2xl font-bold text-white mb-1">Осенняя посадка в Алматинской области</h3>
+<p class="text-gray-300 text-sm">Октябрь 2023 • 2,500 саженцев</p>
+</div>
+<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-sm p-4 rounded-full group-hover:bg-primary transition-all duration-300">
+<span class="material-symbols-outlined text-white text-3xl group-hover:text-black">play_arrow</span>
+</div>
+</div>
+<div class="relative group rounded-2xl overflow-hidden cursor-pointer">
+<img alt="Volunteers working" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVEqCuwNCtUQQQRcxMdyW0NJm8qAtjO7G7utCKWnb_Y6MLOqhBVuyy-Ko_9264h3fhwvjEejX7LdvZFnroA9Xy-RX6wKonFYUsozmDLF71po97LZTQnzlMeLT2ooGJV6JpPjMIk2B_wZ1T9DP5aWI5TObJp8mpPbjSamtm7nH1geZFAmDDYEoYS7_37hEHq6MQTE-3JxFDMMzA0dGZlOOWz3jSbW1TUdXJtCkwlg2f6MAEKdfKwcDzsZou7sHYarlarhRfnwShYA5U"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-6">
+<h3 class="text-lg font-bold text-white">Команда волонтеров</h3>
+<p class="text-gray-300 text-xs">Сентябрь 2023</p>
+</div>
+</div>
+<div class="relative group rounded-2xl overflow-hidden cursor-pointer">
+<img alt="Seedlings close up" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDz_8RLzUf60KZE2JO2h6Th20sRKT4dTZPJApjieVmV6S5mYoFv2V4EcD1G8LREEWL98Q4VE68HSbs82a0zNsRXyVC-sOG5mWgm8-YV7ahVoeOnveKia3wl3GBdHt72x-1SCL5nRyrEGiM1GJfRPYLZBOf_bIfTR5BBIlR67OJJ7dOgqzhO7OqHtDUeVp3Ru29ou3BcDXVIOBEZrtiRQUJG37CaY7RVvwTOd-FOSA9HFHZGRXWm5U9hYvNap0lwGzbkYc9D8CPF1xjq"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-6">
+<h3 class="text-lg font-bold text-white">Питомник саженцев</h3>
+<p class="text-gray-300 text-xs">Август 2023</p>
+</div>
+</div>
+<div class="relative group rounded-2xl overflow-hidden cursor-pointer">
+<img alt="Drone view of forest" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiiqOXvc4pIxntFeiA96uq-TAktKXzQGGQx15tKI-t-JyVfh4h4pcGBb3iTKkcoW2plM4zNrh34oDmjWRtdQ03ighnn9iKHKumW2z5sgfuMZxHf-YLXs46FLE-jw2pMgPERTQnRW8-m-hAqqdw310weKamThXXmME9rN4tgYUtiPWvohbSZRrAr-7ZfgaEt2oe1XEJtvtqOv000LWaS0dn3xGn4w3PU986G-SHw07L_zYv7sD_wGdQDWCNT66hvPhajcN05oM4b8kn"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-6">
+<span class="bg-primary text-black text-xs font-bold px-2 py-1 rounded mb-2 inline-block">Дрон съемка</span>
+<h3 class="text-lg font-bold text-white">Мониторинг роста</h3>
+<p class="text-gray-300 text-xs">Июль 2023</p>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-20">
+<div>
+<h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">description</span>
+                        Сезонные отчеты
+                    </h2>
+<div class="space-y-4">
+<div class="bg-surface-dark border border-white/5 rounded-xl p-5 hover:border-primary/50 transition-colors cursor-pointer group flex items-start justify-between">
+<div class="flex gap-4">
+<div class="bg-white/5 p-3 rounded-lg h-fit">
+<span class="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors">picture_as_pdf</span>
+</div>
+<div>
+<h4 class="text-white font-semibold text-lg group-hover:text-primary transition-colors">Итоговый отчет за 2023 год</h4>
+<p class="text-gray-400 text-sm mt-1">Финансы, локации, статистика выживаемости</p>
+<div class="flex items-center gap-3 mt-3">
+<span class="text-xs text-gray-500 bg-black/20 px-2 py-0.5 rounded">PDF, 4.2 MB</span>
+<span class="text-xs text-gray-500">15 Января 2024</span>
+</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-gray-500 group-hover:text-white transform group-hover:translate-x-1 transition-all">download</span>
+</div>
+<div class="bg-surface-dark border border-white/5 rounded-xl p-5 hover:border-primary/50 transition-colors cursor-pointer group flex items-start justify-between">
+<div class="flex gap-4">
+<div class="bg-white/5 p-3 rounded-lg h-fit">
+<span class="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors">picture_as_pdf</span>
+</div>
+<div>
+<h4 class="text-white font-semibold text-lg group-hover:text-primary transition-colors">Отчет: Осенняя высадка</h4>
+<p class="text-gray-400 text-sm mt-1">Результаты кампании Сентябрь-Ноябрь</p>
+<div class="flex items-center gap-3 mt-3">
+<span class="text-xs text-gray-500 bg-black/20 px-2 py-0.5 rounded">PDF, 2.8 MB</span>
+<span class="text-xs text-gray-500">10 Декабря 2023</span>
+</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-gray-500 group-hover:text-white transform group-hover:translate-x-1 transition-all">download</span>
+</div>
+<div class="bg-surface-dark border border-white/5 rounded-xl p-5 hover:border-primary/50 transition-colors cursor-pointer group flex items-start justify-between">
+<div class="flex gap-4">
+<div class="bg-white/5 p-3 rounded-lg h-fit">
+<span class="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors">table_chart</span>
+</div>
+<div>
+<h4 class="text-white font-semibold text-lg group-hover:text-primary transition-colors">Детализация расходов Q3</h4>
+<p class="text-gray-400 text-sm mt-1">Полная финансовая прозрачность</p>
+<div class="flex items-center gap-3 mt-3">
+<span class="text-xs text-gray-500 bg-black/20 px-2 py-0.5 rounded">XLSX, 1.1 MB</span>
+<span class="text-xs text-gray-500">1 Октября 2023</span>
+</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-gray-500 group-hover:text-white transform group-hover:translate-x-1 transition-all">download</span>
+</div>
+</div>
+</div>
+<div>
+<h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">update</span>
+                        Планы на будущее
+                    </h2>
+<div class="bg-surface-dark border border-white/5 rounded-2xl p-6 h-fit">
+<div class="relative pl-8 border-l border-white/10 space-y-8">
+<div class="relative">
+<span class="absolute -left-[39px] top-1 h-5 w-5 rounded-full border-4 border-background-dark bg-primary"></span>
+<span class="text-xs font-bold text-primary mb-1 block uppercase tracking-wider">Март - Апрель 2024</span>
+<h3 class="text-white text-lg font-bold mb-2">Весенняя кампания "Жасыл Ел"</h3>
+<p class="text-gray-400 text-sm">Планируется высадка 5000 саженцев хвойных пород в Акмолинской области. Подготовка почвы уже началась.</p>
+</div>
+<div class="relative">
+<span class="absolute -left-[39px] top-1 h-5 w-5 rounded-full border-4 border-background-dark bg-gray-600"></span>
+<span class="text-xs font-bold text-gray-500 mb-1 block uppercase tracking-wider">Июнь 2024</span>
+<h3 class="text-gray-300 text-lg font-bold mb-2">Запуск системы мониторинга</h3>
+<p class="text-gray-500 text-sm">Внедрение IoT датчиков для контроля влажности почвы на пилотных участках.</p>
+</div>
+<div class="relative">
+<span class="absolute -left-[39px] top-1 h-5 w-5 rounded-full border-4 border-background-dark bg-gray-600"></span>
+<span class="text-xs font-bold text-gray-500 mb-1 block uppercase tracking-wider">Август 2024</span>
+<h3 class="text-gray-300 text-lg font-bold mb-2">Расширение питомника</h3>
+<p class="text-gray-500 text-sm">Увеличение площади собственного питомника на 2 гектара для выращивания редких видов.</p>
+</div>
+</div>
+<div class="mt-8 pt-6 border-t border-white/5">
+<a class="w-full block text-center bg-white/5 hover:bg-white/10 text-white py-3 rounded-lg text-sm font-medium transition-colors border border-dashed border-white/20 hover:border-white/40" href="#">
+                                Посмотреть полную дорожную карту
+                            </a>
+</div>
+</div>
+</div>
+</div>
+<div class="relative rounded-3xl overflow-hidden">
+<div class="absolute inset-0">
+<img alt="CTA Background" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQ9_ITnk4w8rQMLl8YA-IY_Q_PKrGuWfjASL76ouiHrJ87xE8xXpTST--xPpdEvZXJ-Larady-DYStkUTQlVd9UNyXcJ1yMhBwTDWmUVHexUXVgabasB0vg1qJURAppV_G3BPMjEB0NCpNTfvzbmG7XpO6l2tS-ldOdSIU7ZsxRY9KQwkP5pNBMr3HH0EsNjnQKnGBydVGEPPrJX-XPo3hETT-dEA4oHvBAuNTkAQBF40OQpWOlZaSK8tPKLUIHXVZOcQRQpIX7BiH"/>
+<div class="absolute inset-0 bg-background-dark/80 backdrop-blur-[2px]"></div>
+</div>
+<div class="relative z-10 px-8 py-16 md:px-20 text-center">
+<h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Станьте частью изменений</h2>
+<p class="text-gray-300 max-w-2xl mx-auto mb-8 text-lg">Каждое пожертвование прозрачно отслеживается. Посадите свое именное дерево уже сегодня и получите сертификат с GPS-координатами.</p>
+<div class="flex flex-col sm:flex-row justify-center gap-4">
+<button class="bg-primary hover:bg-primary-hover text-black font-bold py-4 px-8 rounded-lg shadow-lg shadow-primary/20 transition-all transform hover:-translate-y-1">
+<span class="flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">yard</span>
+                                Посадить дерево
+                            </span>
+</button>
+<button class="bg-transparent hover:bg-white/10 text-white border border-white/30 font-semibold py-4 px-8 rounded-lg transition-all">
+<span class="flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">map</span>
+                                Выбрать локацию
+                            </span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<footer class="bg-surface-dark border-t border-white/10 py-12">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">forest</span>
+<span class="text-white font-bold text-xl">Mukhatay Ormany</span>
+</div>
+<p class="text-gray-500 text-sm">© 2024 Mukhatay Ormany. Все права защищены.</p>
+<div class="flex gap-6">
+<a class="text-gray-400 hover:text-white transition-colors" href="#">Instagram</a>
+<a class="text-gray-400 hover:text-white transition-colors" href="#">Facebook</a>
+<a class="text-gray-400 hover:text-white transition-colors" href="#">Telegram</a>
+</div>
+</div>
+</footer>
+
+</body></html>

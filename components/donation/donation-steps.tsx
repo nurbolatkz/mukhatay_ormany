@@ -15,20 +15,20 @@ export function DonationSteps({ steps, currentStep }: DonationStepsProps) {
               <div
                 className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all ${
                   index < currentStep
-                    ? "bg-emerald-600 border-emerald-600 text-white"
+                    ? "bg-primary border-primary text-background-dark"
                     : index === currentStep
-                      ? "bg-emerald-600 border-emerald-600 text-white"
-                      : "bg-background border-border text-muted-foreground"
+                      ? "bg-primary border-primary text-background-dark"
+                      : "bg-background border-border text-foreground/40"
                 }`}
               >
                 {index < currentStep ? <Check className="h-5 w-5" /> : <span>{index + 1}</span>}
               </div>
-              <div className="mt-2 text-sm font-medium text-center hidden md:block">{step}</div>
+              <div className="mt-2 text-sm font-medium text-center hidden md:block text-foreground/60">{step}</div>
             </div>
             {index < steps.length - 1 && (
               <div
                 className={`absolute top-5 left-1/2 w-full h-0.5 -z-10 transition-all ${
-                  index < currentStep ? "bg-emerald-600" : "bg-border"
+                  index < currentStep ? "bg-primary" : "bg-border"
                 }`}
               />
             )}

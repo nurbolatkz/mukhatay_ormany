@@ -1,89 +1,111 @@
 import Link from "next/link"
-import { Facebook, Instagram, Youtube, Mail } from "lucide-react"
+import { Facebook, Instagram, Youtube, Send, MessageCircle } from "lucide-react"
 
 export function Footer() {
   return (
-    <footer className="bg-muted border-t border-border">
+    <footer className="bg-[#1a3d2e] text-white/70">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        {/* Top Section: 4 columns */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+          {/* Brand Column */}
           <div>
-            <h3 className="font-bold text-lg mb-4 text-emerald-600">Mukhatay Ormany</h3>
-            <p className="text-sm text-muted-foreground">Реальное лесовосстановление в Казахстане</p>
-            <div className="flex gap-4 mt-4">
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
-                <Facebook className="h-5 w-5" />
+            <h3 className="font-bold text-lg mb-4 text-white">Mukhatay Ormany</h3>
+            <p className="text-sm text-white/50 mb-4">Реальное лесовосстановление в Казахстане</p>
+            <div className="flex gap-4">
+              {/* Facebook */}
+              <a href="#" className="text-white/70 hover:text-primary transition-colors">
+                <Facebook className="w-6 h-6" />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
-                <Instagram className="h-5 w-5" />
+              
+              {/* Instagram */}
+              <a href="#" className="text-white/70 hover:text-primary transition-colors">
+                <Instagram className="w-6 h-6" />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
-                <Youtube className="h-5 w-5" />
+              
+              {/* YouTube */}
+              <a href="#" className="text-white/70 hover:text-primary transition-colors">
+                <Youtube className="w-6 h-6" />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
-                <Mail className="h-5 w-5" />
+              
+              {/* Telegram */}
+              <a href="#" className="text-white/70 hover:text-primary transition-colors">
+                <Send className="w-6 h-6" />
+              </a>
+              
+              {/* WhatsApp */}
+              <a href="#" className="text-white/70 hover:text-primary transition-colors">
+                <MessageCircle className="w-6 h-6" />
               </a>
             </div>
           </div>
 
+          {/* Quick Links */}
           <div>
-            <h4 className="font-semibold mb-4">Проект</h4>
+            <h4 className="font-semibold mb-4 text-white">Быстрые ссылки</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="#locations" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Локации посадки
+                <Link href="#" className="text-white/70 hover:text-primary transition-colors">
+                  О проекте
                 </Link>
               </li>
               <li>
-                <Link href="#how-it-works" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Как это работает
+                <Link href="#locations" className="text-white/70 hover:text-primary transition-colors">
+                  Локации
                 </Link>
               </li>
               <li>
-                <Link href="#transparency" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Отчётность
+                <Link href="#corporate" className="text-white/70 hover:text-primary transition-colors">
+                  Для компаний
                 </Link>
               </li>
               <li>
-                <Link href="#news" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Новости
+                <Link href="#" className="text-white/70 hover:text-primary transition-colors">
+                  Контакты
                 </Link>
               </li>
             </ul>
           </div>
 
+          {/* Legal */}
           <div>
-            <h4 className="font-semibold mb-4">Для бизнеса</h4>
+            <h4 className="font-semibold mb-4 text-white">Правовая информация</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="#corporate" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Корпоративное участие
+                <Link href="#" className="text-white/70 hover:text-primary transition-colors">
+                  Политика конфиденциальности
                 </Link>
               </li>
               <li>
-                <Link href="#corporate" className="text-muted-foreground hover:text-foreground transition-colors">
-                  ESG / CSR проекты
+                <Link href="#" className="text-white/70 hover:text-primary transition-colors">
+                  Публичная оферта
                 </Link>
               </li>
               <li>
-                <Link href="#corporate" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Партнёрство
+                <Link href="#" className="text-white/70 hover:text-primary transition-colors">
+                  Отчеты
                 </Link>
               </li>
             </ul>
           </div>
 
+          {/* Contact */}
           <div>
-            <h4 className="font-semibold mb-4">Контакты</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
+            <h4 className="font-semibold mb-4 text-white">Контакты</h4>
+            <ul className="space-y-2 text-sm text-white/70">
               <li>Email: info@mukhatayormany.kz</li>
               <li>Телефон: +7 (XXX) XXX-XX-XX</li>
-              <li>Казахстан, Астана</li>
+              <li>Адрес: Казахстан, Астана</li>
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-border mt-8 pt-8 text-center text-sm text-muted-foreground">
+        {/* Divider */}
+        <div className="border-t border-white/10 my-8"></div>
+
+        {/* Bottom Section */}
+        <div className="text-center text-sm text-white/50">
           <p>© {new Date().getFullYear()} Mukhatay Ormany. Все права защищены.</p>
+          <p className="mt-2">Made with 🌱 for Kazakhstan</p>
         </div>
       </div>
     </footer>

@@ -1,65 +1,97 @@
 "use client"
 
-import { MapPin, TreeDeciduous, CreditCard, Sprout, FileText } from "lucide-react"
+import { useState, useEffect } from "react"
 
 const steps = [
   {
-    icon: <MapPin className="h-8 w-8" />,
-    title: "Вы выбираете локацию посадки",
+    number: "01",
+    title: "Выбор локации",
     description: "Питомник или Карагандинская область",
+    icon: "place",
   },
   {
-    icon: <TreeDeciduous className="h-8 w-8" />,
-    title: "Вы выбираете количество деревьев",
+    number: "02",
+    title: "Выбор деревьев",
     description: "От одного дерева до корпоративных пакетов",
+    icon: "forest",
   },
   {
-    icon: <CreditCard className="h-8 w-8" />,
-    title: "Оплачиваете онлайн",
+    number: "03",
+    title: "Оплата",
     description: "Безопасная оплата через Kaspi или карту",
+    icon: "credit_card",
   },
   {
-    icon: <Sprout className="h-8 w-8" />,
-    title: "Мы высаживаем деревья и обеспечиваем уход",
+    number: "04",
+    title: "Посадка и уход",
     description: "Профессиональная посадка и долгосрочный уход",
+    icon: "local_florist",
   },
   {
-    icon: <FileText className="h-8 w-8" />,
-    title: "Вы получаете отчет о проделанной работе",
+    number: "05",
+    title: "Отчет",
     description: "Фото, видео и сертификат о посадке",
+    icon: "description",
   },
 ]
 
 export function HowItWorksSection() {
+  const [activeStep, setActiveStep] = useState(0)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const section = document.getElementById('how-it-works')
+      if (!section) return
+
+      const sectionTop = section.offsetTop
+      const sectionHeight = section.offsetHeight
+      const scrollPosition = window.scrollY + window.innerHeight / 2
+
+      // Calculate which step should be active based on scroll position
+      if (scrollPosition >= sectionTop && scrollPosition <= sectionTop + sectionHeight) {
+        const stepHeight = sectionHeight / steps.length
+        const relativePosition = scrollPosition - sectionTop
+        const newActiveStep = Math.min(Math.floor(relativePosition / stepHeight), steps.length - 1)
+        setActiveStep(newActiveStep)
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    handleScroll() // Initial check
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
   return (
-    <section id="how-it-works" className="py-20 bg-background">
+    <section id="how-it-works" className="py-20 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-balance">Как это работает</h2>
-          <p className="text-lg text-muted-foreground text-pretty">Простой процесс от выбора до результата</p>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">Как это <span className="text-primary">работает</span></h2>
+          <p className="text-lg text-muted-foreground">От выбора дерева до получения отчета</p>
         </div>
 
         <div className="max-w-4xl mx-auto">
           <div className="relative">
-            {/* Vertical line */}
-            <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-border hidden md:block" />
-
-            <div className="space-y-12">
+            {/* Vertical dashed line */}
+            <div className="absolute left-12 top-0 bottom-0 w-0.5 border-l-2 border-dashed border-green-600 hidden md:block"></div>
+            
+            <div className="space-y-16">
               {steps.map((step, index) => (
                 <div
                   key={index}
-                  className="relative flex gap-6 items-start animate-fade-in-up"
-                  style={{ animationDelay: `${index * 0.1}s` }}
+                  className={`relative flex gap-8 items-start transition-all duration-500 ${index <= activeStep ? 'opacity-100 translate-x-0' : 'opacity-50 translate-x-4'}`}
                 >
-                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-600 text-white flex items-center justify-center z-10">
-                    {step.icon}
+                  {/* Large number */}
+                  <div className={`flex-shrink-0 text-6xl font-light w-24 text-left transition-all duration-500 ${index <= activeStep ? 'text-primary' : 'text-muted'}`}>{step.number}</div>
+                  
+                  {/* Icon */}
+                  <div className={`flex-shrink-0 w-20 h-20 rounded-full flex items-center justify-center shadow-lg border transition-all duration-500 ${index <= activeStep ? 'bg-white border-green-600' : 'bg-muted border-border'}`}>
+                    <span className={`material-symbols-outlined !text-3xl transition-all duration-500 ${index <= activeStep ? 'text-green-600' : 'text-muted-foreground'}`}>{step.icon}</span>
                   </div>
-
-                  <div className="flex-1 pt-1">
-                    <h3 className="text-xl font-semibold mb-2">
-                      {index + 1}. {step.title}
-                    </h3>
-                    <p className="text-muted-foreground">{step.description}</p>
+                  
+                  {/* Content */}
+                  <div className="flex-1 pt-2">
+                    <h3 className={`text-2xl font-bold mb-3 transition-all duration-500 ${index <= activeStep ? 'text-foreground' : 'text-muted-foreground'}`}>{step.title}</h3>
+                    <p className={`text-base max-w-md transition-all duration-500 ${index <= activeStep ? 'text-muted-foreground' : 'text-muted'}`}>{step.description}</p>
                   </div>
                 </div>
               ))}

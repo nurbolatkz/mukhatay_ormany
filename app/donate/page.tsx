@@ -154,7 +154,7 @@ function DonateContent({}) {
 
 export default function DonatePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-emerald-50 to-background dark:from-emerald-950/20 dark:to-background">
+    <div className="min-h-screen bg-gradient-to-b from-background-light to-background dark:from-background-dark dark:to-background">
       <div className="container mx-auto px-4 py-8">
         <DonateContent />
       </div>

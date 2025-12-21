@@ -1,52 +1,64 @@
-import { Target, Workflow, TrendingUp } from "lucide-react"
-
 export function MissionSection() {
   return (
-    <section className="py-20 bg-background">
+    <section className="py-20 bg-white">
       <div className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto space-y-16">
-          <div className="text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-balance">Наша миссия и подход</h2>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center space-y-4 animate-fade-in-up">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-900/30">
-                <Target className="h-8 w-8 text-emerald-600" />
+        <div className="flex flex-col lg:flex-row gap-16 items-center">
+          {/* Image Side */}
+          <div className="w-full lg:w-1/2">
+            <div className="relative rounded-2xl overflow-hidden">
+              {/* High-quality photo of team planting */}
+              <img 
+                src="/Восстановление лесов Казахстана-mission.jpg" 
+                alt="Восстановление лесов Казахстана"
+                className="w-full h-full object-cover aspect-video"
+              />
+              
+              {/* Optional stat badges */}
+              <div className="absolute top-4 right-4 bg-primary text-background px-3 py-1 rounded-full text-sm font-medium">
+                10 лет опыта
               </div>
-              <h3 className="text-xl font-semibold">Миссия</h3>
-              <p className="text-muted-foreground text-pretty">
-                Восстановление лесных экосистем Казахстана через прозрачные и устойчивые проекты
-              </p>
-            </div>
-
-            <div className="text-center space-y-4 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-900/30">
-                <Workflow className="h-8 w-8 text-emerald-600" />
-              </div>
-              <h3 className="text-xl font-semibold">Полный цикл</h3>
-              <p className="text-muted-foreground text-pretty">
-                От выращивания саженцев до многолетнего ухода за взрослыми деревьями
-              </p>
-            </div>
-
-            <div className="text-center space-y-4 animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-900/30">
-                <TrendingUp className="h-8 w-8 text-emerald-600" />
-              </div>
-              <h3 className="text-xl font-semibold">Системность</h3>
-              <p className="text-muted-foreground text-pretty">
-                Планомерная работа с измеримыми результатами на каждом этапе
-              </p>
             </div>
           </div>
-
-          <div className="bg-emerald-50 dark:bg-emerald-950/10 rounded-xl p-8 md:p-12 text-center">
-            <p className="text-lg md:text-xl text-foreground leading-relaxed text-pretty">
-              Мы не просто сажаем деревья — мы создаём устойчивые лесные экосистемы, которые будут служить природе и
-              людям десятилетиями. Каждый проект проходит тщательное планирование, профессиональную реализацию и
-              долгосрочное сопровождение.
-            </p>
+          
+          {/* Text Side */}
+          <div className="w-full lg:w-1/2">
+            <div className="max-w-md">
+              {/* Overline */}
+              <div className="text-xs uppercase text-primary tracking-[2px] font-medium mb-4">НАША МИССИЯ</div>
+              
+              {/* Title */}
+              <h2 className="text-4xl font-bold text-foreground mb-6">Восстановление лесов Казахстана</h2>
+              
+              {/* Body text */}
+              <p className="text-lg text-muted-foreground leading-[1.8] mb-8 max-w-md">
+                Мы создаем устойчивые лесные экосистемы, которые будут служить природе и людям десятилетиями. Каждый проект проходит тщательное планирование, профессиональную реализацию и долгосрочное сопровождение.
+              </p>
+              
+              {/* Bullet points with green checkmarks */}
+              <div className="space-y-4 mb-8">
+                <div className="flex items-start gap-3">
+                  <span className="material-symbols-outlined text-primary mt-0.5 !text-xl">check_circle</span>
+                  <span className="text-foreground">Экологически устойчивые методы посадки</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="material-symbols-outlined text-primary mt-0.5 !text-xl">check_circle</span>
+                  <span className="text-foreground">Долгосрочный уход за каждым деревом</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="material-symbols-outlined text-primary mt-0.5 !text-xl">check_circle</span>
+                  <span className="text-foreground">Прозрачная отчетность и фотофиксация</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="material-symbols-outlined text-primary mt-0.5 !text-xl">check_circle</span>
+                  <span className="text-foreground">Поддержка местных сообществ</span>
+                </div>
+              </div>
+              
+              {/* CTA Button */}
+              <button className="bg-primary text-background font-semibold px-8 py-4 rounded-full transition-all duration-300 hover:scale-105 hover:shadow-lg">
+                Узнать больше
+              </button>
+            </div>
           </div>
         </div>
       </div>
