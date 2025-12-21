@@ -140,10 +140,10 @@ function LoginFormContent({}) {
   };
 
   return (
-    <Card className="mx-auto max-w-sm">
+    <Card className="mx-auto max-w-sm rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.15)] border-none">
       <CardHeader>
-        <CardTitle className="text-2xl">Вход</CardTitle>
-        <CardDescription>
+        <CardTitle className="text-2xl font-bold text-[#1a3d2e]">Вход</CardTitle>
+        <CardDescription className="text-[#6b7280]">
           Введите ваш email и пароль для входа в аккаунт
         </CardDescription>
       </CardHeader>
@@ -155,15 +155,15 @@ function LoginFormContent({}) {
             </p>
           </div>
         )}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
           {error && (
-            <div className="text-red-500 text-sm bg-red-50 p-2 rounded">
+            <div className="text-red-500 text-sm bg-red-50 p-3 rounded-lg">
               {error}
             </div>
           )}
           
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email" className="text-[#1a3d2e] font-semibold">Email</Label>
             <Input
               id="email"
               type="email"
@@ -171,11 +171,12 @@ function LoginFormContent({}) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              className="border-2 border-[#e8ebe7] rounded-xl py-5 text-base focus:border-[#f4e31e] focus:ring-4 focus:ring-[rgba(244,227,30,0.2)]"
             />
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="password">Пароль</Label>
+            <Label htmlFor="password" className="text-[#1a3d2e] font-semibold">Пароль</Label>
             <div className="relative">
               <Input
                 id="password"
@@ -183,7 +184,7 @@ function LoginFormContent({}) {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="pr-10"
+                className="pr-10 border-2 border-[#e8ebe7] rounded-xl py-5 text-base focus:border-[#f4e31e] focus:ring-4 focus:ring-[rgba(244,227,30,0.2)]"
               />
               <button
                 type="button"
@@ -202,7 +203,7 @@ function LoginFormContent({}) {
           
           <Button 
             type="submit" 
-            className="w-full bg-emerald-600 hover:bg-emerald-700"
+            className="w-full bg-[#f4e31e] text-[#1a3d2e] rounded-full py-5 font-semibold text-lg shadow-[0_4px_16px_rgba(244,227,30,0.3)] hover:scale-102 hover:shadow-[0_6px_24px_rgba(244,227,30,0.4)] hover:bg-[#ffd700] transition-all duration-300"
             disabled={loading}
           >
             {loading ? "Вход..." : "Войти"}

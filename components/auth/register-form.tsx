@@ -109,16 +109,16 @@ export function RegisterForm() {
   };
 
   return (
-    <Card className="mx-auto max-w-sm">
+    <Card className="mx-auto max-w-sm rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.15)] border-none">
       <CardHeader>
-        <CardTitle className="text-2xl">Регистрация</CardTitle>
-        <CardDescription>
+        <CardTitle className="text-2xl font-bold text-[#1a3d2e]">Регистрация</CardTitle>
+        <CardDescription className="text-[#6b7280]">
           Создайте новый аккаунт, чтобы начать сажать деревья
         </CardDescription>
       </CardHeader>
       <CardContent>
         {success ? (
-          <div className="text-green-500 text-sm bg-green-50 p-4 rounded text-center">
+          <div className="text-green-500 text-sm bg-green-50 p-4 rounded-lg text-center">
             Аккаунт успешно создан! Перенаправление на страницу входа...
           </div>
         ) : (
@@ -130,15 +130,15 @@ export function RegisterForm() {
                 </p>
               </div>
             )}
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-6">
               {error && (
-                <div className="text-red-500 text-sm bg-red-50 p-2 rounded">
+                <div className="text-red-500 text-sm bg-red-50 p-3 rounded-lg">
                   {error}
                 </div>
               )}
             
             <div className="space-y-2">
-              <Label htmlFor="full_name">Полное имя</Label>
+              <Label htmlFor="full_name" className="text-[#1a3d2e] font-semibold">Полное имя</Label>
               <Input
                 id="full_name"
                 type="text"
@@ -146,11 +146,12 @@ export function RegisterForm() {
                 value={formData.full_name}
                 onChange={handleChange}
                 required
+                className="border-2 border-[#e8ebe7] rounded-xl py-5 text-base focus:border-[#f4e31e] focus:ring-4 focus:ring-[rgba(244,227,30,0.2)]"
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-[#1a3d2e] font-semibold">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -158,20 +159,21 @@ export function RegisterForm() {
                 value={formData.email}
                 onChange={handleChange}
                 required
+                className="border-2 border-[#e8ebe7] rounded-xl py-5 text-base focus:border-[#f4e31e] focus:ring-4 focus:ring-[rgba(244,227,30,0.2)]"
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="text-[#1a3d2e] font-semibold">Пароль</Label>
               <div className="relative">
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Create a password"
+                  placeholder="Создайте пароль"
                   value={formData.password}
                   onChange={handleChange}
                   required
-                  className="pr-10"
+                  className="pr-10 border-2 border-[#e8ebe7] rounded-xl py-5 text-base focus:border-[#f4e31e] focus:ring-4 focus:ring-[rgba(244,227,30,0.2)]"
                 />
                 <button
                   type="button"
@@ -189,7 +191,7 @@ export function RegisterForm() {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="phone">Номер телефона</Label>
+              <Label htmlFor="phone" className="text-[#1a3d2e] font-semibold">Номер телефона</Label>
               <Input
                 id="phone"
                 type="tel"
@@ -197,12 +199,13 @@ export function RegisterForm() {
                 value={formData.phone}
                 onChange={handleChange}
                 required
+                className="border-2 border-[#e8ebe7] rounded-xl py-5 text-base focus:border-[#f4e31e] focus:ring-4 focus:ring-[rgba(244,227,30,0.2)]"
               />
             </div>
             
             <Button 
               type="submit" 
-              className="w-full bg-emerald-600 hover:bg-emerald-700"
+              className="w-full bg-[#f4e31e] text-[#1a3d2e] rounded-full py-5 font-semibold text-lg shadow-[0_4px_16px_rgba(244,227,30,0.3)] hover:scale-102 hover:shadow-[0_6px_24px_rgba(244,227,30,0.4)] hover:bg-[#ffd700] transition-all duration-300"
               disabled={loading}
             >
               {loading ? "Создание аккаунта..." : "Создать аккаунт"}
