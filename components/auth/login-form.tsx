@@ -48,11 +48,12 @@ function LoginFormContent({}) {
     try {
       // Login using the AuthContext
       console.log("LoginForm: Attempting login with email:", email);
-      await login(email, password);
+      const loggedInUser = await login(email, password);
       console.log("LoginForm: Login successful");
       
-      // Use the user data from context to check role
-      console.log("LoginForm: Using context user data, isAdmin:", user?.role === 'admin');
+      // Use the user data returned by login to check role
+      const isAdmin = loggedInUser?.role === 'admin';
+      console.log("LoginForm: Logged in user data, isAdmin:", isAdmin);
       
       // Check if there's a return URL
       const returnUrl = searchParams.get('return');
@@ -62,23 +63,17 @@ function LoginFormContent({}) {
       if (returnUrl && returnUrl === '/donate') {
         // Redirect back to donation page
         console.log("LoginForm: Redirecting back to donation page");
-        // Add a small delay to ensure auth state is updated
-        setTimeout(() => {
-          router.push("/donate");
-        }, 100);
+        router.push("/donate");
       } else if (returnUrl && returnUrl === '/donate' && step === 'complete') {
         // Check if there's pending donation data
         const pendingDonation = localStorage.getItem('pendingDonation');
         if (pendingDonation) {
           // Redirect back to donation page to complete the process
           console.log("LoginForm: Redirecting to complete donation");
-          // Add a small delay to ensure auth state is updated
-          setTimeout(() => {
-            router.push("/donate?step=complete");
-          }, 100);
+          router.push("/donate?step=complete");
         } else {
           // No pending donation, redirect based on user role
-          if (user?.role === 'admin') {
+          if (isAdmin) {
             console.log("LoginForm: Redirecting admin to /admin");
             router.push("/admin");
           } else {
@@ -89,20 +84,15 @@ function LoginFormContent({}) {
       } else if (isGuestDonation) {
         // For guest donations, redirect to cabinet to show donation history
         console.log("LoginForm: Redirecting guest donation to /cabinet");
-        setTimeout(() => {
-          router.push("/cabinet?view=history");
-        }, 300);
+        router.push("/cabinet?view=history");
       } else {
         // Redirect based on user role
         console.log("LoginForm: Redirecting based on user role");
-        // Add a longer delay to ensure auth state is fully updated
-        setTimeout(() => {
-          if (user?.role === 'admin') {
-            router.push("/admin");
-          } else {
-            router.push("/cabinet");
-          }
-        }, 300);
+        if (isAdmin) {
+          router.push("/admin");
+        } else {
+          router.push("/cabinet");
+        }
       }
       
       console.log("LoginForm: Redirect initiated");

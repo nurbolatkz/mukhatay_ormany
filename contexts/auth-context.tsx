@@ -85,13 +85,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.log("AuthContext: Attempting login with email:", email);
       await apiService.login(email, password);
       console.log("AuthContext: Login successful, fetching user profile");
-      await fetchUserProfile();
-      console.log("AuthContext: User profile fetched successfully");
-      // Small delay to ensure state is fully propagated
-      await new Promise(resolve => setTimeout(resolve, 100));
+      const userData = await apiService.getUserProfile();
+      console.log("AuthContext: User profile received:", userData);
+      setUser(userData);
+      setIsAuthenticated(true);
+      console.log("AuthContext: Authentication state set to true");
       console.log("AuthContext: Login process completed");
+      return userData;
     } catch (error) {
       console.error("AuthContext: Login error:", error);
+      // Token might be invalid, clear it
+      apiService.logout();
+      setUser(null);
+      setIsAuthenticated(false);
       throw error;
     }
   };
