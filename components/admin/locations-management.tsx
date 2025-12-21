@@ -495,19 +495,6 @@ export function LocationsManagement() {
           </CardContent>
         </Card>
       </div>
-          <DialogTrigger asChild>
-            <Button className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full" onClick={openCreateDialog}>
-              <Plus className="h-4 w-4 mr-2" />
-              Добавить локацию
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-lg w-[90vw] max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>
-                {editingLocation ? "Редактировать локацию" : "Добавить новую локацию"}
-              </DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="name">Название</Label>
@@ -637,8 +624,6 @@ export function LocationsManagement() {
             </div>
           </DialogContent>
         </Dialog>
-      </div>
-      </div>
 
       {loading ? (
         <div className="p-8 text-center">
@@ -718,7 +703,7 @@ export function LocationsManagement() {
             </Card>
           ))}
         </div>
-      )}
+      )
     </div>
   )
 }
