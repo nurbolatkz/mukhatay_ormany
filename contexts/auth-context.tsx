@@ -21,6 +21,7 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   loading: boolean;
+  isAdmin: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   register: (userData: { full_name: string; email: string; password: string; phone: string }) => Promise<void>;
@@ -110,10 +111,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const isAdmin = user ? user.role === 'admin' : false;
+  
   const value = {
     user,
     isAuthenticated,
     loading,
+    isAdmin,
     login,
     logout,
     register
@@ -133,4 +137,9 @@ export function useAuth() {
     throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
+}
+
+export function useAdmin() {
+  const { isAdmin } = useAuth();
+  return isAdmin;
 }

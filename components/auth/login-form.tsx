@@ -51,10 +51,8 @@ function LoginFormContent({}) {
       await login(email, password);
       console.log("LoginForm: Login successful");
       
-      // Get user profile directly from API to check role
-      const userProfile = await apiService.getUserProfile();
-      const isAdmin = userProfile && userProfile.role === 'admin';
-      console.log("LoginForm: User profile fetched, isAdmin:", isAdmin);
+      // Use the user data from context to check role
+      console.log("LoginForm: Using context user data, isAdmin:", user?.role === 'admin');
       
       // Check if there's a return URL
       const returnUrl = searchParams.get('return');
@@ -80,7 +78,7 @@ function LoginFormContent({}) {
           }, 100);
         } else {
           // No pending donation, redirect based on user role
-          if (isAdmin) {
+          if (user?.role === 'admin') {
             console.log("LoginForm: Redirecting admin to /admin");
             router.push("/admin");
           } else {
@@ -99,7 +97,7 @@ function LoginFormContent({}) {
         console.log("LoginForm: Redirecting based on user role");
         // Add a longer delay to ensure auth state is fully updated
         setTimeout(() => {
-          if (isAdmin) {
+          if (user?.role === 'admin') {
             router.push("/admin");
           } else {
             router.push("/cabinet");

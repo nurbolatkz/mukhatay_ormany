@@ -5,10 +5,11 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useAuth } from "@/contexts/auth-context";
+import { useAuth, useAdmin } from "@/contexts/auth-context";
 
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, user, loading } = useAuth();
+  const isAdmin = useAdmin();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [redirecting, setRedirecting] = useState(false);

@@ -9,6 +9,7 @@ import { LocationsManagement } from "@/components/admin/locations-management"
 import { ContentManagement } from "@/components/admin/content-management"
 import { CertificatesManagement } from "@/components/admin/certificates-management"
 import { ReportsAnalytics } from "@/components/admin/reports-analytics"
+import { AdminProtectedRoute } from "@/components/admin/admin-protected-route"
 
 export type AdminView =
   | "dashboard"
@@ -24,14 +25,16 @@ export default function AdminPage() {
   const [currentView, setCurrentView] = useState<AdminView>("dashboard")
 
   return (
-    <AdminLayout currentView={currentView} onViewChange={setCurrentView}>
-      {currentView === "dashboard" && <AdminDashboard onNavigate={setCurrentView} />}
-      {currentView === "donations" && <DonationsManagement />}
-      {currentView === "users" && <UsersManagement />}
-      {currentView === "locations" && <LocationsManagement />}
-      {currentView === "content" && <ContentManagement />}
-      {currentView === "certificates" && <CertificatesManagement />}
-      {currentView === "reports" && <ReportsAnalytics />}
-    </AdminLayout>
+    <AdminProtectedRoute>
+      <AdminLayout currentView={currentView} onViewChange={setCurrentView}>
+        {currentView === "dashboard" && <AdminDashboard onNavigate={setCurrentView} />}
+        {currentView === "donations" && <DonationsManagement />}
+        {currentView === "users" && <UsersManagement />}
+        {currentView === "locations" && <LocationsManagement />}
+        {currentView === "content" && <ContentManagement />}
+        {currentView === "certificates" && <CertificatesManagement />}
+        {currentView === "reports" && <ReportsAnalytics />}
+      </AdminLayout>
+    </AdminProtectedRoute>
   )
 }
