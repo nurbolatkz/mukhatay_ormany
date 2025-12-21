@@ -338,173 +338,6 @@ export function LocationsManagement() {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="status">Статус</Label>
-                  <Select value={formData.status} onValueChange={(value) => setFormData({...formData, status: value})}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="active">Активна</SelectItem>
-                      <SelectItem value="inactive">Неактивна</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              
-              <div>
-                <Label htmlFor="description">Описание</Label>
-                <Textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) => setFormData({...formData, description: e.target.value})}
-                  rows={3}
-                />
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <Label htmlFor="area_hectares">Площадь (га)</Label>
-                  <Input
-                    id="area_hectares"
-                    type="number"
-                    value={formData.area_hectares}
-                    onChange={(e) => setFormData({...formData, area_hectares: e.target.value})}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="capacity_trees">Вместимость (деревья)</Label>
-                  <Input
-                    id="capacity_trees"
-                    type="number"
-                    value={formData.capacity_trees}
-                    onChange={(e) => setFormData({...formData, capacity_trees: e.target.value})}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="planted_trees">Посажено деревьев</Label>
-                  <Input
-                    id="planted_trees"
-                    type="number"
-                    value={formData.planted_trees}
-                    onChange={(e) => setFormData({...formData, planted_trees: e.target.value})}
-                  />
-                </div>
-              </div>
-              
-              <div>
-                <Label htmlFor="coordinates">Координаты</Label>
-                <Input
-                  id="coordinates"
-                  value={formData.coordinates}
-                  onChange={(e) => setFormData({...formData, coordinates: e.target.value})}
-                />
-              </div>
-              
-              <div>
-                <Label>Изображение</Label>
-                <div className="space-y-4">
-                  {/* Image Preview */}
-                  {(imageUpload.previewUrl || formData.image_url) && (
-                    <div className="relative">
-                      <img
-                        src={imageUpload.previewUrl || formData.image_url}
-                        alt="Preview"
-                        className="w-full h-48 object-cover rounded-md border"
-                      />
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="sm"
-                        className="absolute top-2 right-2"
-                        onClick={handleRemoveImage}
-                      >
-                        Удалить
-                      </Button>
-                    </div>
-                  )}
-                  
-                  {/* File Upload */}
-                  <div className="space-y-2">
-                    <div>
-                      <Input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        className="w-full"
-                      />
-                    </div>
-                    <div className="text-center text-sm text-muted-foreground">или</div>
-                    <div>
-                      <Input
-                        placeholder="Вставить URL изображения"
-                        value={formData.image_url}
-                        onChange={(e) => setFormData({...formData, image_url: e.target.value})}
-                        className="w-full"
-                      />
-                    </div>
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    Поддерживаются форматы JPG, PNG, GIF. Максимальный размер 5MB.
-                  </p>
-                </div>
-              </div>
-              
-              <div className="flex justify-end gap-2">
-                <Button variant="outline" className="rounded-full" onClick={() => setIsDialogOpen(false)}>
-                  Отмена
-                </Button>
-                <Button className="rounded-full" onClick={handleSubmit}>
-                  {editingLocation ? "Сохранить" : "Создать"}
-                </Button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-      </div>
-      
-      {/* Stats Summary */}
-      <div className="grid md:grid-cols-4 gap-4">
-        <Card className="border-2 rounded-2xl">
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-emerald-600">{locations.length}</div>
-            <p className="text-sm text-muted-foreground">Всего локаций</p>
-          </CardContent>
-        </Card>
-        <Card className="border-2 rounded-2xl">
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-emerald-600">
-              {locations.filter(loc => loc.status === 'active').length}
-            </div>
-            <p className="text-sm text-muted-foreground">Активных</p>
-          </CardContent>
-        </Card>
-        <Card className="border-2 rounded-2xl">
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-orange-600">
-              {locations.reduce((sum, loc) => sum + loc.planted_trees, 0).toLocaleString()}
-            </div>
-            <p className="text-sm text-muted-foreground">Посажено деревьев</p>
-          </CardContent>
-        </Card>
-        <Card className="border-2 rounded-2xl">
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-emerald-600">
-              {locations.reduce((sum, loc) => sum + loc.area_hectares, 0).toLocaleString()} га
-            </div>
-            <p className="text-sm text-muted-foreground">Общая площадь</p>
-          </CardContent>
-        </Card>
-      </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="name">Название</Label>
-                  <Input
-                    id="name"
-                    value={formData.name}
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  />
-                </div>
-                <div>
                   <Label htmlFor="area_hectares">Площадь (га)</Label>
                   <Input
                     id="area_hectares"
@@ -624,7 +457,41 @@ export function LocationsManagement() {
             </div>
           </DialogContent>
         </Dialog>
-
+      </div>
+      
+      {/* Stats Summary */}
+      <div className="grid md:grid-cols-4 gap-4">
+        <Card className="border-2 rounded-2xl">
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold text-emerald-600">{locations.length}</div>
+            <p className="text-sm text-muted-foreground">Всего локаций</p>
+          </CardContent>
+        </Card>
+        <Card className="border-2 rounded-2xl">
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold text-emerald-600">
+              {locations.filter(loc => loc.status === 'active').length}
+            </div>
+            <p className="text-sm text-muted-foreground">Активных</p>
+          </CardContent>
+        </Card>
+        <Card className="border-2 rounded-2xl">
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold text-orange-600">
+              {locations.reduce((sum, loc) => sum + loc.planted_trees, 0).toLocaleString()}
+            </div>
+            <p className="text-sm text-muted-foreground">Посажено деревьев</p>
+          </CardContent>
+        </Card>
+        <Card className="border-2 rounded-2xl">
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold text-emerald-600">
+              {locations.reduce((sum, loc) => sum + loc.area_hectares, 0).toLocaleString()} га
+            </div>
+            <p className="text-sm text-muted-foreground">Общая площадь</p>
+          </CardContent>
+        </Card>
+      </div>
       {loading ? (
         <div className="p-8 text-center">
           <p>Загрузка локаций...</p>
@@ -703,7 +570,7 @@ export function LocationsManagement() {
             </Card>
           ))}
         </div>
-      )
+      )}
     </div>
   )
 }
