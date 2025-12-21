@@ -181,18 +181,3 @@ export function DashboardOverview({ onNavigate }: DashboardOverviewProps) {
     </div>
   )
 }
-              <p className="text-sm text-[#6b7280] dark:text-white/70 mt-1">CO₂ поглощено за год</p>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-[#1a3d2e] dark:text-white">38 м²</div>
-              <p className="text-sm text-[#6b7280] dark:text-white/70 mt-1">Восстановлено леса</p>
-            </div>
-          </div>
-          <p className="text-sm text-center text-[#6b7280] dark:text-white/70">
-            Благодаря вашему вкладу мы восстановили экосистему на площади более 38 квадратных метров
-          </p>
-        </CardContent>
-      </Card>
-    </div>
-  )
-}
