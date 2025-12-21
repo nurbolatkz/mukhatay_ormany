@@ -55,7 +55,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
 
       {/* Stats Grid */}
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="border-2 hover:shadow-lg transition-shadow">
+        <Card className="border-2 hover:shadow-lg transition-shadow rounded-2xl">
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-2">
               <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
@@ -72,7 +72,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
           </CardContent>
         </Card>
 
-        <Card className="border-2 hover:shadow-lg transition-shadow">
+        <Card className="border-2 hover:shadow-lg transition-shadow rounded-2xl">
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-2">
               <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
@@ -89,7 +89,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
           </CardContent>
         </Card>
 
-        <Card className="border-2 hover:shadow-lg transition-shadow">
+        <Card className="border-2 hover:shadow-lg transition-shadow rounded-2xl">
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-2">
               <div className="w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
@@ -106,7 +106,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
           </CardContent>
         </Card>
 
-        <Card className="border-2 hover:shadow-lg transition-shadow">
+        <Card className="border-2 hover:shadow-lg transition-shadow rounded-2xl">
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-2">
               <div className="w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
@@ -126,7 +126,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
 
       {/* Charts */}
       <div className="grid lg:grid-cols-2 gap-6">
-        <Card className="border-2">
+        <Card className="border-2 rounded-2xl">
           <CardHeader>
             <CardTitle>Динамика пожертвований</CardTitle>
           </CardHeader>
@@ -144,7 +144,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
           </CardContent>
         </Card>
 
-        <Card className="border-2">
+        <Card className="border-2 rounded-2xl">
           <CardHeader>
             <CardTitle>Деревья по месяцам</CardTitle>
           </CardHeader>
@@ -165,7 +165,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
 
       {/* Recent Activity & Location Distribution */}
       <div className="grid lg:grid-cols-3 gap-6">
-        <Card className="border-2 lg:col-span-2">
+        <Card className="border-2 lg:col-span-2 rounded-2xl">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Последние пожертвования</CardTitle>
             <Button variant="ghost" size="sm" onClick={() => onNavigate("donations")}>
@@ -201,7 +201,7 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
           </CardContent>
         </Card>
 
-        <Card className="border-2">
+        <Card className="border-2 rounded-2xl">
           <CardHeader>
             <CardTitle>Распределение по локациям</CardTitle>
           </CardHeader>

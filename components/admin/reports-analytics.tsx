@@ -71,7 +71,7 @@ export function ReportsAnalytics() {
 
       {/* Key Metrics */}
       <div className="grid md:grid-cols-4 gap-4">
-        <Card className="border-2">
+        <Card className="border-2 rounded-2xl">
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-muted-foreground">Общий доход</span>
@@ -84,7 +84,7 @@ export function ReportsAnalytics() {
           </CardContent>
         </Card>
 
-        <Card className="border-2">
+        <Card className="border-2 rounded-2xl">
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-muted-foreground">Средний чек</span>
@@ -97,7 +97,7 @@ export function ReportsAnalytics() {
           </CardContent>
         </Card>
 
-        <Card className="border-2">
+        <Card className="border-2 rounded-2xl">
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-muted-foreground">Выживаемость</span>
@@ -110,7 +110,7 @@ export function ReportsAnalytics() {
           </CardContent>
         </Card>
 
-        <Card className="border-2">
+        <Card className="border-2 rounded-2xl">
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-muted-foreground">Конверсия</span>
@@ -125,7 +125,7 @@ export function ReportsAnalytics() {
       </div>
 
       {/* Revenue Chart */}
-      <Card className="border-2">
+      <Card className="border-2 rounded-2xl">
         <CardHeader>
           <CardTitle>Доход и целевые показатели</CardTitle>
         </CardHeader>
@@ -146,7 +146,7 @@ export function ReportsAnalytics() {
 
       {/* Donor Types & Trees Growth */}
       <div className="grid lg:grid-cols-2 gap-6">
-        <Card className="border-2">
+        <Card className="border-2 rounded-2xl">
           <CardHeader>
             <CardTitle>Типы доноров</CardTitle>
           </CardHeader>
@@ -169,7 +169,7 @@ export function ReportsAnalytics() {
           </CardContent>
         </Card>
 
-        <Card className="border-2">
+        <Card className="border-2 rounded-2xl">
           <CardHeader>
             <CardTitle>Посадка и выживаемость деревьев</CardTitle>
           </CardHeader>

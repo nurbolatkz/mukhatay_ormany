@@ -57,19 +57,19 @@ export function CertificatesManagement() {
 
       {/* Stats */}
       <div className="grid md:grid-cols-3 gap-4">
-        <Card className="border-2">
+        <Card className="border-2 rounded-2xl">
           <CardContent className="p-4">
             <div className="text-2xl font-bold text-emerald-600">480</div>
             <p className="text-sm text-muted-foreground">Всего сертификатов</p>
           </CardContent>
         </Card>
-        <Card className="border-2">
+        <Card className="border-2 rounded-2xl">
           <CardContent className="p-4">
             <div className="text-2xl font-bold text-blue-600">12</div>
             <p className="text-sm text-muted-foreground">Ожидают отправки</p>
           </CardContent>
         </Card>
-        <Card className="border-2">
+        <Card className="border-2 rounded-2xl">
           <CardContent className="p-4">
             <div className="text-2xl font-bold text-emerald-600">468</div>
             <p className="text-sm text-muted-foreground">Отправлено</p>
@@ -78,7 +78,7 @@ export function CertificatesManagement() {
       </div>
 
       {/* Certificates Table */}
-      <Card className="border-2">
+      <Card className="border-2 rounded-2xl">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <Table>

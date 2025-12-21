@@ -227,7 +227,7 @@ export function UsersManagement() {
           <p className="text-muted-foreground">Просмотр и управление пользователями платформы</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline">
+          <Button variant="outline" className="rounded-full">
             <Download className="h-4 w-4 mr-2" />
             Экспорт
           </Button>
@@ -235,6 +235,7 @@ export function UsersManagement() {
             <DialogTrigger asChild>
               <Button 
                 type="button"
+                className="rounded-full"
                 onClick={(e) => {
                   e.preventDefault()
                   e.stopPropagation()
@@ -324,13 +325,13 @@ export function UsersManagement() {
 
       {/* Stats */}
       <div className="grid md:grid-cols-4 gap-4">
-        <Card className="border-2">
+        <Card className="border-2 rounded-2xl">
           <CardContent className="p-4">
             <div className="text-2xl font-bold text-emerald-600">{users.length}</div>
             <p className="text-sm text-muted-foreground">Всего пользователей</p>
           </CardContent>
         </Card>
-        <Card className="border-2">
+        <Card className="border-2 rounded-2xl">
           <CardContent className="p-4">
             <div className="text-2xl font-bold text-blue-600">
               {users.filter(u => u.donations_count > 0).length}
@@ -338,7 +339,7 @@ export function UsersManagement() {
             <p className="text-sm text-muted-foreground">Активных доноров</p>
           </CardContent>
         </Card>
-        <Card className="border-2">
+        <Card className="border-2 rounded-2xl">
           <CardContent className="p-4">
             <div className="text-2xl font-bold text-purple-600">
               {users.filter(u => u.total_amount > 500000).length}
@@ -346,7 +347,7 @@ export function UsersManagement() {
             <p className="text-sm text-muted-foreground">Корпоративных</p>
           </CardContent>
         </Card>
-        <Card className="border-2">
+        <Card className="border-2 rounded-2xl">
           <CardContent className="p-4">
             <div className="text-2xl font-bold text-orange-600">
               {users.filter(u => new Date(u.joined_date) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)).length}

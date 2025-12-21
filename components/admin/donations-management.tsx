@@ -281,7 +281,7 @@ export function DonationsManagement() {
           <h1 className="text-3xl font-bold mb-2">Управление пожертвованиями</h1>
           <p className="text-muted-foreground">Просмотр и управление всеми пожертвованиями</p>
         </div>
-        <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">
+        <Button className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full">
           <Download className="h-4 w-4 mr-2" />
           Экспорт
         </Button>
@@ -289,25 +289,25 @@ export function DonationsManagement() {
 
       {/* Stats Summary */}
       <div className="grid md:grid-cols-4 gap-4">
-        <Card className="border-2">
+        <Card className="border-2 rounded-2xl">
           <CardContent className="p-4">
             <div className="text-2xl font-bold text-emerald-600">{summary.total}</div>
             <p className="text-sm text-muted-foreground">Всего пожертвований</p>
           </CardContent>
         </Card>
-        <Card className="border-2">
+        <Card className="border-2 rounded-2xl">
           <CardContent className="p-4">
             <div className="text-2xl font-bold text-yellow-600">{summary.processing}</div>
             <p className="text-sm text-muted-foreground">В процессе</p>
           </CardContent>
         </Card>
-        <Card className="border-2">
+        <Card className="border-2 rounded-2xl">
           <CardContent className="p-4">
             <div className="text-2xl font-bold text-orange-600">{summary.pending}</div>
             <p className="text-sm text-muted-foreground">Ожидают</p>
           </CardContent>
         </Card>
-        <Card className="border-2">
+        <Card className="border-2 rounded-2xl">
           <CardContent className="p-4">
             <div className="text-2xl font-bold text-emerald-600">{summary.revenue.toLocaleString()} ₸</div>
             <p className="text-sm text-muted-foreground">Общий доход</p>
@@ -316,7 +316,7 @@ export function DonationsManagement() {
       </div>
 
       {/* Filters */}
-      <Card className="border-2">
+      <Card className="border-2 rounded-2xl">
         <CardContent className="p-4">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
@@ -756,7 +756,7 @@ export function DonationsManagement() {
                 </Select>
               </div>
               <div className="flex justify-end gap-2">
-                <Button variant="outline" onClick={() => setEditingDonation(null)}>
+                <Button variant="outline" onClick={() => setEditingDonation(null)} className="rounded-full">
                   Отмена
                 </Button>
                 <Button onClick={updateDonationStatus}>Сохранить</Button>
