@@ -19,10 +19,20 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     console.log("ProtectedRoute: State update - isAuthenticated:", isAuthenticated, "loading:", loading);
     
-    // If user is not authenticated and not loading, redirect to login page
+    // If user is not authenticated and not loading, redirect appropriately
     if (!isAuthenticated && !loading && !redirecting) {
-      console.log("ProtectedRoute: Redirecting to login");
+      console.log("ProtectedRoute: Redirecting");
       setRedirecting(true);
+      
+      // Check if user just logged out
+      const justLoggedOut = localStorage.getItem('justLoggedOut');
+      if (justLoggedOut === 'true') {
+        // Clear the flag
+        localStorage.removeItem('justLoggedOut');
+        // Redirect to main page after logout
+        router.push("/");
+        return;
+      }
       
       // Check if we're on the donate page
       const isDonatePage = window.location.pathname.includes('/donate');

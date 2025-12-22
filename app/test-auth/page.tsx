@@ -40,8 +40,7 @@ export default function TestAuthPage() {
   };
 
   const handleLogout = async () => {
-    await logout();
-    router.push("/");
+    await logout(true);
   };
 
   return (

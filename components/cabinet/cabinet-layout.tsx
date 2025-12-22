@@ -45,8 +45,7 @@ export function CabinetLayout({ children, currentView, onViewChange }: CabinetLa
     }
     
     console.log('CabinetLayout: Executing logout');
-    await logout()
-    router.push("/")
+    await logout(true)
   }
 
   return (

@@ -83,6 +83,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string) => {
     try {
       console.log("AuthContext: Attempting login with email:", email);
+      // Clear any logout flag when logging in
+      localStorage.removeItem('justLoggedOut');
       await apiService.login(email, password);
       console.log("AuthContext: Login successful, fetching user profile");
       const userData = await apiService.getUserProfile();
@@ -102,7 +104,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const logout = async () => {
+  const logout = async (redirectToMain: boolean = true) => {
     console.log('AuthContext: Logout called');
     try {
       await apiService.logout();
@@ -110,16 +112,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.error('AuthContext: Error during logout:', error);
       // Even if logout fails, we still want to clear local state
     } finally {
+      // Set a flag to indicate user just logged out
+      localStorage.setItem('justLoggedOut', 'true');
+      
       // Always clear local authentication state
       setUser(null);
       setIsAuthenticated(false);
       console.log('AuthContext: User logged out and state cleared');
+      
+      // If redirectToMain is true, redirect to main page
+      if (redirectToMain && typeof window !== 'undefined') {
+        window.location.href = '/';
+      }
     }
   };
 
   const register = async (userData: { full_name: string; email: string; password: string; phone: string }) => {
     try {
+      // Clear any logout flag when registering
+      localStorage.removeItem('justLoggedOut');
       await apiService.register(userData);
+      // After registration, automatically log in the user
+      await login(userData.email, userData.password);
     } catch (error) {
       throw error;
     }

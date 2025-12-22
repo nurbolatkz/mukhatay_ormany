@@ -44,8 +44,7 @@ export function AdminLayout({ children, currentView, onViewChange }: AdminLayout
   const router = useRouter()
 
   const handleLogout = async () => {
-    await logout()
-    router.push("/")
+    await logout(true)
   }
 
   return (
