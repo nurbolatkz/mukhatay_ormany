@@ -441,8 +441,16 @@ def admin_get_donations(current_user):
         location = Location.query.get(donation.location_id)
         
         # Handle case where user or location might not exist
-        donor_name = user.full_name if user else 'Unknown User'
-        email = user.email if user else 'Unknown Email'
+        # For guest donations, use donor_info from the donation itself
+        if user:
+            donor_name = user.full_name
+            email = user.email
+        elif donation.email:  # Guest donation with email
+            donor_name = donation.donor_info.get('full_name', 'Guest Donor') if donation.donor_info else 'Guest Donor'
+            email = donation.email
+        else:  # Fallback for any other case
+            donor_name = 'Unknown User'
+            email = 'Unknown Email'
         location_name = location.name if location else 'Unknown Location'
         
         donation_data = {
