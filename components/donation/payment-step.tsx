@@ -177,7 +177,7 @@ export function PaymentStep({ donationData, onBack }: PaymentStepProps) {
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-12">
         <div className="lg:col-span-7">
           <h1 className="mb-2 text-3xl font-extrabold text-foreground sm:text-4xl">Оплата участия</h1>
-          <p className="mb-8 text-foreground/60">Завершите перевод через WhatsApp.</p>
+          <p className="mb-8 text-foreground/60">Завершите перевод.</p>
           
           <div className="space-y-6">
             <div className="relative overflow-hidden rounded-2xl border-2 border-primary bg-background/60 backdrop-blur-sm p-6 shadow-lg transition-all">
@@ -186,7 +186,7 @@ export function PaymentStep({ donationData, onBack }: PaymentStepProps) {
                   <div className="flex h-6 w-6 items-center justify-center rounded-full border-[6px] border-primary bg-transparent"></div>
                   <span className="text-xl font-bold text-foreground">Оплата через WhatsApp</span>
                 </div>
-                <span className="rounded-full bg-[#25D366]/20 border border-[#25D366]/50 px-3 py-1 text-xs font-bold text-[#25D366]">ВРЕМЕННО</span>
+                <span className="rounded-full bg-transparent border border-transparent px-3 py-1 text-xs font-bold text-transparent">ВРЕМЕННО</span>
               </div>
               
               <div className="space-y-4">
@@ -233,7 +233,7 @@ export function PaymentStep({ donationData, onBack }: PaymentStepProps) {
               <span className="material-symbols-outlined text-3xl text-primary/80">info</span>
               <div className="text-center sm:text-left text-xs leading-relaxed">
                 <p className="font-bold uppercase tracking-wider text-foreground/70">Временное решение</p>
-                <p>Это временное решение до получения API ключа для платежной системы. Мы свяжемся с вами в течение 24 часов.</p>
+                <p> </p>
               </div>
             </div>
           </div>
