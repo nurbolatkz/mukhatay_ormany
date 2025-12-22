@@ -197,6 +197,25 @@ class ApiService {
   }
 
   /**
+   * Get all packages
+   * @returns {Promise<Array>} List of packages
+   */
+  async getPackages() {
+    try {
+      const response = await this.request('/api/packages', {
+        method: 'GET',
+      });
+      return response;
+    } catch (error) {
+      // In production, we don't log errors to console to prevent information leakage
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Error fetching packages:', error);
+      }
+      throw error;
+    }
+  }
+
+  /**
    * Create a new donation
    * @param {Object} donationData - Donation data
    * @param {boolean} isGuest - Whether this is a guest donation

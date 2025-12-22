@@ -38,7 +38,7 @@ with app.app_context():
             id="pkg_single",
             name="1 дерево",
             tree_count=1,
-            price=2500,
+            price=999,
             description="Идеально для начала",
             popular=False
         ),
@@ -46,9 +46,25 @@ with app.app_context():
             id="pkg_small",
             name="10 деревьев",
             tree_count=10,
-            price=22500,
+            price=9990,
             description="Небольшой пакет",
             popular=True
+        ),
+        Package(
+            id="pkg_medium",
+            name="50 деревьев",
+            tree_count=50,
+            price=49950,
+            description="Средний пакет",
+            popular=False
+        ),
+        Package(
+            id="pkg_large",
+            name="100 деревьев",
+            tree_count=100,
+            price=99900,
+            description="Крупный пакет",
+            popular=False
         )
     ]
 

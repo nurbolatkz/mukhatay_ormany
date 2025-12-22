@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -18,11 +18,42 @@ export function PaymentStep({ donationData, onBack }: PaymentStepProps) {
   const router = useRouter()
   const { user } = useAuth()
   const [isProcessing, setIsProcessing] = useState(false)
+  const [locationData, setLocationData] = useState<{name: string, coordinates: string} | null>(null)
 
   // Use the actual location ID from the donation data
   const locationId = donationData.location
-  // Get location name from the location ID
-  const locationName = locationId === "loc_nursery_001" ? "Forest of Central Asia" : "Mukhatay Ormany"
+
+  // Fetch location data
+  useEffect(() => {
+    const fetchLocationData = async () => {
+      if (locationId) {
+        try {
+          // Fetch all locations and find the selected one
+          const locations = await apiService.getLocations()
+          const selectedLocation = locations.find((loc: any) => loc.id === locationId)
+          if (selectedLocation) {
+            setLocationData({
+              name: selectedLocation.name,
+              coordinates: selectedLocation.coordinates
+            })
+          }
+        } catch (error) {
+          console.error('Error fetching location data:', error)
+          // Fallback to hardcoded names if API fails
+          const locationName = locationId === "loc_nursery_001" ? "Forest of Central Asia" : "Mukhatay Ormany"
+          setLocationData({
+            name: locationName,
+            coordinates: "Сектор B-14, Алматинская область"
+          })
+        }
+      }
+    }
+
+    fetchLocationData()
+  }, [locationId])
+
+  // Get location name for display
+  const locationName = locationData ? locationData.name : "Загрузка..."
 
   const handlePayment = async () => {
     setIsProcessing(true)
@@ -71,7 +102,8 @@ export function PaymentStep({ donationData, onBack }: PaymentStepProps) {
       localStorage.removeItem('pendingDonation')
       
       // Prepare WhatsApp message
-      const whatsappMessage = `New Tree Donation Request:%0AName: ${encodeURIComponent(donationData.donorInfo.fullName)}%0AEmail: ${encodeURIComponent(donationData.donorInfo.email)}%0APhone: ${encodeURIComponent(donationData.donorInfo.phone)}%0ATree Count: ${donationData.treeCount}%0ALocation: ${encodeURIComponent(locationName)}%0AAmount: ${donationData.amount} KZT`;
+      const locationInfo = locationData ? `${locationData.name} (${locationData.coordinates})` : locationName;
+      const whatsappMessage = `New Tree Donation Request:%0AName: ${encodeURIComponent(donationData.donorInfo.fullName)}%0AEmail: ${encodeURIComponent(donationData.donorInfo.email)}%0APhone: ${encodeURIComponent(donationData.donorInfo.phone)}%0ATree Count: ${donationData.treeCount}%0ALocation: ${encodeURIComponent(locationInfo)}%0AAmount: ${donationData.amount} KZT`;
       
       // Redirect to WhatsApp - responsive approach for both desktop and mobile
       const whatsappUrl = `https://wa.me/77029999849?text=${whatsappMessage}`;
@@ -290,7 +322,7 @@ export function PaymentStep({ donationData, onBack }: PaymentStepProps) {
                       <p className="font-bold text-foreground">{locationName}</p>
                     </div>
                   </div>
-                  <p className="mt-1 text-sm text-foreground/60">Сектор B-14, Алматинская область</p>
+                  <p className="mt-1 text-sm text-foreground/60">{locationData?.coordinates || "Сектор B-14, Алматинская область"}</p>
                 </div>
               </div>
               <div className="h-px w-full bg-gradient-to-r from-transparent via-foreground/20 to-transparent"></div>

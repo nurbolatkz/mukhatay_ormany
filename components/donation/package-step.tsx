@@ -34,41 +34,14 @@ export function PackageStep({ location, selectedPackage, onPackageSelect, onBack
   // Get location name from the location ID
   const locationName = location === "loc_nursery_001" ? "Forest of Central Asia" : "Mukhatay Ormany"
   
-  // Calculate price based on 2500₸ per tree (same as single tree package)
-  const customPrice = customTreeCount * 2500
+  // Calculate price based on 999₸ per tree
+  const customPrice = customTreeCount * 999
 
   useEffect(() => {
     const fetchPackages = async () => {
       try {
         setLoading(true)
-        // For now, we'll use hardcoded packages since there's no API endpoint for packages
-        // In a real implementation, this would be: const packagesData = await apiService.getPackages()
-        const packagesData = [
-          {
-            id: "small",
-            name: "10 деревьев",
-            tree_count: 10,
-            price: 22500,
-            description: "Небольшой пакет",
-            popular: true,
-          },
-          {
-            id: "medium",
-            name: "50 деревьев",
-            tree_count: 50,
-            price: 100000,
-            description: "Средний пакет",
-            popular: false,
-          },
-          {
-            id: "large",
-            name: "100 деревьев",
-            tree_count: 100,
-            price: 190000,
-            description: "Крупный пакет",
-            popular: false,
-          }
-        ]
+        const packagesData = await apiService.getPackages()
         setPackages(packagesData)
       } catch (err) {
         console.error('Error fetching packages:', err)
