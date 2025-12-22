@@ -37,7 +37,7 @@ services:
         condition: service_healthy
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.mukhatay-backend.rule=Host(`mukhatayormany.birqadam.kz`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.mukhatay-backend.rule=Host(`mukhatayormany.kz`) && PathPrefix(`/api`)"
       - "traefik.http.routers.mukhatay-backend.entrypoints=websecure"
       - "traefik.http.routers.mukhatay-backend.tls.certresolver=mytlschallenge"
       - "traefik.http.services.mukhatay-backend.loadbalancer.server.port=5000"
@@ -52,20 +52,20 @@ services:
     networks:
       - n8n-compose_web
     environment:
-      - NEXT_PUBLIC_API_URL=https://mukhatayormany.birqadam.kz
+      - NEXT_PUBLIC_API_URL=https://mukhatayormany.kz
       - NODE_ENV=production
       - PORT=3000
       - HOSTNAME=0.0.0.0
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.mukhatay-frontend.rule=Host(`mukhatayormany.birqadam.kz`) && !PathPrefix(`/api`)"
+      - "traefik.http.routers.mukhatay-frontend.rule=Host(`mukhatayormany.kz`) && !PathPrefix(`/api`)"
       - "traefik.http.routers.mukhatay-frontend.entrypoints=websecure"
       - "traefik.http.routers.mukhatay-frontend.tls.certresolver=mytlschallenge"
       - "traefik.http.services.mukhatay-frontend.loadbalancer.server.port=3000"
       - "traefik.http.routers.mukhatay-frontend.priority=5"
-      # CORS headers if needed
+      # CORS headers
       - "traefik.http.middlewares.mukhatay-cors.headers.accesscontrolallowmethods=GET,OPTIONS,PUT,POST,DELETE,PATCH"
-      - "traefik.http.middlewares.mukhatay-cors.headers.accesscontrolalloworiginlist=https://mukhatayormany.birqadam.kz"
+      - "traefik.http.middlewares.mukhatay-cors.headers.accesscontrolalloworiginlist=https://mukhatayormany.kz"
       - "traefik.http.middlewares.mukhatay-cors.headers.accesscontrolmaxage=100"
       - "traefik.http.middlewares.mukhatay-cors.headers.addvaryheader=true"
 
