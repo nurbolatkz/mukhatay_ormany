@@ -73,9 +73,19 @@ export function PaymentStep({ donationData, onBack }: PaymentStepProps) {
       // Prepare WhatsApp message
       const whatsappMessage = `New Tree Donation Request:%0AName: ${encodeURIComponent(donationData.donorInfo.fullName)}%0AEmail: ${encodeURIComponent(donationData.donorInfo.email)}%0APhone: ${encodeURIComponent(donationData.donorInfo.phone)}%0ATree Count: ${donationData.treeCount}%0ALocation: ${encodeURIComponent(locationName)}%0AAmount: ${donationData.amount} KZT`;
       
-      // Redirect to WhatsApp
+      // Redirect to WhatsApp - responsive approach for both desktop and mobile
       const whatsappUrl = `https://wa.me/77029999849?text=${whatsappMessage}`;
-      window.open(whatsappUrl, '_blank');
+      
+      // Detect mobile device
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      
+      if (isMobile) {
+        // On mobile, directly navigate to WhatsApp (opens in WhatsApp app if installed)
+        window.location.href = whatsappUrl;
+      } else {
+        // On desktop, open in new tab
+        window.open(whatsappUrl, '_blank');
+      }
       
       // Show confirmation message
       alert("Ваша заявка на пожертвование отправлена! Мы свяжемся с вами через WhatsApp для подтверждения оплаты. Спасибо за ваш вклад в восстановление лесов!")
