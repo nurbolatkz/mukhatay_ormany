@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { DonationSteps } from "@/components/donation/donation-steps"
 import { LocationStep } from "@/components/donation/location-step"
-import { PackageStep } from "@/components/donation/package-step"
+import { TreeCountStep } from "@/components/donation/tree-count-step"
 import { DonorInfoStep } from "@/components/donation/donor-info-step"
 import { PaymentStep } from "@/components/donation/payment-step"
 import { Button } from "@/components/ui/button"
@@ -16,7 +16,6 @@ export type Location = string
 
 export interface DonationData {
   location: Location | null
-  packageType: string
   treeCount: number
   amount: number
   donorInfo: {
@@ -29,7 +28,7 @@ export interface DonationData {
   }
 }
 
-const STEPS = ["Локация", "Пакет", "Информация", "Оплата"]
+const STEPS = ["Посадить дерево", "Количество деревьев", "Оплата"]
 
 // Separate component that uses useSearchParams
 function DonateContent({}) {
@@ -38,9 +37,8 @@ function DonateContent({}) {
   const [currentStep, setCurrentStep] = useState(0)
   const [donationData, setDonationData] = useState<DonationData>({
     location: null,
-    packageType: "",
-    treeCount: 0,
-    amount: 0,
+    treeCount: 1,
+    amount: 999,
     donorInfo: {
       fullName: "",
       email: "",
@@ -123,13 +121,14 @@ function DonateContent({}) {
           )}
 
           {currentStep === 1 && (
-            <PackageStep
+            <TreeCountStep
               location={donationData.location!}
-              selectedPackage={donationData.packageType}
-              onPackageSelect={(packageType, treeCount, amount) => {
-                updateDonationData({ packageType, treeCount, amount })
-                handleNext()
+              treeCount={donationData.treeCount}
+              amount={donationData.amount}
+              onTreeCountChange={(treeCount, amount) => {
+                updateDonationData({ treeCount, amount })
               }}
+              onNext={handleNext}
               onBack={handleBack}
             />
           )}

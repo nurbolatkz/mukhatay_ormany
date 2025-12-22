@@ -18,12 +18,30 @@ interface LocationData {
 interface LocationStepProps {
   selectedLocation: string | null
   onLocationSelect: (locationId: string) => void
+  autoProceed?: boolean
 }
 
-export function LocationStep({ selectedLocation, onLocationSelect }: LocationStepProps) {
+export function LocationStep({ selectedLocation, onLocationSelect, autoProceed = false }: LocationStepProps) {
   const [locations, setLocations] = useState<LocationData[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [locationSelected, setLocationSelected] = useState(false)
+
+  // Auto-proceed when a location is selected and autoProceed is enabled
+  useEffect(() => {
+    if (autoProceed && locationSelected && selectedLocation) {
+      // Small delay to ensure state is updated before proceeding
+      const timer = setTimeout(() => {
+        // Find the continue button and click it
+        const continueButton = document.querySelector('button span:contains("Продолжить")')?.closest('button');
+        if (continueButton) {
+          (continueButton as HTMLButtonElement).click();
+        }
+      }, 100);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [autoProceed, locationSelected, selectedLocation]);
 
   useEffect(() => {
     const fetchLocations = async () => {
@@ -82,7 +100,18 @@ export function LocationStep({ selectedLocation, onLocationSelect }: LocationSte
               name="location" 
               value={location.id}
               checked={selectedLocation === location.id}
-              onChange={() => onLocationSelect(location.id)}
+              onChange={() => {
+                onLocationSelect(location.id);
+                // If autoProceed is enabled, simulate clicking the continue button after a short delay
+                if (autoProceed) {
+                  setTimeout(() => {
+                    const continueButton = document.querySelector('button:contains("Продолжить")');
+                    if (continueButton) {
+                      (continueButton as HTMLButtonElement).click();
+                    }
+                  }, 100);
+                }
+              }}
               className="peer sr-only"
             />
             <div className={`relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card/20 p-6 backdrop-blur-md transition-all duration-300 peer-checked:border-primary peer-checked:bg-white/5 peer-checked:shadow-[0_0_30px_rgba(249,245,6,0.15)] hover:border-foreground/30 hover:-translate-y-1 hover:bg-card/30 ${selectedLocation === location.id ? 'border-primary bg-white/5 shadow-[0_0_30px_rgba(249,245,6,0.15)]' : ''}`}>
