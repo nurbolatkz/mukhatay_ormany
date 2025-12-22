@@ -4,9 +4,7 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
-import { Check, CreditCard, Smartphone, Building2 } from "lucide-react"
 import type { DonationData } from "@/app/donate/page"
 import apiService from "@/services/api"
 import { useAuth } from "@/contexts/auth-context"
@@ -19,7 +17,6 @@ interface PaymentStepProps {
 export function PaymentStep({ donationData, onBack }: PaymentStepProps) {
   const router = useRouter()
   const { user } = useAuth()
-  const [paymentMethod, setPaymentMethod] = useState<"kaspi" | "card" | "bank">("kaspi")
   const [isProcessing, setIsProcessing] = useState(false)
 
   // Use the actual location ID from the donation data
@@ -28,6 +25,74 @@ export function PaymentStep({ donationData, onBack }: PaymentStepProps) {
   const locationName = locationId === "loc_nursery_001" ? "Forest of Central Asia" : "Mukhatay Ormany"
 
   const handlePayment = async () => {
+    setIsProcessing(true)
+    
+    try {
+      // Create donation in backend with pending status
+      const donationPayload = {
+        location_id: locationId,
+        package_id: donationData.packageType,
+        tree_count: donationData.treeCount,
+        amount: donationData.amount,
+        donor_info: {
+          full_name: donationData.donorInfo.fullName,
+          email: donationData.donorInfo.email,
+          phone: donationData.donorInfo.phone,
+          company_name: donationData.donorInfo.companyName,
+          message: donationData.donorInfo.message,
+          subscribe_updates: donationData.donorInfo.subscribeUpdates
+        }
+      }
+      
+      console.log("[v0] Creating donation in backend:", donationPayload)
+      // Check if user is authenticated to determine if this is a guest donation
+      const isGuest = !user;
+      const createdDonation = await apiService.createDonation(donationPayload, isGuest)
+      console.log("[v0] Donation created:", createdDonation)
+      
+      // TEMPORARY: Redirect to WhatsApp instead of processing payment
+      // Save donation to localStorage with email for future linking
+      const donationRecord = {
+        id: createdDonation.id,
+        date: new Date().toLocaleDateString('ru-RU'),
+        location: locationName,
+        trees: donationData.treeCount,
+        amount: donationData.amount,
+        status: "В ожидании", // Pending status
+        statusColor: "yellow",
+        email: donationData.donorInfo.email // Store email for linking
+      }
+      
+      const userDonations = JSON.parse(localStorage.getItem('userDonations') || '[]')
+      userDonations.push(donationRecord)
+      localStorage.setItem('userDonations', JSON.stringify(userDonations))
+      
+      // Clear pending donation data
+      localStorage.removeItem('pendingDonation')
+      
+      // Prepare WhatsApp message
+      const whatsappMessage = `New Tree Donation Request:%0AName: ${encodeURIComponent(donationData.donorInfo.fullName)}%0AEmail: ${encodeURIComponent(donationData.donorInfo.email)}%0APhone: ${encodeURIComponent(donationData.donorInfo.phone)}%0ATree Count: ${donationData.treeCount}%0ALocation: ${encodeURIComponent(locationName)}%0AAmount: ${donationData.amount} KZT`;
+      
+      // Redirect to WhatsApp
+      const whatsappUrl = `https://wa.me/77029999849?text=${whatsappMessage}`;
+      window.open(whatsappUrl, '_blank');
+      
+      // Show confirmation message
+      alert("Ваша заявка на пожертвование отправлена! Мы свяжемся с вами через WhatsApp для подтверждения оплаты. Спасибо за ваш вклад в восстановление лесов!")
+      setIsProcessing(false)
+      
+      // Redirect to home page after WhatsApp redirect
+      router.push('/')
+    } catch (error) {
+      console.error("[v0] Error creating donation:", error)
+      alert("Произошла ошибка при создании заявки на пожертвование. Пожалуйста, попробуйте еще раз.")
+      setIsProcessing(false)
+    }
+  }
+  
+  // ORIGINAL PAYMENT CODE (COMMENTED OUT FOR TEMPORARY WHATSAPP FLOW)
+  /*
+  const handlePaymentOriginal = async () => {
     setIsProcessing(true)
     
     try {
@@ -97,6 +162,7 @@ export function PaymentStep({ donationData, onBack }: PaymentStepProps) {
       setIsProcessing(false)
     }
   }
+  */
 
   return (
     <div className="space-y-6">
@@ -111,181 +177,65 @@ export function PaymentStep({ donationData, onBack }: PaymentStepProps) {
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-12">
         <div className="lg:col-span-7">
           <h1 className="mb-2 text-3xl font-extrabold text-foreground sm:text-4xl">Оплата участия</h1>
-          <p className="mb-8 text-foreground/60">Выберите удобный способ оплаты для завершения перевода.</p>
+          <p className="mb-8 text-foreground/60">Завершите перевод через WhatsApp.</p>
           
-          <div className="space-y-4">
+          <div className="space-y-6">
             <div className="relative overflow-hidden rounded-2xl border-2 border-primary bg-background/60 backdrop-blur-sm p-6 shadow-lg transition-all">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                  <div className={`flex h-6 w-6 items-center justify-center rounded-full border-[6px] ${paymentMethod === 'kaspi' ? 'border-primary bg-transparent' : 'border-border bg-transparent'}`}></div>
-                  <span className="text-xl font-bold text-foreground">Kaspi QR</span>
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full border-[6px] border-primary bg-transparent"></div>
+                  <span className="text-xl font-bold text-foreground">Оплата через WhatsApp</span>
                 </div>
-                <span className="rounded-full bg-[#f14635]/20 border border-[#f14635]/50 px-3 py-1 text-xs font-bold text-[#f14635]">0% КОМИССИЯ</span>
+                <span className="rounded-full bg-[#25D366]/20 border border-[#25D366]/50 px-3 py-1 text-xs font-bold text-[#25D366]">ВРЕМЕННО</span>
               </div>
               
-              <Tabs value={paymentMethod} onValueChange={(value) => setPaymentMethod(value as any)}>
-                <TabsList className="grid w-full grid-cols-3 mb-6">
-                  <TabsTrigger value="kaspi" className="flex items-center justify-center gap-2">
-                    <Smartphone className="h-4 w-4" />
-                    Kaspi QR
-                  </TabsTrigger>
-                  <TabsTrigger value="card" className="flex items-center justify-center gap-2">
-                    <CreditCard className="h-4 w-4" />
-                    Карта
-                  </TabsTrigger>
-                  <TabsTrigger value="bank" className="flex items-center justify-center gap-2">
-                    <Building2 className="h-4 w-4" />
-                    Перевод
-                  </TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="kaspi" className="space-y-4 mt-6">
-                  <div className="flex flex-col sm:flex-row items-center gap-10 sm:gap-12">
-                    <div className="group relative flex h-72 w-72 shrink-0 items-center justify-center rounded-2xl bg-white p-6 shadow-[0_0_30px_rgba(255,255,255,0.1)] border-2 border-primary/10">
-                      <img 
-                        src="/Kaspi_QR_payment.jpg" 
-                        alt="Kaspi QR Payment" 
-                        className="h-full w-full object-contain"
-                      />
-                      <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-primary/10 opacity-0 transition-opacity group-hover:opacity-100">
-                        <div className="h-full w-0.5 bg-primary animate-[spin_2s_linear_infinite]"></div>
-                      </div>
-                    </div>
-                    <div className="flex flex-col gap-3 text-center sm:text-left">
-                      <h4 className="text-lg font-bold text-foreground">Сканируйте для оплаты</h4>
-                      <p className="text-sm leading-relaxed text-foreground/70">
-                        Откройте приложение <strong>Kaspi.kz</strong>, выберите сканер QR и наведите камеру на код.
-                      </p>
-                      <div className="mt-2 flex flex-wrap items-center justify-center sm:justify-start gap-3">
-                        <div className="flex items-center gap-1 rounded-md bg-white/5 px-2 py-1 text-xs text-primary">
-                          <span className="material-symbols-outlined !text-[16px]">verified_user</span>
-                          <span>Мгновенно</span>
-                        </div>
-                        <div className="flex items-center gap-1 rounded-md bg-white/5 px-2 py-1 text-xs text-primary">
-                          <span className="material-symbols-outlined !text-[16px]">eco</span>
-                          <span>Eco-friendly</span>
-                        </div>
-                      </div>
-                    </div>
+              <div className="space-y-4">
+                <div className="flex flex-col items-center text-center gap-4 py-4">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#25D366]/10 text-[#25D366] border border-[#25D366]/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 12.5c0 1.38-.56 2.63-1.46 3.54l-1.27 1.27c-.91.9-2.16 1.46-3.54 1.46-.97 0-1.94-.27-2.78-.8l-9.06-5.72c-.55-.35-.86-.96-.8-1.6-.06-.64.25-1.25.8-1.6l9.06-5.72c.84-.53 1.81-.8 2.78-.8 1.38 0 2.63.56 3.54 1.46l1.27 1.27c.9.91 1.46 2.16 1.46 3.54Z"/>
+                      <path d="m7 12 5.5 2.5M12.5 9.5 17 7"/>
+                    </svg>
                   </div>
-                </TabsContent>
-
-                <TabsContent value="card" className="space-y-4 mt-6">
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-foreground">Номер карты</label>
-                      <input
-                        type="text"
-                        placeholder="0000 0000 0000 0000"
-                        className="w-full px-3 py-2 border border-border rounded-md bg-background/5 text-foreground"
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-foreground">Срок действия</label>
-                        <input type="text" placeholder="MM/YY" className="w-full px-3 py-2 border border-border rounded-md bg-background/5 text-foreground" />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-foreground">CVV</label>
-                        <input type="text" placeholder="123" className="w-full px-3 py-2 border border-border rounded-md bg-background/5 text-foreground" />
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-2 text-sm text-foreground/60">
-                      <Check className="h-4 w-4 text-primary" />
-                      <span>Защищённое соединение SSL</span>
-                    </div>
+                  <div>
+                    <h4 className="text-lg font-bold text-foreground">Оплата через WhatsApp</h4>
+                    <p className="text-sm leading-relaxed text-foreground/70 mt-2">
+                      После подтверждения вашей заявки вы будете перенаправлены в WhatsApp для завершения оплаты.
+                    </p>
                   </div>
-                </TabsContent>
-
-                <TabsContent value="bank" className="space-y-4 mt-6">
-                  <div className="bg-card/5 rounded-lg p-6 space-y-3 border border-border">
-                    <h4 className="font-semibold text-foreground">Реквизиты для перевода:</h4>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-foreground/60">Получатель:</span>
-                        <span className="font-medium text-foreground">ТОО "Mukhatay Ormany"</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-foreground/60">БИН:</span>
-                        <span className="font-medium text-foreground">XXXXXXXXXXX</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-foreground/60">IBAN:</span>
-                        <span className="font-medium text-foreground">KZ00000000000000000000</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-foreground/60">Банк:</span>
-                        <span className="font-medium text-foreground">АО "Народный Банк Казахстана"</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-foreground/60">Назначение:</span>
-                        <span className="font-medium text-foreground">Пожертвование на посадку деревьев</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <p className="text-sm text-foreground/60">
-                    После перевода отправьте подтверждение на email: payments@mukhatayormany.kz
-                  </p>
-                </TabsContent>
-              </Tabs>
+                </div>
+                
+                <div className="rounded-lg bg-primary/5 border border-primary/10 p-4">
+                  <h5 className="font-semibold text-foreground mb-2">Как это работает:</h5>
+                  <ul className="text-sm text-foreground/70 space-y-1">
+                    <li className="flex items-start gap-2">
+                      <span className="material-symbols-outlined !text-[16px] text-primary mt-0.5">check_circle</span>
+                      <span>Нажмите "Подтвердить и оплатить"</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="material-symbols-outlined !text-[16px] text-primary mt-0.5">check_circle</span>
+                      <span>Откроется WhatsApp с предзаполненным сообщением</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="material-symbols-outlined !text-[16px] text-primary mt-0.5">check_circle</span>
+                      <span>Наш менеджер свяжется с вами для подтверждения оплаты</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="material-symbols-outlined !text-[16px] text-primary mt-0.5">check_circle</span>
+                      <span>После оплаты вы получите сертификат посадки</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
             </div>
             
-            <label className="group relative flex cursor-pointer items-center justify-between rounded-2xl border border-border bg-card/5 p-6 transition-all hover:bg-card/10 hover:border-foreground/30 hover:shadow-lg">
-              <div className="flex items-center gap-4">
-                <input 
-                  type="radio" 
-                  name="payment_method" 
-                  checked={paymentMethod === 'kaspi'}
-                  onChange={() => setPaymentMethod('kaspi')}
-                  className="h-5 w-5 border-border/30 bg-transparent text-primary focus:ring-primary focus:ring-offset-0"
-                />
-                <span className="text-lg font-medium text-foreground/80 group-hover:text-foreground">Kaspi QR</span>
+            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-4 rounded-xl bg-card/5 border border-border/5 p-4 text-foreground/50">
+              <span className="material-symbols-outlined text-3xl text-primary/80">info</span>
+              <div className="text-center sm:text-left text-xs leading-relaxed">
+                <p className="font-bold uppercase tracking-wider text-foreground/70">Временное решение</p>
+                <p>Это временное решение до получения API ключа для платежной системы. Мы свяжемся с вами в течение 24 часов.</p>
               </div>
-              <div className="flex gap-2">
-                <div className="flex h-8 w-12 items-center justify-center rounded bg-white/10">
-                  <span className="text-[10px] font-bold text-foreground">KASPI</span>
-                </div>
-              </div>
-            </label>
-            
-            <label className="group relative flex cursor-pointer items-center justify-between rounded-2xl border border-border bg-card/5 p-6 transition-all hover:bg-card/10 hover:border-foreground/30 hover:shadow-lg">
-              <div className="flex items-center gap-4">
-                <input 
-                  type="radio" 
-                  name="payment_method" 
-                  checked={paymentMethod === 'card'}
-                  onChange={() => setPaymentMethod('card')}
-                  className="h-5 w-5 border-border/30 bg-transparent text-primary focus:ring-primary focus:ring-offset-0"
-                />
-                <span className="text-lg font-medium text-foreground/80 group-hover:text-foreground">Банковская карта</span>
-              </div>
-              <div className="flex gap-2">
-                <div className="flex h-8 w-12 items-center justify-center rounded bg-white/10">
-                  <span className="text-[10px] font-bold text-foreground">VISA</span>
-                </div>
-                <div className="flex h-8 w-12 items-center justify-center rounded bg-white/10">
-                  <div className="h-3 w-3 rounded-full bg-foreground/50 -mr-1"></div>
-                  <div className="h-3 w-3 rounded-full bg-foreground/30"></div>
-                </div>
-              </div>
-            </label>
-            
-            <label className="group relative flex cursor-pointer items-center justify-between rounded-2xl border border-border bg-card/5 p-6 transition-all hover:bg-card/10 hover:border-foreground/30 hover:shadow-lg">
-              <div className="flex items-center gap-4">
-                <input 
-                  type="radio" 
-                  name="payment_method" 
-                  checked={paymentMethod === 'bank'}
-                  onChange={() => setPaymentMethod('bank')}
-                  className="h-5 w-5 border-border/30 bg-transparent text-primary focus:ring-primary focus:ring-offset-0"
-                />
-                <span className="text-lg font-medium text-foreground/80 group-hover:text-foreground">Банковский перевод</span>
-              </div>
-              <span className="material-symbols-outlined text-foreground/50">account_balance</span>
-            </label>
+            </div>
           </div>
           
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-4 rounded-xl bg-card/5 border border-border/5 p-4 text-foreground/50">
