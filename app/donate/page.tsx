@@ -41,12 +41,12 @@ function DonateContent({}) {
     treeCount: 1,
     amount: 999,
     donorInfo: {
-      fullName: "",
-      email: "",
+      fullName: "Анонимный пользователь",
+      email: "anonymous@example.com",
       phone: "",
       companyName: "",
       message: "",
-      subscribeUpdates: true,
+      subscribeUpdates: false,
     },
   })
 
@@ -147,18 +147,7 @@ function DonateContent({}) {
             />
           )}
 
-          {currentStep === 1 && (
-            <DonorInfoStep
-              donorInfo={donationData.donorInfo}
-              onSubmit={(donorInfo) => {
-                updateDonationData({ donorInfo })
-                handleNext()
-              }}
-              onBack={handleBack}
-            />
-          )}
-
-          {currentStep === 2 && <PaymentStep donationData={donationData} onBack={handleBack} />}
+          {currentStep === 1 && <PaymentStep donationData={donationData} onBack={handleBack} />}
         </div>
       </div>
     </>

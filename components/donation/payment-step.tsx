@@ -103,7 +103,8 @@ export function PaymentStep({ donationData, onBack }: PaymentStepProps) {
       
       // Prepare WhatsApp message
       const locationInfo = locationData ? `${locationData.name} (${locationData.coordinates})` : locationName;
-      const whatsappMessage = `New Tree Donation Request:%0AName: ${encodeURIComponent(donationData.donorInfo.fullName)}%0AEmail: ${encodeURIComponent(donationData.donorInfo.email)}%0APhone: ${encodeURIComponent(donationData.donorInfo.phone)}%0ATree Count: ${donationData.treeCount}%0ALocation: ${encodeURIComponent(locationInfo)}%0AAmount: ${donationData.amount} KZT`;
+      // Note: The donation ID will be available after the donation is created in the backend
+      const whatsappMessage = `New Tree Donation Request:%0AName: ${encodeURIComponent(donationData.donorInfo.fullName)}%0AEmail: ${encodeURIComponent(donationData.donorInfo.email)}%0APhone: ${encodeURIComponent(donationData.donorInfo.phone)}%0ATree Count: ${donationData.treeCount}%0ALocation: ${encodeURIComponent(locationInfo)}%0AAmount: ${donationData.amount} KZT%0ADonation ID: ${createdDonation.id}`;
       
       // Redirect to WhatsApp - responsive approach for both desktop and mobile
       const whatsappUrl = `https://wa.me/77029999849?text=${whatsappMessage}`;

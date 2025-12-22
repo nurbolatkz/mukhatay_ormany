@@ -112,7 +112,21 @@ export function TreeCountStep({ location, treeCount, amount, onTreeCountChange, 
             <Button variant="outline" onClick={onBack} className="rounded-md">
               Назад
             </Button>
-            <Button onClick={onNext} className="bg-primary hover:bg-primary/90 rounded-md">
+            <Button onClick={() => {
+              // Create a default donor info since we're skipping the donor form
+              const defaultDonorInfo = {
+                fullName: "Анонимный пользователь",
+                email: "anonymous@example.com",
+                phone: "",
+                companyName: "",
+                message: "",
+                subscribeUpdates: false
+              };
+              // Update donation data with default donor info
+              onTreeCountChange(localTreeCount, calculatePrice(localTreeCount));
+              // Proceed to payment
+              onNext();
+            }} className="bg-primary hover:bg-primary/90 rounded-md">
               Продолжить к оплате
             </Button>
           </div>
