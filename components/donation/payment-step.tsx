@@ -140,8 +140,8 @@ export function PaymentStep({ donationData, onBack }: PaymentStepProps) {
                 </TabsList>
 
                 <TabsContent value="kaspi" className="space-y-4 mt-6">
-                  <div className="flex flex-col sm:flex-row items-center gap-8 sm:gap-10">
-                    <div className="group relative flex h-52 w-52 shrink-0 items-center justify-center rounded-2xl bg-white p-4 shadow-[0_0_30px_rgba(255,255,255,0.1)] border-2 border-primary/10">
+                  <div className="flex flex-col sm:flex-row items-center gap-10 sm:gap-12">
+                    <div className="group relative flex h-72 w-72 shrink-0 items-center justify-center rounded-2xl bg-white p-6 shadow-[0_0_30px_rgba(255,255,255,0.1)] border-2 border-primary/10">
                       <img 
                         src="/Kaspi_QR_payment.jpg" 
                         alt="Kaspi QR Payment" 
