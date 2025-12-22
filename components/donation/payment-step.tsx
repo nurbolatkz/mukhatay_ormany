@@ -62,7 +62,7 @@ export function PaymentStep({ donationData, onBack }: PaymentStepProps) {
       // Create donation in backend with pending status
       const donationPayload = {
         location_id: locationId,
-        package_id: donationData.packageType,
+        package_id: "custom", // Use "custom" for direct tree count selection
         tree_count: donationData.treeCount,
         amount: donationData.amount,
         donor_info: {
@@ -142,7 +142,7 @@ export function PaymentStep({ donationData, onBack }: PaymentStepProps) {
       // Create donation in backend
       const donationPayload = {
         location_id: locationId,
-        package_id: donationData.packageType,
+        package_id: "custom", // Use "custom" for direct tree count selection
         tree_count: donationData.treeCount,
         amount: donationData.amount,
         donor_info: {

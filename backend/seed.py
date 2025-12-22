@@ -65,6 +65,14 @@ with app.app_context():
             price=99900,
             description="Крупный пакет",
             popular=False
+        ),
+        Package(
+            id="custom",
+            name="Пользовательский выбор",
+            tree_count=0,  # Will be overridden by actual tree count
+            price=0,      # Will be calculated based on tree count
+            description="Пользователь выбрал количество деревьев самостоятельно",
+            popular=False
         )
     ]
 
