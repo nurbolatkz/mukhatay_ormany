@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { ProtectedRoute } from "@/components/auth/protected-route"
+import apiService from "@/services/api"
 
 export type Location = string
 
@@ -28,7 +29,7 @@ export interface DonationData {
   }
 }
 
-const STEPS = ["Посадить дерево", "Количество деревьев", "Оплата"]
+const STEPS = ["Количество деревьев", "Оплата"]
 
 // Separate component that uses useSearchParams
 function DonateContent({}) {
@@ -36,7 +37,7 @@ function DonateContent({}) {
   const searchParams = useSearchParams()
   const [currentStep, setCurrentStep] = useState(0)
   const [donationData, setDonationData] = useState<DonationData>({
-    location: null,
+    location: null, // Will be set to a random location
     treeCount: 1,
     amount: 999,
     donorInfo: {
@@ -58,13 +59,36 @@ function DonateContent({}) {
         try {
           const { donationData: savedData } = JSON.parse(pendingDonation)
           setDonationData(savedData)
-          setCurrentStep(3) // Go to payment step
+          setCurrentStep(2) // Go to payment step
         } catch (error) {
           console.error('Error restoring donation data:', error)
         }
       }
     }
   }, [searchParams])
+
+  // Fetch locations and select one randomly
+  useEffect(() => {
+    const fetchRandomLocation = async () => {
+      try {
+        const locations = await apiService.getLocations();
+        
+        // Select a random location
+        const randomIndex = Math.floor(Math.random() * locations.length);
+        const randomLocation = locations[randomIndex].id;
+        
+        setDonationData(prev => ({ ...prev, location: randomLocation }));
+      } catch (error) {
+        console.error('Error fetching locations:', error);
+        // Fallback to default location
+        setDonationData(prev => ({ ...prev, location: "loc_karaganda_002" }));
+      }
+    };
+
+    if (!donationData.location) {
+      fetchRandomLocation();
+    }
+  }, [donationData.location]);
 
   useEffect(() => {
     // Skip this effect if we're restoring from pending donation
@@ -111,16 +135,6 @@ function DonateContent({}) {
 
         <div className="mt-8">
           {currentStep === 0 && (
-            <LocationStep
-              selectedLocation={donationData.location}
-              onLocationSelect={(location) => {
-                updateDonationData({ location })
-                handleNext()
-              }}
-            />
-          )}
-
-          {currentStep === 1 && (
             <TreeCountStep
               location={donationData.location!}
               treeCount={donationData.treeCount}
@@ -129,11 +143,11 @@ function DonateContent({}) {
                 updateDonationData({ treeCount, amount })
               }}
               onNext={handleNext}
-              onBack={handleBack}
+              onBack={() => router.push('/')}
             />
           )}
 
-          {currentStep === 2 && (
+          {currentStep === 1 && (
             <DonorInfoStep
               donorInfo={donationData.donorInfo}
               onSubmit={(donorInfo) => {
@@ -144,7 +158,7 @@ function DonateContent({}) {
             />
           )}
 
-          {currentStep === 3 && <PaymentStep donationData={donationData} onBack={handleBack} />}
+          {currentStep === 2 && <PaymentStep donationData={donationData} onBack={handleBack} />}
         </div>
       </div>
     </>

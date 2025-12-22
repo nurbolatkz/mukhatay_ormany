@@ -44,11 +44,11 @@ export function TreeCountStep({ location, treeCount, amount, onTreeCountChange, 
         <p className="text-foreground/60">Укажите, сколько деревьев вы хотите посадить в {locationName}</p>
       </div>
       
-      <Card className="max-w-2xl mx-auto">
-        <CardHeader>
+      <Card className="max-w-2xl mx-auto rounded-lg">
+        <CardHeader className="rounded-t-md">
           <CardTitle className="text-center">Количество деревьев</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-8">
+        <CardContent className="space-y-8 rounded-b-md">
           {/* Tree counter */}
           <div className="flex items-center justify-center gap-4">
             <Button 
@@ -56,6 +56,7 @@ export function TreeCountStep({ location, treeCount, amount, onTreeCountChange, 
               size="icon" 
               onClick={() => handleTreeCountChange(localTreeCount - 1)}
               disabled={localTreeCount <= 1}
+              className="rounded-md"
             >
               <Minus className="h-4 w-4" />
             </Button>
@@ -67,7 +68,7 @@ export function TreeCountStep({ location, treeCount, amount, onTreeCountChange, 
                 max="1000"
                 value={localTreeCount}
                 onChange={handleInputChange}
-                className="w-32 text-center text-2xl font-bold h-16"
+                className="w-32 text-center text-2xl font-bold h-16 rounded-md"
               />
               <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
                 <TreePine className="h-5 w-5 text-foreground/50" />
@@ -78,13 +79,14 @@ export function TreeCountStep({ location, treeCount, amount, onTreeCountChange, 
               variant="outline" 
               size="icon" 
               onClick={() => handleTreeCountChange(localTreeCount + 1)}
+              className="rounded-md"
             >
               <Plus className="h-4 w-4" />
             </Button>
           </div>
           
           {/* Price display */}
-          <div className="text-center py-6 bg-primary/5 rounded-xl border border-primary/10">
+          <div className="text-center py-6 bg-primary/5 rounded-lg border border-primary/10">
             <p className="text-sm text-foreground/60 mb-1">Общая стоимость</p>
             <p className="text-4xl font-extrabold text-foreground">
               {calculatePrice(localTreeCount).toLocaleString()} ₸
@@ -95,8 +97,8 @@ export function TreeCountStep({ location, treeCount, amount, onTreeCountChange, 
           </div>
           
           {/* Location info */}
-          <div className="flex items-center justify-center gap-3 p-4 bg-card/50 rounded-lg border border-border">
-            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+          <div className="flex items-center justify-center gap-3 p-4 bg-card/50 rounded-md border border-border">
+            <div className="h-10 w-10 rounded-md bg-primary/10 flex items-center justify-center">
               <TreePine className="h-5 w-5 text-primary" />
             </div>
             <div>
@@ -107,10 +109,10 @@ export function TreeCountStep({ location, treeCount, amount, onTreeCountChange, 
           
           {/* Navigation buttons */}
           <div className="flex justify-between pt-4">
-            <Button variant="outline" onClick={onBack}>
+            <Button variant="outline" onClick={onBack} className="rounded-md">
               Назад
             </Button>
-            <Button onClick={onNext} className="bg-primary hover:bg-primary/90">
+            <Button onClick={onNext} className="bg-primary hover:bg-primary/90 rounded-md">
               Продолжить к оплате
             </Button>
           </div>
