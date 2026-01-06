@@ -42,7 +42,7 @@ export function CookieConsentBanner() {
             <Button 
               variant="outline" 
               onClick={declineCookies}
-              className="text-white border-white hover:bg-white/10"
+              className="text-white border-white bg-transparent hover:bg-white hover:text-[#1a3d2e]"
             >
               Отклонить
             </Button>
