@@ -71,17 +71,17 @@ export function Footer() {
             <h4 className="font-semibold mb-4 text-white">Правовая информация</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="#" className="text-white/70 hover:text-primary transition-colors">
+                <Link href="/PrivacyPolicy.pdf" target="_blank" className="text-white/70 hover:text-primary transition-colors">
                   Политика конфиденциальности
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-white/70 hover:text-primary transition-colors">
+                <Link href="/ПУБЛИЧНАЯ ОФЕРТА.pdf" target="_blank" className="text-white/70 hover:text-primary transition-colors">
                   Публичная оферта
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-white/70 hover:text-primary transition-colors">
+                <Link href="#transparency" className="text-white/70 hover:text-primary transition-colors">
                   Отчеты
                 </Link>
               </li>
@@ -93,7 +93,7 @@ export function Footer() {
             <h4 className="font-semibold mb-4 text-white">Контакты</h4>
             <ul className="space-y-2 text-sm text-white/70">
               <li>Email: info@mukhatayormany.kz</li>
-              <li>Телефон: +7 (XXX) XXX-XX-XX</li>
+              <li>Телефон: +7 (702)999-98-49</li>
               <li>Адрес: Казахстан, Астана</li>
             </ul>
           </div>

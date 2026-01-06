@@ -1,4 +1,4 @@
-from app import app, db, User
+from app import app, db, User, News
 import sys
 
 with app.app_context():

@@ -71,6 +71,17 @@ class Certificate(db.Model):
     pdf_url = db.Column(db.String)
     created_date = db.Column(db.DateTime, server_default=db.func.now())
 
+class News(db.Model):
+    id = db.Column(db.String, primary_key=True)
+    title = db.Column(db.String, nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    image_url = db.Column(db.String)
+    author = db.Column(db.String)
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    updated_at = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now())
+    published = db.Column(db.Boolean, default=True)
+    category = db.Column(db.String, default='general')
+
 # Decorator for token validation
 def token_required(f):
     @wraps(f)
@@ -682,6 +693,130 @@ def admin_delete_location(current_user, location_id):
     db.session.commit()
     return jsonify({'message': 'Location deleted successfully'})
 
+
+# News endpoints
+@app.route('/api/news', methods=['GET'])
+def get_news():
+    # Get all published news, ordered by creation date (newest first)
+    news_items = News.query.filter_by(published=True).order_by(News.created_at.desc()).all()
+    output = []
+    for news in news_items:
+        news_data = {
+            'id': news.id,
+            'title': news.title,
+            'content': news.content,
+            'image_url': news.image_url,
+            'author': news.author,
+            'created_at': news.created_at.isoformat() + 'Z',
+            'updated_at': news.updated_at.isoformat() + 'Z' if news.updated_at else None,
+            'category': news.category
+        }
+        output.append(news_data)
+    return jsonify(output)
+
+@app.route('/api/news/<string:news_id>', methods=['GET'])
+def get_news_detail(news_id):
+    news_item = News.query.get_or_404(news_id)
+    if not news_item.published:
+        # Only admin can view unpublished news
+        try:
+            token = None
+            if 'Authorization' in request.headers:
+                token = request.headers['Authorization'].split(" ")[1]
+            if not token:
+                return jsonify({'message': 'Authentication required'}), 401
+            data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=["HS256"])
+            current_user = User.query.filter_by(id=data['id']).first()
+            if not current_user or current_user.role != 'admin':
+                return jsonify({'message': 'Admin access required'}), 403
+        except jwt.ExpiredSignatureError:
+            return jsonify({'message': 'Token has expired!'}), 401
+        except jwt.InvalidTokenError:
+            return jsonify({'message': 'Token is invalid!'}), 401
+    
+    news_data = {
+        'id': news_item.id,
+        'title': news_item.title,
+        'content': news_item.content,
+        'image_url': news_item.image_url,
+        'author': news_item.author,
+        'created_at': news_item.created_at.isoformat() + 'Z',
+        'updated_at': news_item.updated_at.isoformat() + 'Z' if news_item.updated_at else None,
+        'category': news_item.category,
+        'published': news_item.published
+    }
+    return jsonify(news_data)
+
+@app.route('/api/admin/news', methods=['GET'])
+@admin_required
+def admin_get_all_news(current_user):
+    # Admin can see all news (published and unpublished)
+    news_items = News.query.order_by(News.created_at.desc()).all()
+    output = []
+    for news in news_items:
+        news_data = {
+            'id': news.id,
+            'title': news.title,
+            'content': news.content,
+            'image_url': news.image_url,
+            'author': news.author,
+            'created_at': news.created_at.isoformat() + 'Z',
+            'updated_at': news.updated_at.isoformat() + 'Z' if news.updated_at else None,
+            'published': news.published,
+            'category': news.category
+        }
+        output.append(news_data)
+    return jsonify(output)
+
+@app.route('/api/admin/news', methods=['POST'])
+@admin_required
+def admin_create_news(current_user):
+    data = request.get_json()
+    
+    new_news = News(
+        id=str(uuid.uuid4()),
+        title=data['title'],
+        content=data['content'],
+        image_url=data.get('image_url', ''),
+        author=data.get('author', 'Admin'),
+        published=data.get('published', True),
+        category=data.get('category', 'general')
+    )
+    
+    db.session.add(new_news)
+    db.session.commit()
+    
+    return jsonify({'id': new_news.id, 'message': 'News created successfully'}), 201
+
+@app.route('/api/admin/news/<string:news_id>', methods=['PUT'])
+@admin_required
+def admin_update_news(current_user, news_id):
+    news_item = News.query.get_or_404(news_id)
+    data = request.get_json()
+    
+    if 'title' in data:
+        news_item.title = data['title']
+    if 'content' in data:
+        news_item.content = data['content']
+    if 'image_url' in data:
+        news_item.image_url = data['image_url']
+    if 'author' in data:
+        news_item.author = data['author']
+    if 'published' in data:
+        news_item.published = data['published']
+    if 'category' in data:
+        news_item.category = data['category']
+    
+    db.session.commit()
+    return jsonify({'message': 'News updated successfully'})
+
+@app.route('/api/admin/news/<string:news_id>', methods=['DELETE'])
+@admin_required
+def admin_delete_news(current_user, news_id):
+    news_item = News.query.get_or_404(news_id)
+    db.session.delete(news_item)
+    db.session.commit()
+    return jsonify({'message': 'News deleted successfully'})
 
 @app.route('/api/health', methods=['GET'])
 def health_check():

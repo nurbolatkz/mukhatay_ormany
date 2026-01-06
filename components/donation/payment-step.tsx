@@ -81,10 +81,13 @@ export function PaymentStep({ donationData, onBack }: PaymentStepProps) {
       const createdDonation = await apiService.createDonation(donationPayload, isGuest)
       console.log("[v0] Donation created:", createdDonation)
       
+      // Type assertion to access the id property
+      const donationId = (createdDonation as { id: string }).id
+      
       // TEMPORARY: Redirect to WhatsApp instead of processing payment
       // Save donation to localStorage with email for future linking
       const donationRecord = {
-        id: createdDonation.id,
+        id: donationId,
         date: new Date().toLocaleDateString('ru-RU'),
         location: locationName,
         trees: donationData.treeCount,
@@ -104,7 +107,7 @@ export function PaymentStep({ donationData, onBack }: PaymentStepProps) {
       // Prepare WhatsApp message
       const locationInfo = locationData ? `${locationData.name} (${locationData.coordinates})` : locationName;
       // Note: The donation ID will be available after the donation is created in the backend
-      const whatsappMessage = `New Tree Donation Request:%0AName: ${encodeURIComponent(donationData.donorInfo.fullName)}%0AEmail: ${encodeURIComponent(donationData.donorInfo.email)}%0APhone: ${encodeURIComponent(donationData.donorInfo.phone)}%0ATree Count: ${donationData.treeCount}%0ALocation: ${encodeURIComponent(locationInfo)}%0AAmount: ${donationData.amount} KZT%0ADonation ID: ${createdDonation.id}`;
+      const whatsappMessage = `New Tree Donation Request:%0AName: ${encodeURIComponent(donationData.donorInfo.fullName)}%0AEmail: ${encodeURIComponent(donationData.donorInfo.email)}%0APhone: ${encodeURIComponent(donationData.donorInfo.phone)}%0ATree Count: ${donationData.treeCount}%0ALocation: ${encodeURIComponent(locationInfo)}%0AAmount: ${donationData.amount} KZT%0ADonation ID: ${donationId}`;
       
       // Redirect to WhatsApp - responsive approach for both desktop and mobile
       const whatsappUrl = `https://wa.me/77029999849?text=${whatsappMessage}`;
@@ -357,9 +360,31 @@ export function PaymentStep({ donationData, onBack }: PaymentStepProps) {
                 <span className="relative z-10">{isProcessing ? "Обработка..." : "Подтвердить и оплатить"}</span>
                 <span className="material-symbols-outlined relative z-10 transition-transform group-hover:translate-x-1">arrow_forward</span>
               </Button>
-              <p className="text-center text-[10px] text-foreground/30">
-                Нажимая кнопку, вы соглашаетесь с <a className="underline hover:text-foreground" href="#">Условиями использования</a> и <a className="underline hover:text-foreground" href="#">Политикой конфиденциальности</a>
-              </p>
+              <div className="space-y-3">
+                <div className="flex items-start space-x-3 pt-2">
+                  <input 
+                    type="checkbox" 
+                    id="public-offer-agreement" 
+                    defaultChecked 
+                    className="mt-1 h-4 w-4 rounded border-input text-primary focus:ring-primary"
+                  />
+                  <label htmlFor="public-offer-agreement" className="text-[10px] text-foreground/70 leading-relaxed">
+                    Нажимая «Оплатить», я соглашаюсь с <a href="/ПУБЛИЧНАЯ ОФЕРТА.pdf" target="_blank" className="underline hover:text-foreground">Публичной офертой</a> и подтверждаю, что пожертвование является добровольным и безвозвратным
+                  </label>
+                </div>
+                
+                <div className="flex items-start space-x-3 pt-2">
+                  <input 
+                    type="checkbox" 
+                    id="privacy-policy-agreement" 
+                    defaultChecked 
+                    className="mt-1 h-4 w-4 rounded border-input text-primary focus:ring-primary"
+                  />
+                  <label htmlFor="privacy-policy-agreement" className="text-[10px] text-foreground/70 leading-relaxed">
+                    Я согласен(а) с <a href="/PrivacyPolicy.pdf" target="_blank" className="underline hover:text-foreground">Политикой конфиденциальности</a> и даю согласие на обработку персональных данных
+                  </label>
+                </div>
+              </div>
             </div>
           </div>
           <div className="mt-6 flex items-center justify-center gap-2 text-sm text-foreground/40">

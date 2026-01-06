@@ -216,6 +216,127 @@ class ApiService {
   }
 
   /**
+   * Get all news items
+   * @returns {Promise<Array>} List of news items
+   */
+  async getNews() {
+    try {
+      const response = await this.request('/api/news', {
+        method: 'GET',
+      });
+      return response;
+    } catch (error) {
+      // In production, we don't log errors to console to prevent information leakage
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Error fetching news:', error);
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Get a specific news item
+   * @param {string} newsId - News ID
+   * @returns {Promise<Object>} News item
+   */
+  async getNewsById(newsId) {
+    try {
+      const response = await this.request(`/api/news/${newsId}`, {
+        method: 'GET',
+      });
+      return response;
+    } catch (error) {
+      // In production, we don't log errors to console to prevent information leakage
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Error fetching news item:', error);
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Create a new news item (admin only)
+   * @param {Object} newsData - News data
+   * @returns {Promise<Object>} Created news response
+   */
+  async adminCreateNews(newsData) {
+    try {
+      const response = await this.request('/api/admin/news', {
+        method: 'POST',
+        body: JSON.stringify(newsData),
+      });
+      return response;
+    } catch (error) {
+      // In production, we don't log errors to console to prevent information leakage
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Error creating news:', error);
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Update a news item (admin only)
+   * @param {string} newsId - News ID
+   * @param {Object} newsData - Updated news data
+   * @returns {Promise<Object>} Update response
+   */
+  async adminUpdateNews(newsId, newsData) {
+    try {
+      const response = await this.request(`/api/admin/news/${newsId}`, {
+        method: 'PUT',
+        body: JSON.stringify(newsData),
+      });
+      return response;
+    } catch (error) {
+      // In production, we don't log errors to console to prevent information leakage
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Error updating news:', error);
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Delete a news item (admin only)
+   * @param {string} newsId - News ID
+   * @returns {Promise<Object>} Delete response
+   */
+  async adminDeleteNews(newsId) {
+    try {
+      const response = await this.request(`/api/admin/news/${newsId}`, {
+        method: 'DELETE',
+      });
+      return response;
+    } catch (error) {
+      // In production, we don't log errors to console to prevent information leakage
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Error deleting news:', error);
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Get all news items (admin only - includes unpublished)
+   * @returns {Promise<Array>} List of all news items
+   */
+  async adminGetAllNews() {
+    try {
+      const response = await this.request('/api/admin/news', {
+        method: 'GET',
+      });
+      return response;
+    } catch (error) {
+      // In production, we don't log errors to console to prevent information leakage
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Error fetching all news:', error);
+      }
+      throw error;
+    }
+  }
+
+  /**
    * Create a new donation
    * @param {Object} donationData - Donation data
    * @param {boolean} isGuest - Whether this is a guest donation

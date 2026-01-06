@@ -1,4 +1,4 @@
-from app import app, db, Location, Package
+from app import app, db, Location, Package, News
 
 with app.app_context():
     db.create_all()
@@ -78,6 +78,40 @@ with app.app_context():
 
     for package in packages:
         db.session.add(package)
+    
+    # Seed News
+    news = [
+        News(
+            id="news_001",
+            title="Открыт новый лесной участок в Карагандинской области",
+            content="Мы рады сообщить о начале проекта по восстановлению лесов в Карагандинской области. Участок площадью 25 000 гектаров будет восстановлен за 5 лет с использованием современных методов посадки и ухода за деревьями.",
+            image_url="/images/news-forest-planting.jpg",
+            author="Администрация проекта",
+            category="general",
+            published=True
+        ),
+        News(
+            id="news_002",
+            title="Более 1000 деревьев посажено за месяц",
+            content="Благодаря щедрой поддержке наших доноров, мы смогли посадить более 1000 деревьев в рамках текущего сезона. Это важный шаг на пути к восстановлению экосистемы региона.",
+            image_url="/images/news-thousand-trees.jpg",
+            author="Администрация проекта",
+            category="success",
+            published=True
+        ),
+        News(
+            id="news_003",
+            title="Новый партнер присоединился к проекту",
+            content="Мы рады приветствовать нового корпоративного партнера, который поддержит наш проект по лесовосстановлению на сумму 500 000 тенге в этом году.",
+            image_url="/images/news-partner-join.jpg",
+            author="Администрация проекта",
+            category="partnership",
+            published=True
+        )
+    ]
+    
+    for news_item in news:
+        db.session.add(news_item)
     
     db.session.commit()
 

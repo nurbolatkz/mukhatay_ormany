@@ -33,6 +33,7 @@ const navItems = [
   { id: "users" as AdminView, label: "Пользователи", icon: Users },
   { id: "locations" as AdminView, label: "Локации", icon: MapPin },
   { id: "content" as AdminView, label: "Контент", icon: FileText },
+  { id: "news" as AdminView, label: "Новости", icon: FileText },
   { id: "certificates" as AdminView, label: "Сертификаты", icon: Award },
   { id: "reports" as AdminView, label: "Аналитика", icon: BarChart3 },
   { id: "settings" as AdminView, label: "Настройки", icon: Settings },
