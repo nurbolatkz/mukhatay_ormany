@@ -26,7 +26,7 @@ export function TrustSection() {
     <section className="py-20 bg-[#f8f9f5]">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">Почему нам можно <span className="text-primary">доверять</span></h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">Почему нам можно <span className="text-primary font-bold">доверять</span></h2>
           <p className="text-lg text-muted-foreground">Прозрачность на каждом этапе</p>
         </div>
 

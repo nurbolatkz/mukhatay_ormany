@@ -11,7 +11,7 @@
   --card-foreground: #181811;
   --popover: #ffffff;
   --popover-foreground: #181811;
-  --primary: #f9f506;
+  --primary: #f4e31e;
   --primary-foreground: #181811;
   --secondary: #f0f0e8;
   --secondary-foreground: #181811;
@@ -23,8 +23,8 @@
   --destructive-foreground: #f8f8f5;
   --border: rgba(0, 0, 0, 0.1);
   --input: rgba(0, 0, 0, 0.1);
-  --ring: #f9f506;
-  --chart-1: #f9f506;
+  --ring: #f4e31e;
+  --chart-1: #f4e31e;
   --chart-2: #4ade80;
   --chart-3: #22c55e;
   --chart-4: #16a34a;
@@ -60,8 +60,8 @@
   --destructive-foreground: #f8f8f5;
   --border: rgba(255, 255, 255, 0.1);
   --input: rgba(255, 255, 255, 0.1);
-  --ring: #f9f506;
-  --chart-1: #f9f506;
+  --ring: #f4e31e;
+  --chart-1: #f4e31e;
   --chart-2: #4ade80;
   --chart-3: #22c55e;
   --chart-4: #16a34a;
@@ -142,5 +142,19 @@
 
 /* Text shadow for metrics */
 .metric-glow {
-  text-shadow: 0 0 12px rgba(255,217,0,0.35);
+  text-shadow: 0 0 12px rgba(244,227,30,0.35);
+}
+
+/* Consistent yellow color usage */
+.text-yellow-accent {
+  color: #f4e31e !important;
+}
+.bg-yellow-accent {
+  background-color: #f4e31e !important;
+}
+.border-yellow-accent {
+  border-color: #f4e31e !important;
+}
+.hover\:text-yellow-accent:hover {
+  color: #f4e31e !important;
 }

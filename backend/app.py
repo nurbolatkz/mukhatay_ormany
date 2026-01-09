@@ -6,6 +6,7 @@ import os
 import jwt
 import base64
 import hashlib
+import time
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 import datetime
@@ -901,6 +902,25 @@ def submit_contact_form():
     # For now, we'll just log the submission
     print(f"Contact form received: {data}")
     
+    # In a real application, you would save this to a database
+    # For now, we'll store in memory
+    if not hasattr(submit_contact_form, 'submissions'):
+        submit_contact_form.submissions = []
+    
+    submission = {
+        'id': f"contact_{int(time.time())}_{uuid.uuid4().hex[:8]}",
+        'name': data.get('name'),
+        'email': data.get('email'),
+        'phone': data.get('phone', ''),
+        'message': data.get('message'),
+        'created_at': datetime.datetime.utcnow().isoformat() + 'Z'
+    }
+    
+    submit_contact_form.submissions.append(submission)
+    
+    # Here you would typically send an email notification
+    print(f"Contact submission saved: {submission}")
+    
     return jsonify({'message': 'Сообщение успешно отправлено'}), 200
 
 @app.route('/api/partnership-inquiry', methods=['POST'])
@@ -951,6 +971,21 @@ def admin_get_partnership_inquiries(current_user):
     sorted_inquiries = sorted(inquiries, key=lambda x: x['created_at'], reverse=True)
     
     return jsonify(sorted_inquiries)
+
+
+@app.route('/api/admin/contact-submissions', methods=['GET'])
+@admin_required
+def admin_get_contact_submissions(current_user):
+    # Retrieve all contact form submissions
+    if hasattr(submit_contact_form, 'submissions'):
+        submissions = submit_contact_form.submissions
+    else:
+        submissions = []
+    
+    # Sort by creation date (newest first)
+    sorted_submissions = sorted(submissions, key=lambda x: x['created_at'], reverse=True)
+    
+    return jsonify(sorted_submissions)
 
 @app.route('/api/health', methods=['GET'])
 def health_check():

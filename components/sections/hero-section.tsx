@@ -26,7 +26,7 @@ export function HeroSection() {
         
         {/* Main Title */}
         <h1 className="mb-6 max-w-4xl text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
-          Mukhatay Ormany — лесовосстановление и <span className="text-primary">посадка деревьев</span> в Казахстане
+          Mukhatay Ormany — лесовосстановление и <span className="text-primary font-extrabold">посадка деревьев</span> в Казахстане
         </h1>
         
         {/* Subtitle */}
@@ -38,7 +38,7 @@ export function HeroSection() {
         <div className="flex w-full flex-col items-center justify-center gap-4 sm:flex-row sm:gap-6">
           <Link href="/donate">
             <Button 
-              className="group relative flex h-14 min-w-[200px] w-full sm:w-auto items-center justify-center gap-2 overflow-hidden rounded-full bg-primary px-8 text-base font-bold text-background-dark transition-all hover:scale-105 hover:shadow-[0_0_20px_rgba(249,245,6,0.5)]"
+              className="group relative flex h-14 min-w-[200px] w-full sm:w-auto items-center justify-center gap-2 overflow-hidden rounded-full bg-primary px-8 text-base font-bold text-background-dark transition-all hover:scale-105 hover:shadow-[0_0_20px_rgba(244,227,30,0.5)]"
             >
               <span className="material-symbols-outlined">yard</span>
               <span>Посадить дерево</span>

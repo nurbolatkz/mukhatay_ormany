@@ -335,6 +335,25 @@ class ApiService {
   }
 
   /**
+   * Get contact form submissions (admin only)
+   * @returns {Promise<Array>} List of contact form submissions
+   */
+  async adminGetContactSubmissions() {
+    try {
+      const response = await this.request('/api/admin/contact-submissions', {
+        method: 'GET',
+      });
+      return response;
+    } catch (error) {
+      // In production, we don't log errors to console to prevent information leakage
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Error fetching contact submissions:', error);
+      }
+      throw error;
+    }
+  }
+
+  /**
    * Get partnership inquiries (admin only)
    * @returns {Promise<Array>} List of partnership inquiries
    */

@@ -84,7 +84,7 @@ export function NewsSection() {
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="flex justify-between items-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-foreground">Новости <span className="text-primary">проекта</span></h2>
+          <h2 className="text-4xl md:text-5xl font-bold text-foreground">Новости <span className="text-primary font-bold">проекта</span></h2>
           <a href="/news" className="text-[#2d5a45] font-semibold text-lg flex items-center gap-2 hover:gap-3 transition-all duration-300 hover:text-primary">
             Все новости
             <span className="material-symbols-outlined !text-xl">arrow_forward</span>
@@ -132,7 +132,7 @@ export function NewsSection() {
                   {/* Card Content */}
                   <div className="p-6">
                     {/* Date */}
-                    <div className="flex items-center text-sm text-[#8a9189] mb-3">
+                    <div className="flex items-center text-sm text-[#6b7280] mb-3">
                       <span className="material-symbols-outlined !text-lg mr-2">calendar_today</span>
                       {formattedDate}
                     </div>
@@ -141,7 +141,7 @@ export function NewsSection() {
                     <h3 className="text-xl font-bold text-foreground mb-3 leading-[1.3] line-clamp-2">{item.title}</h3>
                     
                     {/* Excerpt */}
-                    <p className="text-base text-[#6b7280] mb-5 leading-[1.6] line-clamp-3">{item.content.substring(0, 100)}{item.content.length > 100 ? '...' : ''}</p>
+                    <p className="text-base text-[#6b7280] mb-5 leading-[1.6] line-clamp-3">{item.content.substring(0, 120)}{item.content.length > 120 ? '...' : ''}</p>
                     
                     {/* Read more link */}
                     <div className="text-[#2d5a45] font-semibold flex items-center gap-2 hover:gap-3 transition-all duration-300 hover:text-primary cursor-pointer" onClick={() => openNewsDetail(item)}>

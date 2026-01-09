@@ -9,39 +9,14 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           {/* Brand Column */}
           <div>
-            <h3 className="font-bold text-lg mb-4 text-white">Mukhatay Ormany</h3>
+            <h3 className="font-extrabold text-lg mb-4 text-white">Mukhatay Ormany</h3>
             <p className="text-sm text-white/50 mb-4">Реальное лесовосстановление в Казахстане</p>
-            <div className="flex gap-4">
-              {/* Facebook */}
-              <a href="https://facebook.com/mukhatayormany" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-primary transition-colors">
-                <Facebook className="w-6 h-6" />
-              </a>
-              
-              {/* Instagram */}
-              <a href="https://instagram.com/mukhatayormany" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-primary transition-colors">
-                <Instagram className="w-6 h-6" />
-              </a>
-              
-              {/* YouTube */}
-              <a href="https://youtube.com/@mukhatayormany" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-primary transition-colors">
-                <Youtube className="w-6 h-6" />
-              </a>
-              
-              {/* Telegram */}
-              <a href="https://t.me/mukhatayormany" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-primary transition-colors">
-                <Send className="w-6 h-6" />
-              </a>
-              
-              {/* WhatsApp */}
-              <a href="https://wa.me/77029999849" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-primary transition-colors">
-                <MessageCircle className="w-6 h-6" />
-              </a>
-            </div>
+
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-semibold mb-4 text-white">Быстрые ссылки</h4>
+            <h4 className="font-bold mb-4 text-white">Быстрые ссылки</h4>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link href="#mission" className="text-white/70 hover:text-primary transition-colors">
@@ -68,7 +43,7 @@ export function Footer() {
 
           {/* Legal */}
           <div>
-            <h4 className="font-semibold mb-4 text-white">Правовая информация</h4>
+            <h4 className="font-bold mb-4 text-white">Правовая информация</h4>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link href="/PrivacyPolicy.pdf" target="_blank" className="text-white/70 hover:text-primary transition-colors">
@@ -90,11 +65,11 @@ export function Footer() {
 
           {/* Contact */}
           <div>
-            <h4 className="font-semibold mb-4 text-white">Контакты</h4>
+            <h4 className="font-bold mb-4 text-white">Контакты</h4>
             <ul className="space-y-2 text-sm text-white/70">
-              <li>Email: info@mukhatayormany.kz</li>
-              <li>Телефон: +7 (702)999-98-49</li>
-              <li>Адрес: Казахстан, Астана</li>
+              <li>Email: forest.central.asia@gmail.com</li>
+              <li>Телефон: +7 702 999 9849</li>
+              <li>Адрес: Товарищество с ограниченной ответственностью «Forest of Central Asia» 021606 Акмолинская область, Шортандинский район, с.о Бозайгыр, ст. Тонкерис, улица Дулатова, 40</li>
             </ul>
           </div>
         </div>

@@ -65,8 +65,8 @@ export function HowItWorksSection() {
     <section id="how-it-works" className="py-20 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">Как это <span className="text-primary">работает</span></h2>
-          <p className="text-lg text-muted-foreground">От выбора дерева до получения отчета</p>
+          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-foreground">Как это <span className="text-primary font-bold">работает</span></h2>
+          <p className="text-base text-muted-foreground">От выбора дерева до получения отчета</p>
         </div>
 
         <div className="max-w-4xl mx-auto">
@@ -81,17 +81,17 @@ export function HowItWorksSection() {
                   className={`relative flex gap-8 items-start transition-all duration-500 ${index <= activeStep ? 'opacity-100 translate-x-0' : 'opacity-50 translate-x-4'}`}
                 >
                   {/* Large number */}
-                  <div className={`flex-shrink-0 text-6xl font-light w-24 text-left transition-all duration-500 ${index <= activeStep ? 'text-primary' : 'text-muted'}`}>{step.number}</div>
+                  <div className={`flex-shrink-0 text-4xl font-bold w-24 text-left transition-all duration-500 ${index <= activeStep ? 'text-primary' : 'text-muted'}`}>{step.number}</div>
                   
                   {/* Icon */}
-                  <div className={`flex-shrink-0 w-20 h-20 rounded-full flex items-center justify-center shadow-lg border transition-all duration-500 ${index <= activeStep ? 'bg-white border-green-600' : 'bg-muted border-border'}`}>
-                    <span className={`material-symbols-outlined !text-3xl transition-all duration-500 ${index <= activeStep ? 'text-green-600' : 'text-muted-foreground'}`}>{step.icon}</span>
+                  <div className={`flex-shrink-0 w-16 h-16 rounded-full flex items-center justify-center shadow-lg border transition-all duration-500 ${index <= activeStep ? 'bg-white border-green-600' : 'bg-muted border-border'}`}>
+                    <span className={`material-symbols-outlined !text-2xl transition-all duration-500 ${index <= activeStep ? 'text-green-600' : 'text-muted-foreground'}`}>{step.icon}</span>
                   </div>
                   
                   {/* Content */}
                   <div className="flex-1 pt-2">
-                    <h3 className={`text-2xl font-bold mb-3 transition-all duration-500 ${index <= activeStep ? 'text-foreground' : 'text-muted-foreground'}`}>{step.title}</h3>
-                    <p className={`text-base max-w-md transition-all duration-500 ${index <= activeStep ? 'text-muted-foreground' : 'text-muted'}`}>{step.description}</p>
+                    <h3 className={`text-xl font-bold mb-3 transition-all duration-500 ${index <= activeStep ? 'text-foreground' : 'text-muted-foreground'}`}>{step.title}</h3>
+                    <p className={`text-sm max-w-md transition-all duration-500 ${index <= activeStep ? 'text-muted-foreground' : 'text-muted'}`}>{step.description}</p>
                   </div>
                 </div>
               ))}

@@ -11,6 +11,7 @@ import { CertificatesManagement } from "@/components/admin/certificates-manageme
 import { ReportsAnalytics } from "@/components/admin/reports-analytics"
 import { NewsManagement } from "@/components/admin/news-management"
 import { PartnershipInquiries } from "@/components/admin/partnership-inquiries"
+import { ContactSubmissions } from "@/components/admin/contact-submissions"
 import { AdminProtectedRoute } from "@/components/admin/admin-protected-route"
 
 export type AdminView =
@@ -24,6 +25,7 @@ export type AdminView =
   | "reports"
   | "settings"
   | "partnerships"
+  | "contacts"
 
 export default function AdminPage() {
   const [currentView, setCurrentView] = useState<AdminView>("dashboard")
@@ -40,6 +42,7 @@ export default function AdminPage() {
         {currentView === "certificates" && <CertificatesManagement />}
         {currentView === "reports" && <ReportsAnalytics />}
         {currentView === "partnerships" && <PartnershipInquiries />}
+        {currentView === "contacts" && <ContactSubmissions />}
       </AdminLayout>
     </AdminProtectedRoute>
   )

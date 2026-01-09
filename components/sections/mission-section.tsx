@@ -24,10 +24,10 @@ export function MissionSection() {
           <div className="w-full lg:w-1/2">
             <div className="max-w-md">
               {/* Overline */}
-              <div className="text-xs uppercase text-primary tracking-[2px] font-medium mb-4">НАША МИССИЯ</div>
+              <div className="text-xs uppercase text-primary tracking-[2px] font-bold mb-4">НАША МИССИЯ</div>
               
               {/* Title */}
-              <h2 className="text-4xl font-bold text-foreground mb-6">Восстановление лесов Казахстана</h2>
+              <h2 className="text-4xl font-extrabold text-foreground mb-6">Восстановление лесов Казахстана</h2>
               
               {/* Body text */}
               <p className="text-lg text-muted-foreground leading-[1.8] mb-8 max-w-md">

@@ -38,6 +38,7 @@ const navItems = [
   { id: "certificates" as AdminView, label: "Сертификаты", icon: Award },
   { id: "reports" as AdminView, label: "Аналитика", icon: BarChart3 },
   { id: "partnerships" as AdminView, label: "Партнерства", icon: Building },
+  { id: "contacts" as AdminView, label: "Обращения", icon: FileText },
   { id: "settings" as AdminView, label: "Настройки", icon: Settings },
 ]
 

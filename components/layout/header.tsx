@@ -16,7 +16,7 @@ export function Header() {
   useEffect(() => {
     const handleScroll = () => {
       // Check if we're past the hero section (approximately first 100vh)
-      const heroSection = document.querySelector('section.relative.flex.flex-grow');
+      const heroSection = document.querySelector('section.relative.flex.flex-grow') as HTMLElement;
       const heroHeight = heroSection ? heroSection.offsetHeight : window.innerHeight;
       setIsScrolled(window.scrollY > heroHeight - 100);
     }
@@ -47,7 +47,7 @@ export function Header() {
           </Link>
           <Link 
             href="/" 
-            className={`text-foreground font-extrabold leading-tight tracking-tight hidden sm:block transition-all duration-300 hover:text-primary ${isScrolled ? 'text-base' : 'text-lg'}`}
+            className={`font-extrabold leading-tight tracking-tight hidden sm:block transition-all duration-300 ${isScrolled ? 'text-base text-white' : 'text-lg text-white'}`}
           >
             Mukhatay Ormany
           </Link>
@@ -57,20 +57,20 @@ export function Header() {
         <nav className="hidden md:flex items-center gap-8">
           <Link className="relative text-white/70 hover:text-primary text-sm font-medium transition-all duration-300 hover:opacity-100" href="#locations">
             Локации
-            <span className="absolute bottom-[-6px] left-0 w-full h-0.5 bg-primary rounded-full scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
+            <span className="absolute bottom-[-6px] left-0 w-full h-0.5 bg-primary rounded-full scale-x-0 transition-transform duration-300 hover:scale-x-100"></span>
           </Link>
           <Link className="relative text-white/70 hover:text-primary text-sm font-medium transition-all duration-300 hover:opacity-100" href="#how-it-works">
             Как это работает
-            <span className="absolute bottom-[-6px] left-0 w-full h-0.5 bg-primary rounded-full scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
+            <span className="absolute bottom-[-6px] left-0 w-full h-0.5 bg-primary rounded-full scale-x-0 transition-transform duration-300 hover:scale-x-100"></span>
           </Link>
           <Link className="relative text-white/70 hover:text-primary text-sm font-medium transition-all duration-300 hover:opacity-100" href="#corporate">
             Для компаний
-            <span className="absolute bottom-[-6px] left-0 w-full h-0.5 bg-primary rounded-full scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
+            <span className="absolute bottom-[-6px] left-0 w-full h-0.5 bg-primary rounded-full scale-x-0 transition-transform duration-300 hover:scale-x-100"></span>
           </Link>
           <div className="h-4 w-px bg-white/20"></div>
           <Link className="relative text-white/70 hover:text-primary text-sm font-medium transition-all duration-300 hover:opacity-100" href="#contact">
             Контакты
-            <span className="absolute bottom-[-6px] left-0 w-full h-0.5 bg-primary rounded-full scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
+            <span className="absolute bottom-[-6px] left-0 w-full h-0.5 bg-primary rounded-full scale-x-0 transition-transform duration-300 hover:scale-x-100"></span>
           </Link>
         </nav>
 
