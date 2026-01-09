@@ -903,6 +903,55 @@ def submit_contact_form():
     
     return jsonify({'message': 'Сообщение успешно отправлено'}), 200
 
+@app.route('/api/partnership-inquiry', methods=['POST'])
+def submit_partnership_inquiry():
+    data = request.get_json()
+    
+    # Validate required fields
+    required_fields = ['companyName', 'contactPerson', 'email']
+    for field in required_fields:
+        if not data.get(field):
+            return jsonify({'message': f'Поле {field} обязательно'}), 400
+    
+    # Create partnership inquiry object
+    inquiry = {
+        'id': f"inquiry_{int(time.time())}_{uuid.uuid4().hex[:8]}",
+        'company_name': data.get('companyName'),
+        'contact_person': data.get('contactPerson'),
+        'email': data.get('email'),
+        'phone': data.get('phone', ''),
+        'partnership_type': data.get('partnershipType', ''),
+        'message': data.get('message', ''),
+        'created_at': datetime.datetime.utcnow().isoformat() + 'Z',
+        'status': 'pending'  # Default status
+    }
+    
+    # In a real application, you would save this to the database
+    # For now, we'll store in memory
+    if not hasattr(submit_partnership_inquiry, 'inquiries'):
+        submit_partnership_inquiry.inquiries = []
+    
+    submit_partnership_inquiry.inquiries.append(inquiry)
+    
+    # Here you would typically send an email notification
+    print(f"Partnership inquiry received: {inquiry}")
+    
+    return jsonify({'message': 'Заявка на партнерство успешно отправлена', 'inquiry_id': inquiry['id']}), 200
+
+@app.route('/api/admin/partnership-inquiries', methods=['GET'])
+@admin_required
+def admin_get_partnership_inquiries(current_user):
+    # Retrieve all partnership inquiries
+    if hasattr(submit_partnership_inquiry, 'inquiries'):
+        inquiries = submit_partnership_inquiry.inquiries
+    else:
+        inquiries = []
+    
+    # Sort by creation date (newest first)
+    sorted_inquiries = sorted(inquiries, key=lambda x: x['created_at'], reverse=True)
+    
+    return jsonify(sorted_inquiries)
+
 @app.route('/api/health', methods=['GET'])
 def health_check():
     return jsonify({'status': 'healthy', 'timestamp': datetime.datetime.utcnow().isoformat() + 'Z'})

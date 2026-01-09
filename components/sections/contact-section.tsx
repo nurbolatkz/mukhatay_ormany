@@ -146,7 +146,7 @@ export function ContactSection() {
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-[#1a3d2e] mb-2">Телефон</h3>
-                  <p className="text-base text-[#6b7280]">+7 (XXX) XXX-XX-XX</p>
+                  <p className="text-base text-[#6b7280]">+7 (702)999-98-49</p>
                   <p className="text-sm text-[#6b7280] mt-1">Работаем: Пн-Пт, 9:00-18:00</p>
                 </div>
               </div>

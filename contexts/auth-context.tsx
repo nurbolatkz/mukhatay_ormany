@@ -22,8 +22,8 @@ interface AuthContextType {
   isAuthenticated: boolean;
   loading: boolean;
   isAdmin: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
+  login: (email: string, password: string) => Promise<User>;
+  logout: (redirectToMain?: boolean) => void;
   register: (userData: { full_name: string; email: string; password: string; phone: string }) => Promise<void>;
 }
 
@@ -64,7 +64,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.log("AuthContext: Fetching user profile");
       const userData = await apiService.getUserProfile();
       console.log("AuthContext: User profile received:", userData);
-      setUser(userData);
+      setUser(userData as User);
       setIsAuthenticated(true);
       console.log("AuthContext: Authentication state set to true");
     } catch (error) {
@@ -89,11 +89,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.log("AuthContext: Login successful, fetching user profile");
       const userData = await apiService.getUserProfile();
       console.log("AuthContext: User profile received:", userData);
-      setUser(userData);
+      setUser(userData as User);
       setIsAuthenticated(true);
       console.log("AuthContext: Authentication state set to true");
       console.log("AuthContext: Login process completed");
-      return userData;
+      return userData as User;
     } catch (error) {
       console.error("AuthContext: Login error:", error);
       // Token might be invalid, clear it

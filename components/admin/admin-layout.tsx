@@ -21,6 +21,7 @@ import { useState } from "react"
 import type { AdminView } from "@/app/admin/page"
 import { useAuth } from "@/contexts/auth-context"
 import { useRouter } from "next/navigation"
+import { Building } from "lucide-react"
 interface AdminLayoutProps {
   children: React.ReactNode
   currentView: AdminView
@@ -36,6 +37,7 @@ const navItems = [
   { id: "news" as AdminView, label: "Новости", icon: FileText },
   { id: "certificates" as AdminView, label: "Сертификаты", icon: Award },
   { id: "reports" as AdminView, label: "Аналитика", icon: BarChart3 },
+  { id: "partnerships" as AdminView, label: "Партнерства", icon: Building },
   { id: "settings" as AdminView, label: "Настройки", icon: Settings },
 ]
 
@@ -44,8 +46,8 @@ export function AdminLayout({ children, currentView, onViewChange }: AdminLayout
   const { logout, user } = useAuth()
   const router = useRouter()
 
-  const handleLogout = async () => {
-    await logout(true)
+  const handleLogout = () => {
+    logout(true)
   }
 
   return (

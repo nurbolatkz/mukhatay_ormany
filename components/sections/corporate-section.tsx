@@ -1,3 +1,8 @@
+"use client";
+
+import { useState } from "react";
+import { PartnershipModal } from "./partnership-modal";
+
 const benefits = [
   {
     icon: "business_center",
@@ -17,6 +22,16 @@ const benefits = [
 ]
 
 export function CorporateSection() {
+  const [isPartnershipModalOpen, setIsPartnershipModalOpen] = useState(false);
+  
+  const openPartnershipModal = () => {
+    setIsPartnershipModalOpen(true);
+  };
+  
+  const closePartnershipModal = () => {
+    setIsPartnershipModalOpen(false);
+  };
+  
   return (
     <section id="corporate" className="py-20 bg-[#1a3d2e] relative overflow-hidden">
       {/* Gradient overlay */}
@@ -81,11 +96,19 @@ export function CorporateSection() {
 
         {/* CTA Section (Centered) */}
         <div className="text-center">
-          <button className="bg-primary text-background font-bold text-lg px-10 py-5 rounded-full mb-6 transition-all duration-300 hover:scale-105 hover:shadow-lg">
+          <button 
+            className="bg-primary text-background font-bold text-lg px-10 py-5 rounded-full mb-6 transition-all duration-300 hover:scale-105 hover:shadow-lg"
+            onClick={openPartnershipModal}
+          >
             Стать партнёром
           </button>
           <p className="text-white cursor-pointer hover:text-primary transition-colors duration-300">Скачать презентацию для партнеров</p>
         </div>
+        
+        <PartnershipModal 
+          isOpen={isPartnershipModalOpen} 
+          onClose={closePartnershipModal} 
+        />
       </div>
     </section>
   )

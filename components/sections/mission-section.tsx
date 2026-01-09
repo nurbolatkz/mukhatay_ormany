@@ -54,10 +54,7 @@ export function MissionSection() {
                 </div>
               </div>
               
-              {/* CTA Button */}
-              <button className="bg-primary text-background font-semibold px-8 py-4 rounded-full transition-all duration-300 hover:scale-105 hover:shadow-lg">
-                Узнать больше
-              </button>
+
             </div>
           </div>
         </div>

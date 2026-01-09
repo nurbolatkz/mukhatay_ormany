@@ -314,6 +314,46 @@ class ApiService {
   }
 
   /**
+   * Submit partnership inquiry
+   * @param {Object} inquiryData - Partnership inquiry data
+   * @returns {Promise<Object>} Response message
+   */
+  async submitPartnershipInquiry(inquiryData) {
+    try {
+      const response = await this.request('/api/partnership-inquiry', {
+        method: 'POST',
+        body: JSON.stringify(inquiryData),
+      });
+      return response;
+    } catch (error) {
+      // In production, we don't log errors to console to prevent information leakage
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Error submitting partnership inquiry:', error);
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Get partnership inquiries (admin only)
+   * @returns {Promise<Array>} List of partnership inquiries
+   */
+  async adminGetPartnershipInquiries() {
+    try {
+      const response = await this.request('/api/admin/partnership-inquiries', {
+        method: 'GET',
+      });
+      return response;
+    } catch (error) {
+      // In production, we don't log errors to console to prevent information leakage
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Error fetching partnership inquiries:', error);
+      }
+      throw error;
+    }
+  }
+
+  /**
    * Create a new news item (admin only)
    * @param {Object} newsData - News data
    * @returns {Promise<Object>} Created news response
