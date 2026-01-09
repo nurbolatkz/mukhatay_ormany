@@ -134,7 +134,7 @@ export function ContactSection() {
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-[#1a3d2e] mb-2">Email</h3>
-                  <p className="text-base text-[#6b7280]">info@mukhatayormany.kz</p>
+                  <p className="text-base text-[#6b7280]">forest.central.asia@gmail.com</p>
                 </div>
               </div>
             </Card>
@@ -146,7 +146,7 @@ export function ContactSection() {
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-[#1a3d2e] mb-2">Телефон</h3>
-                  <p className="text-base text-[#6b7280]">+7 (702)999-98-49</p>
+                  <p className="text-base text-[#6b7280]">+7 702 999 9849</p>
                   <p className="text-sm text-[#6b7280] mt-1">Работаем: Пн-Пт, 9:00-18:00</p>
                 </div>
               </div>
@@ -160,46 +160,20 @@ export function ContactSection() {
                 <div>
                   <h3 className="text-xl font-bold text-[#1a3d2e] mb-2">Адрес</h3>
                   <p className="text-base text-[#6b7280]">
-                    Казахстан, Астана
+                    Товарищество с ограниченной ответственностью
                     <br />
-                    Проекты: Шортандинский район,
+                    «Forest of Central Asia»
                     <br />
-                    Карагандинская область
+                    021606 Акмолинская область, Шортандинский
+                    <br />
+                    район, с.о Бозайгыр, ст. Тонкерис, улица
+                    <br />
+                    Дулатова, 40
                   </p>
                 </div>
               </div>
             </Card>
 
-            {/* Social Links */}
-            <div className="mt-8">
-              <h3 className="text-xl font-bold text-white mb-4">Мы в социальных сетях</h3>
-              <div className="flex gap-4">
-                {/* Facebook */}
-                <a href="https://facebook.com/mukhatayormany" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#f4e31e] transition-colors duration-300">
-                  <Facebook className="w-5 h-5 text-white" />
-                </a>
-                
-                {/* Instagram */}
-                <a href="https://instagram.com/mukhatayormany" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#f4e31e] transition-colors duration-300">
-                  <Instagram className="w-5 h-5 text-white" />
-                </a>
-                
-                {/* YouTube */}
-                <a href="https://youtube.com/@mukhatayormany" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#f4e31e] transition-colors duration-300">
-                  <Youtube className="w-5 h-5 text-white" />
-                </a>
-                
-                {/* Telegram */}
-                <a href="https://t.me/mukhatayormany" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#f4e31e] transition-colors duration-300">
-                  <Send className="w-5 h-5 text-white" />
-                </a>
-                
-                {/* WhatsApp */}
-                <a href="https://wa.me/77029999849" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#f4e31e] transition-colors duration-300">
-                  <MessageCircle className="w-5 h-5 text-white" />
-                </a>
-              </div>
-            </div>
           </div>
         </div>
       </div>
