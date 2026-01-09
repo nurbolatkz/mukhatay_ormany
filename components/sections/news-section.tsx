@@ -85,7 +85,7 @@ export function NewsSection() {
         {/* Section Header */}
         <div className="flex justify-between items-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-foreground">Новости <span className="text-primary">проекта</span></h2>
-          <a href="#" className="text-[#2d5a45] font-semibold text-lg flex items-center gap-2 hover:gap-3 transition-all duration-300 hover:text-primary">
+          <a href="/news" className="text-[#2d5a45] font-semibold text-lg flex items-center gap-2 hover:gap-3 transition-all duration-300 hover:text-primary">
             Все новости
             <span className="material-symbols-outlined !text-xl">arrow_forward</span>
           </a>
@@ -144,7 +144,7 @@ export function NewsSection() {
                     <p className="text-base text-[#6b7280] mb-5 leading-[1.6] line-clamp-3">{item.content.substring(0, 100)}{item.content.length > 100 ? '...' : ''}</p>
                     
                     {/* Read more link */}
-                    <div className="text-[#2d5a45] font-semibold flex items-center gap-2 hover:gap-3 transition-all duration-300 hover:text-primary cursor-pointer">
+                    <div className="text-[#2d5a45] font-semibold flex items-center gap-2 hover:gap-3 transition-all duration-300 hover:text-primary cursor-pointer" onClick={() => openNewsDetail(item)}>
                       Читать полностью
                       <span className="material-symbols-outlined !text-xl">arrow_forward</span>
                     </div>

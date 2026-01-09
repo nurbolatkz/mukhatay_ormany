@@ -818,6 +818,91 @@ def admin_delete_news(current_user, news_id):
     db.session.commit()
     return jsonify({'message': 'News deleted successfully'})
 
+# Transparency reports endpoints
+@app.route('/api/transparency-reports', methods=['GET'])
+def get_transparency_reports():
+    # Sample transparency report data
+    reports = [
+        {
+            'id': 'report_001',
+            'title': 'Ежегодный отчет 2023',
+            'type': 'report',
+            'thumbnail': '/annual-report-2023.jpg',
+            'date': '2024-01-15',
+            'views': 234,
+            'location': 'Казахстан',
+            'description': 'Подробный отчет о деятельности проекта за 2023 год'
+        },
+        {
+            'id': 'photo_001',
+            'title': 'Посадка в питомнике',
+            'type': 'photo',
+            'thumbnail': '/planting-nursery.jpg',
+            'date': '2024-03-15',
+            'views': 156,
+            'location': 'Шортандинский район',
+            'description': 'Фотоотчет о посадке деревьев в питомнике'
+        },
+        {
+            'id': 'video_001',
+            'title': 'Процесс посадки',
+            'type': 'video',
+            'thumbnail': '/planting-process.jpg',
+            'date': '2024-03-10',
+            'views': 289,
+            'location': 'Карагандинская область',
+            'description': 'Видео о процессе посадки деревьев'
+        },
+        {
+            'id': 'stat_001',
+            'title': 'Статистика 2023',
+            'type': 'statistics',
+            'thumbnail': '/stats-2023.jpg',
+            'date': '2024-01-15',
+            'views': 178,
+            'location': 'Казахстан',
+            'description': 'Статистические данные о посаженных деревьях за 2023 год'
+        },
+        {
+            'id': 'photo_002',
+            'title': 'Уход за саженцами',
+            'type': 'photo',
+            'thumbnail': '/care-of-saplings.jpg',
+            'date': '2024-04-05',
+            'views': 98,
+            'location': 'Шортандинский район',
+            'description': 'Фотоотчет об уходе за молодыми саженцами'
+        },
+        {
+            'id': 'video_002',
+            'title': 'Интервью с волонтером',
+            'type': 'video',
+            'thumbnail': '/volunteer-interview.jpg',
+            'date': '2024-02-20',
+            'views': 145,
+            'location': 'Карагандинская область',
+            'description': 'Интервью с участником проекта'
+        }
+    ]
+    return jsonify(reports)
+
+# Contact form endpoint
+@app.route('/api/contact', methods=['POST'])
+def submit_contact_form():
+    data = request.get_json()
+    
+    # Validate required fields
+    required_fields = ['name', 'email', 'message']
+    for field in required_fields:
+        if not data.get(field):
+            return jsonify({'message': f'Поле {field} обязательно'}), 400
+    
+    # Here you would typically send an email or save to a database
+    # For now, we'll just log the submission
+    print(f"Contact form received: {data}")
+    
+    return jsonify({'message': 'Сообщение успешно отправлено'}), 200
+
 @app.route('/api/health', methods=['GET'])
 def health_check():
     return jsonify({'status': 'healthy', 'timestamp': datetime.datetime.utcnow().isoformat() + 'Z'})

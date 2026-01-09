@@ -253,6 +253,65 @@ class ApiService {
       throw error;
     }
   }
+  
+  /**
+   * Submit contact form
+   * @param {Object} formData - Contact form data
+   * @returns {Promise<Object>} Submission response
+   */
+  async submitContactForm(formData) {
+    try {
+      const response = await this.request('/api/contact', {
+        method: 'POST',
+        body: JSON.stringify(formData),
+      });
+      return response;
+    } catch (error) {
+      // In production, we don't log errors to console to prevent information leakage
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Error submitting contact form:', error);
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Get transparency reports
+   * @returns {Promise<Array>} List of transparency reports
+   */
+  async getTransparencyReports() {
+    try {
+      const response = await this.request('/api/transparency-reports', {
+        method: 'GET',
+      });
+      return response;
+    } catch (error) {
+      // In production, we don't log errors to console to prevent information leakage
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Error fetching transparency reports:', error);
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Get user certificates
+   * @returns {Promise<Array>} List of user certificates
+   */
+  async getUserCertificates() {
+    try {
+      const response = await this.request('/api/users/me/certificates', {
+        method: 'GET',
+      });
+      return response;
+    } catch (error) {
+      // In production, we don't log errors to console to prevent information leakage
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Error fetching user certificates:', error);
+      }
+      throw error;
+    }
+  }
 
   /**
    * Create a new news item (admin only)

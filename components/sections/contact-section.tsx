@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Mail, Phone, MapPin, User, MessageCircle, Facebook, Instagram, Youtube, Send } from "lucide-react"
+import apiService from "@/services/api"
 
 export function ContactSection() {
   const [formData, setFormData] = useState({
@@ -17,12 +18,23 @@ export function ContactSection() {
     phone: "",
     message: "",
   })
-
-  const handleSubmit = (e: React.FormEvent) => {
+  
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("[v0] Contact form submitted:", formData)
-    alert("Спасибо за ваше сообщение! Мы свяжемся с вами в ближайшее время.")
-    setFormData({ name: "", email: "", phone: "", message: "" })
+    setIsSubmitting(true);
+    
+    try {
+      await apiService.submitContactForm(formData);
+      alert("Спасибо за ваше сообщение! Мы свяжемся с вами в ближайшее время.");
+      setFormData({ name: "", email: "", phone: "", message: "" });
+    } catch (error) {
+      console.error("Error submitting contact form:", error);
+      alert("Произошла ошибка при отправке формы. Пожалуйста, попробуйте снова.");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -163,27 +175,27 @@ export function ContactSection() {
               <h3 className="text-xl font-bold text-white mb-4">Мы в социальных сетях</h3>
               <div className="flex gap-4">
                 {/* Facebook */}
-                <a href="#" className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#f4e31e] transition-colors duration-300">
+                <a href="https://facebook.com/mukhatayormany" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#f4e31e] transition-colors duration-300">
                   <Facebook className="w-5 h-5 text-white" />
                 </a>
                 
                 {/* Instagram */}
-                <a href="#" className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#f4e31e] transition-colors duration-300">
+                <a href="https://instagram.com/mukhatayormany" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#f4e31e] transition-colors duration-300">
                   <Instagram className="w-5 h-5 text-white" />
                 </a>
                 
                 {/* YouTube */}
-                <a href="#" className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#f4e31e] transition-colors duration-300">
+                <a href="https://youtube.com/@mukhatayormany" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#f4e31e] transition-colors duration-300">
                   <Youtube className="w-5 h-5 text-white" />
                 </a>
                 
                 {/* Telegram */}
-                <a href="#" className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#f4e31e] transition-colors duration-300">
+                <a href="https://t.me/mukhatayormany" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#f4e31e] transition-colors duration-300">
                   <Send className="w-5 h-5 text-white" />
                 </a>
                 
                 {/* WhatsApp */}
-                <a href="#" className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#f4e31e] transition-colors duration-300">
+                <a href="https://wa.me/77029999849" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#f4e31e] transition-colors duration-300">
                   <MessageCircle className="w-5 h-5 text-white" />
                 </a>
               </div>

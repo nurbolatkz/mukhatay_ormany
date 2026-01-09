@@ -13,27 +13,27 @@ export function Footer() {
             <p className="text-sm text-white/50 mb-4">Реальное лесовосстановление в Казахстане</p>
             <div className="flex gap-4">
               {/* Facebook */}
-              <a href="#" className="text-white/70 hover:text-primary transition-colors">
+              <a href="https://facebook.com/mukhatayormany" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-primary transition-colors">
                 <Facebook className="w-6 h-6" />
               </a>
               
               {/* Instagram */}
-              <a href="#" className="text-white/70 hover:text-primary transition-colors">
+              <a href="https://instagram.com/mukhatayormany" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-primary transition-colors">
                 <Instagram className="w-6 h-6" />
               </a>
               
               {/* YouTube */}
-              <a href="#" className="text-white/70 hover:text-primary transition-colors">
+              <a href="https://youtube.com/@mukhatayormany" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-primary transition-colors">
                 <Youtube className="w-6 h-6" />
               </a>
               
               {/* Telegram */}
-              <a href="#" className="text-white/70 hover:text-primary transition-colors">
+              <a href="https://t.me/mukhatayormany" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-primary transition-colors">
                 <Send className="w-6 h-6" />
               </a>
               
               {/* WhatsApp */}
-              <a href="#" className="text-white/70 hover:text-primary transition-colors">
+              <a href="https://wa.me/77029999849" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-primary transition-colors">
                 <MessageCircle className="w-6 h-6" />
               </a>
             </div>
@@ -44,7 +44,7 @@ export function Footer() {
             <h4 className="font-semibold mb-4 text-white">Быстрые ссылки</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="#" className="text-white/70 hover:text-primary transition-colors">
+                <Link href="#mission" className="text-white/70 hover:text-primary transition-colors">
                   О проекте
                 </Link>
               </li>
@@ -59,7 +59,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-white/70 hover:text-primary transition-colors">
+                <Link href="#contact" className="text-white/70 hover:text-primary transition-colors">
                   Контакты
                 </Link>
               </li>

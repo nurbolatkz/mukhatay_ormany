@@ -1,37 +1,64 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Download, Share2, Award } from "lucide-react"
+import apiService from "@/services/api"
 
-const certificates = [
-  {
-    id: "CERT-2024-001",
-    donationId: "DON-2024-005",
-    trees: 25,
-    location: "Mukhatay Ormany",
-    date: "15 июня 2024",
-    image: "/tree-planting-certificate.jpg",
-  },
-  {
-    id: "CERT-2024-002",
-    donationId: "DON-2024-004",
-    trees: 10,
-    location: "Forest of Central Asia",
-    date: "8 мая 2024",
-    image: "/forest-certificate-green.jpg",
-  },
-  {
-    id: "CERT-2024-003",
-    donationId: "DON-2024-003",
-    trees: 50,
-    location: "Mukhatay Ormany",
-    date: "25 апреля 2024",
-    image: "/environmental-certificate.jpg",
-  },
-]
+interface Certificate {
+  id: string;
+  donation_id: string;
+  trees: number;
+  location: string;
+  date: string; // ISO string format
+  pdf_url: string;
+}
 
 export function Certificates() {
+  const [certificates, setCertificates] = useState<Certificate[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  
+  useEffect(() => {
+    const fetchCertificates = async () => {
+      try {
+        setLoading(true);
+        const data = await apiService.getUserCertificates();
+        setCertificates(data);
+      } catch (err) {
+        console.error('Error fetching certificates:', err);
+        setError('Failed to load certificates');
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchCertificates();
+  }, []);
+  
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[200px]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Загрузка сертификатов...</p>
+        </div>
+      </div>
+    );
+  }
+  
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-[200px]">
+        <div className="text-center">
+          <p className="text-red-500">{error}</p>
+          <p className="text-muted-foreground mt-2">Пожалуйста, попробуйте обновить страницу</p>
+        </div>
+      </div>
+    );
+  }
+  
   return (
     <div className="space-y-6">
       <div>
@@ -43,11 +70,13 @@ export function Certificates() {
         {certificates.map((cert) => (
           <Card key={cert.id} className="border-2 hover:shadow-lg transition-shadow overflow-hidden rounded-2xl">
             <div className="aspect-[3/2] bg-muted relative overflow-hidden rounded-t-2xl">
-              <img
-                src={cert.image || "/placeholder.svg"}
-                alt={`Сертификат ${cert.id}`}
-                className="object-cover w-full h-full"
-              />
+              <div className="w-full h-full bg-gradient-to-br from-emerald-50 to-amber-50 flex items-center justify-center">
+                <div className="text-center p-4">
+                  <Award className="h-16 w-16 text-emerald-600 mx-auto mb-4" />
+                  <h3 className="font-bold text-lg text-emerald-800">Сертификат</h3>
+                  <p className="text-sm text-emerald-600">{cert.id}</p>
+                </div>
+              </div>
               <div className="absolute top-4 right-4">
                 <div className="bg-white dark:bg-background rounded-full p-2 shadow-lg">
                   <Award className="h-6 w-6 text-emerald-600" />
@@ -58,18 +87,20 @@ export function Certificates() {
               <div>
                 <h3 className="font-semibold text-lg mb-2">{cert.id}</h3>
                 <div className="space-y-1 text-sm text-muted-foreground">
-                  <p>Пожертвование: {cert.donationId}</p>
+                  <p>Пожертвование: {cert.donation_id}</p>
                   <p>Деревьев: {cert.trees}</p>
                   <p>Локация: {cert.location}</p>
-                  <p>Дата выдачи: {cert.date}</p>
+                  <p>Дата выдачи: {new Date(cert.date).toLocaleDateString('ru-RU')}</p>
                 </div>
               </div>
 
               <div className="flex gap-2">
-                <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full">
-                  <Download className="h-4 w-4 mr-2" />
-                  Скачать PDF
-                </Button>
+                <a href={cert.pdf_url} target="_blank" rel="noopener noreferrer" className="w-full">
+                  <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-full">
+                    <Download className="h-4 w-4 mr-2" />
+                    Скачать PDF
+                  </Button>
+                </a>
                 <Button variant="outline" className="rounded-full">
                   <Share2 className="h-4 w-4" />
                 </Button>
