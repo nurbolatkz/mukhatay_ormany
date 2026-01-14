@@ -11,6 +11,18 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 import datetime
 import uuid
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+# Import Ioka service
+try:
+    from ioka_service import ioka_service
+    IOKA_ENABLED = True
+except Exception as e:
+    print(f"Warning: Ioka service not available: {e}")
+    IOKA_ENABLED = False
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///tree_donation.db')
@@ -65,6 +77,7 @@ class Donation(db.Model):
     status = db.Column(db.String)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     donor_info = db.Column(db.JSON)
+    payment_order_id = db.Column(db.String)  # Ioka payment order ID
 
 class Certificate(db.Model):
     id = db.Column(db.String, primary_key=True)
@@ -283,55 +296,145 @@ def create_guest_donation():
 @app.route('/api/donations/<string:donation_id>/payment', methods=['POST'])
 @token_required
 def process_payment(current_user, donation_id):
+    """Process payment for authenticated user donation using Ioka"""
     donation = Donation.query.get_or_404(donation_id)
     if donation.user_id != current_user.id:
         return jsonify({'message': 'Permission denied'}), 403
     
-    donation.status = 'completed'
-    
-    new_certificate = Certificate(
-        id=str(uuid.uuid4()),
-        donation_id=donation.id,
-        pdf_url=f"/certificates/{donation.id}.pdf"
-    )
-    db.session.add(new_certificate)
-    db.session.commit()
+    # If Ioka is enabled, create payment order
+    if IOKA_ENABLED:
+        try:
+            # Get location for description
+            location = Location.query.get(donation.location_id)
+            location_name = location.name if location else 'Unknown'
+            description = f"Посадка {donation.tree_count} деревьев в {location_name}"
+            
+            # Create Ioka payment order
+            payment_result = ioka_service.create_payment_order(
+                amount=donation.amount,
+                description=description,
+                donation_id=donation.id,
+                customer_email=current_user.email,
+                customer_name=current_user.full_name
+            )
+            
+            if payment_result.get('success'):
+                # Store Ioka order ID
+                donation.payment_order_id = payment_result.get('order_id')
+                donation.status = 'awaiting_payment'
+                db.session.commit()
+                
+                return jsonify({
+                    'success': True,
+                    'checkout_url': payment_result.get('checkout_url'),
+                    'order_id': payment_result.get('order_id'),
+                    'donation_id': donation.id,
+                    'status': donation.status
+                }), 200
+            else:
+                return jsonify({
+                    'success': False,
+                    'message': payment_result.get('message', 'Failed to create payment')
+                }), 500
+                
+        except Exception as e:
+            return jsonify({
+                'success': False,
+                'message': f'Payment processing error: {str(e)}'
+            }), 500
+    else:
+        # Fallback: mark as completed without payment gateway
+        donation.status = 'completed'
+        
+        new_certificate = Certificate(
+            id=str(uuid.uuid4()),
+            donation_id=donation.id,
+            pdf_url=f"/certificates/{donation.id}.pdf"
+        )
+        db.session.add(new_certificate)
+        db.session.commit()
 
-    response = {
-        "success": True,
-        "donation_id": donation.id,
-        "status": donation.status,
-        "certificate_id": new_certificate.id,
-        "updated_at": datetime.datetime.utcnow().isoformat() + 'Z'
-    }
-    return jsonify(response)
+        return jsonify({
+            "success": True,
+            "donation_id": donation.id,
+            "status": donation.status,
+            "certificate_id": new_certificate.id,
+            "updated_at": datetime.datetime.utcnow().isoformat() + 'Z'
+        })
 
 @app.route('/api/guest-donations/<string:donation_id>/payment', methods=['POST'])
 def process_guest_payment(donation_id):
+    """Process payment for guest donation using Ioka"""
     donation = Donation.query.get_or_404(donation_id)
     # For guest donations, we don't check user ownership
     # but we ensure it's actually a guest donation (user_id is None)
     if donation.user_id is not None:
         return jsonify({'message': 'Permission denied'}), 403
     
-    donation.status = 'completed'
-    
-    new_certificate = Certificate(
-        id=str(uuid.uuid4()),
-        donation_id=donation.id,
-        pdf_url=f"/certificates/{donation.id}.pdf"
-    )
-    db.session.add(new_certificate)
-    db.session.commit()
+    # If Ioka is enabled, create payment order
+    if IOKA_ENABLED:
+        try:
+            # Get location for description
+            location = Location.query.get(donation.location_id)
+            location_name = location.name if location else 'Unknown'
+            description = f"Посадка {donation.tree_count} деревьев в {location_name}"
+            
+            # Get donor info
+            donor_email = donation.donor_info.get('email') if donation.donor_info else None
+            donor_name = donation.donor_info.get('full_name') if donation.donor_info else None
+            
+            # Create Ioka payment order
+            payment_result = ioka_service.create_payment_order(
+                amount=donation.amount,
+                description=description,
+                donation_id=donation.id,
+                customer_email=donor_email,
+                customer_name=donor_name
+            )
+            
+            if payment_result.get('success'):
+                # Store Ioka order ID
+                donation.payment_order_id = payment_result.get('order_id')
+                donation.status = 'awaiting_payment'
+                db.session.commit()
+                
+                return jsonify({
+                    'success': True,
+                    'checkout_url': payment_result.get('checkout_url'),
+                    'order_id': payment_result.get('order_id'),
+                    'donation_id': donation.id,
+                    'status': donation.status
+                }), 200
+            else:
+                return jsonify({
+                    'success': False,
+                    'message': payment_result.get('message', 'Failed to create payment')
+                }), 500
+                
+        except Exception as e:
+            return jsonify({
+                'success': False,
+                'message': f'Payment processing error: {str(e)}'
+            }), 500
+    else:
+        # Fallback: mark as completed without payment gateway
+        donation.status = 'completed'
+        
+        new_certificate = Certificate(
+            id=str(uuid.uuid4()),
+            donation_id=donation.id,
+            pdf_url=f"/certificates/{donation.id}.pdf"
+        )
+        db.session.add(new_certificate)
+        db.session.commit()
 
-    response = {
-        "success": True,
-        "donation_id": donation.id,
-        "status": donation.status,
-        "certificate_id": new_certificate.id,
-        "updated_at": datetime.datetime.utcnow().isoformat() + 'Z'
-    }
-    return jsonify(response)
+        return jsonify({
+            "success": True,
+            "donation_id": donation.id,
+            "status": donation.status,
+            "certificate_id": new_certificate.id,
+            "updated_at": datetime.datetime.utcnow().isoformat() + 'Z'
+        })
 
 @app.route('/api/users/me/donations', methods=['GET'])
 @token_required
@@ -986,6 +1089,74 @@ def admin_get_contact_submissions(current_user):
     sorted_submissions = sorted(submissions, key=lambda x: x['created_at'], reverse=True)
     
     return jsonify(sorted_submissions)
+
+# Ioka Webhook Endpoint
+@app.route('/api/webhooks/ioka', methods=['POST'])
+def ioka_webhook():
+    """Handle Ioka payment webhook notifications"""
+    if not IOKA_ENABLED:
+        return jsonify({'message': 'Ioka integration not enabled'}), 503
+    
+    try:
+        # Get raw request body for signature verification
+        payload = request.get_data()
+        signature = request.headers.get('X-Ioka-Signature', '')
+        
+        # Verify webhook signature
+        if not ioka_service.verify_webhook_signature(payload, signature):
+            return jsonify({'message': 'Invalid signature'}), 401
+        
+        # Parse webhook data
+        data = request.get_json()
+        event_type = data.get('event')
+        order_data = data.get('object', {})
+        
+        # Extract donation ID from external_id
+        donation_id = order_data.get('external_id')
+        if not donation_id:
+            return jsonify({'message': 'Missing external_id'}), 400
+        
+        # Find donation
+        donation = Donation.query.filter_by(id=donation_id).first()
+        if not donation:
+            return jsonify({'message': 'Donation not found'}), 404
+        
+        # Handle different event types
+        if event_type == 'payment.succeeded':
+            # Payment successful - mark donation as completed
+            donation.status = 'completed'
+            
+            # Create certificate if it doesn't exist
+            existing_certificate = Certificate.query.filter_by(donation_id=donation.id).first()
+            if not existing_certificate:
+                new_certificate = Certificate(
+                    id=str(uuid.uuid4()),
+                    donation_id=donation.id,
+                    pdf_url=f"/certificates/{donation.id}.pdf"
+                )
+                db.session.add(new_certificate)
+            
+            db.session.commit()
+            print(f"Payment succeeded for donation {donation_id}")
+            
+        elif event_type == 'payment.failed':
+            # Payment failed
+            donation.status = 'failed'
+            db.session.commit()
+            print(f"Payment failed for donation {donation_id}")
+            
+        elif event_type == 'payment.cancelled':
+            # Payment cancelled
+            donation.status = 'cancelled'
+            db.session.commit()
+            print(f"Payment cancelled for donation {donation_id}")
+        
+        # Return success to Ioka
+        return jsonify({'success': True}), 200
+        
+    except Exception as e:
+        print(f"Webhook error: {str(e)}")
+        return jsonify({'message': f'Webhook processing error: {str(e)}'}), 500
 
 @app.route('/api/health', methods=['GET'])
 def health_check():

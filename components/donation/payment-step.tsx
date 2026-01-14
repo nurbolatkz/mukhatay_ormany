@@ -75,63 +75,51 @@ export function PaymentStep({ donationData, onBack }: PaymentStepProps) {
         }
       }
       
-      console.log("[v0] Creating donation in backend:", donationPayload)
+      console.log("Creating donation in backend:", donationPayload)
       // Check if user is authenticated to determine if this is a guest donation
       const isGuest = !user;
       const createdDonation = await apiService.createDonation(donationPayload, isGuest)
-      console.log("[v0] Donation created:", createdDonation)
+      console.log("Donation created:", createdDonation)
       
       // Type assertion to access the id property
       const donationId = (createdDonation as { id: string }).id
       
-      // TEMPORARY: Redirect to WhatsApp instead of processing payment
-      // Save donation to localStorage with email for future linking
-      const donationRecord = {
-        id: donationId,
-        date: new Date().toLocaleDateString('ru-RU'),
-        location: locationName,
-        trees: donationData.treeCount,
-        amount: donationData.amount,
-        status: "В ожидании", // Pending status
-        statusColor: "yellow",
-        email: donationData.donorInfo.email // Store email for linking
-      }
+      // Process payment through Ioka
+      console.log("Processing payment for donation:", donationId)
+      const paymentResult = await apiService.processPayment(donationId, {}, isGuest) as any
+      console.log("Payment result:", paymentResult)
       
-      const userDonations = JSON.parse(localStorage.getItem('userDonations') || '[]')
-      userDonations.push(donationRecord)
-      localStorage.setItem('userDonations', JSON.stringify(userDonations))
-      
-      // Clear pending donation data
-      localStorage.removeItem('pendingDonation')
-      
-      // Prepare WhatsApp message
-      const locationInfo = locationData ? `${locationData.name} (${locationData.coordinates})` : locationName;
-      // Note: The donation ID will be available after the donation is created in the backend
-      const whatsappMessage = `New Tree Donation Request:%0AName: ${encodeURIComponent(donationData.donorInfo.fullName)}%0AEmail: ${encodeURIComponent(donationData.donorInfo.email)}%0APhone: ${encodeURIComponent(donationData.donorInfo.phone)}%0ATree Count: ${donationData.treeCount}%0ALocation: ${encodeURIComponent(locationInfo)}%0AAmount: ${donationData.amount} KZT%0ADonation ID: ${donationId}`;
-      
-      // Redirect to WhatsApp - responsive approach for both desktop and mobile
-      const whatsappUrl = `https://wa.me/77029999849?text=${whatsappMessage}`;
-      
-      // Detect mobile device
-      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      
-      if (isMobile) {
-        // On mobile, directly navigate to WhatsApp (opens in WhatsApp app if installed)
-        window.location.href = whatsappUrl;
+      // Check if Ioka payment was successful
+      if (paymentResult.success && paymentResult.checkout_url) {
+        // Save donation info to localStorage for tracking
+        const donationRecord = {
+          id: donationId,
+          date: new Date().toLocaleDateString('ru-RU'),
+          location: locationName,
+          trees: donationData.treeCount,
+          amount: donationData.amount,
+          status: "В ожидании оплаты",
+          statusColor: "yellow",
+          email: donationData.donorInfo.email,
+          order_id: paymentResult.order_id
+        }
+        
+        const userDonations = JSON.parse(localStorage.getItem('userDonations') || '[]')
+        userDonations.push(donationRecord)
+        localStorage.setItem('userDonations', JSON.stringify(userDonations))
+        
+        // Clear pending donation data
+        localStorage.removeItem('pendingDonation')
+        
+        // Redirect to Ioka checkout
+        window.location.href = paymentResult.checkout_url
       } else {
-        // On desktop, open in new tab
-        window.open(whatsappUrl, '_blank');
+        // Fallback if Ioka is not configured - show error
+        throw new Error(paymentResult.message || 'Не удалось создать платежный заказ')
       }
-      
-      // Show confirmation message
-      alert("Ваша заявка на пожертвование отправлена! Мы свяжемся с вами через WhatsApp для подтверждения оплаты. Спасибо за ваш вклад в восстановление лесов!")
-      setIsProcessing(false)
-      
-      // Redirect to home page after WhatsApp redirect
-      router.push('/')
     } catch (error) {
-      console.error("[v0] Error creating donation:", error)
-      alert("Произошла ошибка при создании заявки на пожертвование. Пожалуйста, попробуйте еще раз.")
+      console.error("Error processing payment:", error)
+      alert("Произошла ошибка при обработке платежа. Пожалуйста, попробуйте еще раз.")
       setIsProcessing(false)
     }
   }
@@ -230,23 +218,23 @@ export function PaymentStep({ donationData, onBack }: PaymentStepProps) {
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
                   <div className="flex h-6 w-6 items-center justify-center rounded-full border-[6px] border-primary bg-transparent"></div>
-                  <span className="text-xl font-bold text-foreground">Оплата через WhatsApp</span>
+                  <span className="text-xl font-bold text-foreground">Безопасная оплата Ioka</span>
                 </div>
-                <span className="rounded-full bg-transparent border border-transparent px-3 py-1 text-xs font-bold text-transparent">ВРЕМЕННО</span>
+                <span className="rounded-full bg-primary/10 border border-primary/20 px-3 py-1 text-xs font-bold text-primary">ЗАЩИЩЕНО</span>
               </div>
               
               <div className="space-y-4">
                 <div className="flex flex-col items-center text-center gap-4 py-4">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#25D366]/10 text-[#25D366] border border-[#25D366]/20">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary border border-primary/20">
                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M21 12.5c0 1.38-.56 2.63-1.46 3.54l-1.27 1.27c-.91.9-2.16 1.46-3.54 1.46-.97 0-1.94-.27-2.78-.8l-9.06-5.72c-.55-.35-.86-.96-.8-1.6-.06-.64.25-1.25.8-1.6l9.06-5.72c.84-.53 1.81-.8 2.78-.8 1.38 0 2.63.56 3.54 1.46l1.27 1.27c.9.91 1.46 2.16 1.46 3.54Z"/>
-                      <path d="m7 12 5.5 2.5M12.5 9.5 17 7"/>
+                      <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+                      <line x1="1" y1="10" x2="23" y2="10"/>
                     </svg>
                   </div>
                   <div>
-                    <h4 className="text-lg font-bold text-foreground">Оплата через WhatsApp</h4>
+                    <h4 className="text-lg font-bold text-foreground">Оплата банковской картой</h4>
                     <p className="text-sm leading-relaxed text-foreground/70 mt-2">
-                      После подтверждения вашей заявки вы будете перенаправлены в WhatsApp для завершения оплаты.
+                      После подтверждения вы будете перенаправлены на защищенную страницу оплаты Ioka для завершения платежа.
                     </p>
                   </div>
                 </div>
@@ -260,17 +248,29 @@ export function PaymentStep({ donationData, onBack }: PaymentStepProps) {
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="material-symbols-outlined !text-[16px] text-primary mt-0.5">check_circle</span>
-                      <span>Откроется WhatsApp с предзаполненным сообщением</span>
+                      <span>Перенаправление на защищенную страницу Ioka Checkout</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="material-symbols-outlined !text-[16px] text-primary mt-0.5">check_circle</span>
-                      <span>Наш менеджер свяжется с вами для подтверждения оплаты</span>
+                      <span>Введите данные банковской карты</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="material-symbols-outlined !text-[16px] text-primary mt-0.5">check_circle</span>
                       <span>После оплаты вы получите сертификат посадки</span>
                     </li>
                   </ul>
+                </div>
+                
+                <div className="rounded-lg bg-card/5 border border-border/10 p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="material-symbols-outlined text-primary !text-[20px]">credit_card</span>
+                    <h5 className="font-semibold text-foreground">Принимаем к оплате:</h5>
+                  </div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <div className="px-3 py-1 rounded bg-background border border-border text-xs font-bold">VISA</div>
+                    <div className="px-3 py-1 rounded bg-background border border-border text-xs font-bold">MasterCard</div>
+                    <div className="px-3 py-1 rounded bg-background border border-border text-xs font-bold">МИР</div>
+                  </div>
                 </div>
               </div>
             </div>
