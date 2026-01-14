@@ -32,6 +32,17 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', os.urandom(24))  # Use e
 # Enable CORS for all routes
 CORS(app)
 
+# Add request logging
+import logging
+logging.basicConfig(level=logging.DEBUG)
+app.logger.setLevel(logging.DEBUG)
+
+@app.before_request
+def log_request_info():
+    app.logger.debug(f'Request: {request.method} {request.path}')
+    if request.data:
+        app.logger.debug(f'Body: {request.get_data(as_text=True)[:200]}')
+
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
@@ -297,6 +308,10 @@ def create_guest_donation():
 @token_required
 def process_payment(current_user, donation_id):
     """Process payment for authenticated user donation using Ioka"""
+    print(f"\n=== PAYMENT REQUEST for donation {donation_id} ===")
+    print(f"User: {current_user.email}")
+    print(f"IOKA_ENABLED: {IOKA_ENABLED}")
+    
     donation = Donation.query.get_or_404(donation_id)
     if donation.user_id != current_user.id:
         return jsonify({'message': 'Permission denied'}), 403
@@ -310,6 +325,7 @@ def process_payment(current_user, donation_id):
             description = f"Посадка {donation.tree_count} деревьев в {location_name}"
             
             # Create Ioka payment order
+            print(f"Creating Ioka payment order for donation {donation.id}")
             payment_result = ioka_service.create_payment_order(
                 amount=donation.amount,
                 description=description,
@@ -317,6 +333,7 @@ def process_payment(current_user, donation_id):
                 customer_email=current_user.email,
                 customer_name=current_user.full_name
             )
+            print(f"Ioka payment result: {payment_result}")
             
             if payment_result.get('success'):
                 # Store Ioka order ID
@@ -365,6 +382,9 @@ def process_payment(current_user, donation_id):
 @app.route('/api/guest-donations/<string:donation_id>/payment', methods=['POST'])
 def process_guest_payment(donation_id):
     """Process payment for guest donation using Ioka"""
+    print(f"\n=== GUEST PAYMENT REQUEST for donation {donation_id} ===")
+    print(f"IOKA_ENABLED: {IOKA_ENABLED}")
+    
     donation = Donation.query.get_or_404(donation_id)
     # For guest donations, we don't check user ownership
     # but we ensure it's actually a guest donation (user_id is None)
@@ -1180,4 +1200,4 @@ if __name__ == '__main__':
     # }
     # users_db.append(test_user)
     
-    app.run(debug=False, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5000)

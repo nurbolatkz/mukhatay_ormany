@@ -17,6 +17,7 @@ class IokaService:
     
     def __init__(self):
         self.api_key = os.environ.get('IOKA_API_KEY', '')
+        
         self.base_url = os.environ.get('IOKA_BASE_URL', 'https://stage-api.ioka.kz')
         self.webhook_secret = os.environ.get('IOKA_WEBHOOK_SECRET', '')
         self.frontend_url = os.environ.get('FRONTEND_URL', 'http://localhost:3000')
@@ -28,7 +29,7 @@ class IokaService:
     def _get_headers(self) -> Dict[str, str]:
         """Get headers for Ioka API requests"""
         return {
-            'Authorization': f'Bearer {self.api_key}',
+            'API-KEY': self.api_key,
             'Content-Type': 'application/json'
         }
     
@@ -44,7 +45,7 @@ class IokaService:
         Create a payment order in Ioka
         
         Args:
-            amount: Amount in tenge (integer, e.g., 1000 for 1000 KZT)
+            amount: Amount in tenge (will be converted to tiyn)
             description: Payment description
             donation_id: Unique donation ID
             customer_email: Customer email (optional)
@@ -55,9 +56,12 @@ class IokaService:
         """
         url = f"{self.base_url}/v2/orders"
         
+        # Convert Tenge to Tiyn (1 Tenge = 100 Tiyn)
+        amount_tiyn = int(amount * 100)
+        
         # Prepare payment data
         payload = {
-            "amount": amount,
+            "amount": amount_tiyn,
             "currency": "KZT",
             "capture_method": "AUTO",
             "external_id": donation_id,
@@ -77,6 +81,7 @@ class IokaService:
                 payload["customer"]["name"] = customer_name
         
         try:
+            print(f"Creating payment to Ioka with data: {payload}")
             response = requests.post(
                 url,
                 headers=self._get_headers(),
@@ -85,7 +90,10 @@ class IokaService:
             )
             response.raise_for_status()
             
-            data = response.json()
+            response_json = response.json()
+            # The documentation shows the response might contain an 'order' key 
+            # or the order object might be at the root level.
+            data = response_json.get('order', response_json)
             
             return {
                 'success': True,
@@ -123,7 +131,8 @@ class IokaService:
             )
             response.raise_for_status()
             
-            data = response.json()
+            response_json = response.json()
+            data = response_json.get('order', response_json)
             
             return {
                 'success': True,
@@ -186,6 +195,7 @@ class IokaService:
             payload['amount'] = amount
         
         try:
+            print(f"Refunding payment to Ioka with data: {payload}")
             response = requests.post(
                 url,
                 headers=self._get_headers(),
