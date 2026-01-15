@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_cors import CORS
@@ -24,7 +24,7 @@ except Exception as e:
     print(f"Warning: Ioka service not available: {e}")
     IOKA_ENABLED = False
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///tree_donation.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', os.urandom(24))  # Use environment variable or generate random key
@@ -1177,6 +1177,11 @@ def ioka_webhook():
     except Exception as e:
         print(f"Webhook error: {str(e)}")
         return jsonify({'message': f'Webhook processing error: {str(e)}'}), 500
+
+@app.route('/certificates/<path:filename>')
+def serve_certificate(filename):
+    """Serve certificate PDF files from the static directory"""
+    return send_from_directory(os.path.join(app.root_path, 'static', 'certificates'), filename)
 
 @app.route('/api/donations/<string:donation_id>/status', methods=['GET'])
 def get_donation_status(donation_id):

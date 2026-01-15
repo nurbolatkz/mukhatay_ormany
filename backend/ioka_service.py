@@ -88,6 +88,11 @@ class IokaService:
                 json=payload,
                 timeout=10
             )
+            
+            if not response.ok:
+                print(f"IOKA API ERROR: Status {response.status_code}")
+                print(f"Response Body: {response.text}")
+                
             response.raise_for_status()
             
             response_json = response.json()
@@ -129,6 +134,11 @@ class IokaService:
                 headers=self._get_headers(),
                 timeout=10
             )
+            
+            if not response.ok:
+                print(f"IOKA GET STATUS ERROR: Status {response.status_code}")
+                print(f"Response Body: {response.text}")
+                
             response.raise_for_status()
             
             response_json = response.json()
@@ -202,6 +212,11 @@ class IokaService:
                 json=payload if payload else None,
                 timeout=10
             )
+            
+            if not response.ok:
+                print(f"IOKA REFUND ERROR: Status {response.status_code}")
+                print(f"Response Body: {response.text}")
+                
             response.raise_for_status()
             
             data = response.json()
