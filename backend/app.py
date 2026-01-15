@@ -13,6 +13,18 @@ import datetime
 import uuid
 from dotenv import load_dotenv
 
+# PDF Generation Imports
+try:
+    from reportlab.pdfgen import canvas
+    from reportlab.lib.pagesizes import A4, landscape
+    from reportlab.lib import colors
+    from reportlab.pdfbase import pdfmetrics
+    from reportlab.pdfbase.ttfonts import TTFont
+    PDF_ENABLED = True
+except ImportError:
+    PDF_ENABLED = False
+    print("Warning: reportlab not installed. PDF generation disabled.")
+
 # Load environment variables
 load_dotenv()
 
@@ -45,6 +57,70 @@ def log_request_info():
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+
+def generate_certificate_pdf(donation):
+    """Generate a physical PDF file for the certificate"""
+    if not PDF_ENABLED:
+        return None
+        
+    try:
+        # Create directory if it doesn't exist
+        certificates_dir = os.path.join(app.root_path, 'static', 'certificates')
+        if not os.path.exists(certificates_dir):
+            os.makedirs(certificates_dir)
+            
+        file_path = os.path.join(certificates_dir, f"{donation.id}.pdf")
+        
+        # Create canvas
+        c = canvas.Canvas(file_path, pagesize=landscape(A4))
+        width, height = landscape(A4)
+        
+        # Background color
+        c.setFillColor(colors.HexColor('#F9FDF9'))
+        c.rect(0, 0, width, height, fill=1)
+        
+        # Border
+        c.setStrokeColor(colors.HexColor('#10B981'))
+        c.setLineWidth(10)
+        c.rect(20, 20, width-40, height-40)
+        
+        # Title
+        c.setFillColor(colors.HexColor('#064E3B'))
+        c.setFont("Helvetica-Bold", 40)
+        c.drawCentredString(width/2, height - 100, "СЕРТИФИКАТ ПОСАДКИ")
+        
+        # Message
+        c.setFont("Helvetica", 20)
+        c.drawCentredString(width/2, height - 160, "Настоящим подтверждается, что")
+        
+        # Donor Name
+        donor_name = donation.donor_info.get('full_name', 'Анонимный благотворитель')
+        c.setFont("Helvetica-Bold", 30)
+        c.drawCentredString(width/2, height - 220, donor_name)
+        
+        # Contribution
+        c.setFont("Helvetica", 20)
+        c.drawCentredString(width/2, height - 280, f"внес(ла) вклад в посадку {donation.tree_count} деревьев")
+        
+        # Location
+        location = Location.query.get(donation.location_id)
+        location_name = location.name if location else 'Mukhatay Ormany'
+        c.drawCentredString(width/2, height - 320, f"в локации {location_name}")
+        
+        # Date
+        c.setFont("Helvetica", 14)
+        date_str = donation.created_at.strftime('%d.%m.%Y')
+        c.drawCentredString(width/2, 100, f"Дата: {date_str}")
+        
+        # ID
+        c.setFont("Helvetica-Oblique", 10)
+        c.drawCentredString(width/2, 60, f"ID Сертификата: {donation.id}")
+        
+        c.save()
+        return f"/certificates/{donation.id}.pdf"
+    except Exception as e:
+        print(f"Error generating PDF: {e}")
+        return None
 
 # Models
 class User(db.Model):
@@ -366,7 +442,7 @@ def process_payment(current_user, donation_id):
         new_certificate = Certificate(
             id=str(uuid.uuid4()),
             donation_id=donation.id,
-            pdf_url=f"/certificates/{donation.id}.pdf"
+            pdf_url=f"/api/certificates/{donation.id}.pdf"
         )
         db.session.add(new_certificate)
         db.session.commit()
@@ -443,7 +519,7 @@ def process_guest_payment(donation_id):
         new_certificate = Certificate(
             id=str(uuid.uuid4()),
             donation_id=donation.id,
-            pdf_url=f"/certificates/{donation.id}.pdf"
+            pdf_url=f"/api/certificates/{donation.id}.pdf"
         )
         db.session.add(new_certificate)
         db.session.commit()
@@ -533,7 +609,7 @@ def get_user_certificates(current_user):
             "trees": tree_count,
             "location": location_id,
             "date": certificate.created_date.isoformat() + 'Z' if certificate.created_date else None,
-            "pdf_url": certificate.pdf_url
+            "pdf_url": f"/api/certificates/{certificate.donation_id}.pdf"
         }
         output.append(certificate_data)
     return jsonify(output)
@@ -1149,10 +1225,13 @@ def ioka_webhook():
             # Create certificate if it doesn't exist
             existing_certificate = Certificate.query.filter_by(donation_id=donation.id).first()
             if not existing_certificate:
+                # Generate physical PDF
+                pdf_path = generate_certificate_pdf(donation)
+                
                 new_certificate = Certificate(
                     id=str(uuid.uuid4()),
                     donation_id=donation.id,
-                    pdf_url=f"/certificates/{donation.id}.pdf"
+                    pdf_url=pdf_path or f"/certificates/{donation.id}.pdf"
                 )
                 db.session.add(new_certificate)
             
@@ -1199,10 +1278,13 @@ def get_donation_status(donation_id):
                 # Ensure certificate is created
                 existing_certificate = Certificate.query.filter_by(donation_id=donation.id).first()
                 if not existing_certificate:
+                    # Generate physical PDF
+                    pdf_path = generate_certificate_pdf(donation)
+                    
                     new_certificate = Certificate(
                         id=str(uuid.uuid4()),
                         donation_id=donation.id,
-                        pdf_url=f"/certificates/{donation.id}.pdf"
+                        pdf_url=pdf_path or f"/certificates/{donation.id}.pdf"
                     )
                     db.session.add(new_certificate)
                 db.session.commit()
@@ -1221,6 +1303,9 @@ def get_donation_status(donation_id):
     
     certificate = Certificate.query.filter_by(donation_id=donation.id).first()
     
+    # Return frontend proxy URL instead of direct backend link
+    certificate_url = f"/api/certificates/{donation.id}.pdf" if certificate else None
+    
     return jsonify({
         'id': donation.id,
         'status': donation.status,
@@ -1230,7 +1315,7 @@ def get_donation_status(donation_id):
         'is_guest': is_guest,
         'has_account': has_account,
         'certificate_available': certificate is not None,
-        'certificate_url': certificate.pdf_url if certificate else None
+        'certificate_url': certificate_url
     })
 
 
