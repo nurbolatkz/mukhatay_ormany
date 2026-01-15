@@ -91,6 +91,9 @@ export function PaymentStep({ donationData, onBack }: PaymentStepProps) {
       
       // Check if Ioka payment was successful
       if (paymentResult.success && paymentResult.checkout_url) {
+        // Store donation ID for return check
+        localStorage.setItem('lastDonationId', donationId)
+        
         // Save donation info to localStorage for tracking
         const donationRecord = {
           id: donationId,

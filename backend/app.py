@@ -1178,9 +1178,55 @@ def ioka_webhook():
         print(f"Webhook error: {str(e)}")
         return jsonify({'message': f'Webhook processing error: {str(e)}'}), 500
 
-@app.route('/api/health', methods=['GET'])
-def health_check():
-    return jsonify({'status': 'healthy', 'timestamp': datetime.datetime.utcnow().isoformat() + 'Z'})
+@app.route('/api/donations/<string:donation_id>/status', methods=['GET'])
+def get_donation_status(donation_id):
+    """Check donation status and provide info for the success page"""
+    donation = Donation.query.get_or_404(donation_id)
+    
+    # If it's still awaiting payment, we can optionally check Ioka directly 
+    # to be sure in case the webhook is delayed
+    if donation.status == 'awaiting_payment' and IOKA_ENABLED and donation.payment_order_id:
+        status_result = ioka_service.get_payment_status(donation.payment_order_id)
+        if status_result.get('success'):
+            ioka_status = status_result.get('status')
+            if ioka_status == 'PAID':
+                donation.status = 'completed'
+                # Ensure certificate is created
+                existing_certificate = Certificate.query.filter_by(donation_id=donation.id).first()
+                if not existing_certificate:
+                    new_certificate = Certificate(
+                        id=str(uuid.uuid4()),
+                        donation_id=donation.id,
+                        pdf_url=f"/certificates/{donation.id}.pdf"
+                    )
+                    db.session.add(new_certificate)
+                db.session.commit()
+            elif ioka_status in ['CANCELLED', 'EXPIRED']:
+                donation.status = 'cancelled'
+                db.session.commit()
+            elif ioka_status == 'DECLINED':
+                donation.status = 'failed'
+                db.session.commit()
+
+    is_guest = donation.user_id is None
+    has_account = False
+    if is_guest and donation.email:
+        existing_user = User.query.filter_by(email=donation.email).first()
+        has_account = existing_user is not None
+    
+    certificate = Certificate.query.filter_by(donation_id=donation.id).first()
+    
+    return jsonify({
+        'id': donation.id,
+        'status': donation.status,
+        'amount': donation.amount,
+        'tree_count': donation.tree_count,
+        'email': donation.email,
+        'is_guest': is_guest,
+        'has_account': has_account,
+        'certificate_available': certificate is not None,
+        'certificate_url': certificate.pdf_url if certificate else None
+    })
 
 
 if __name__ == '__main__':

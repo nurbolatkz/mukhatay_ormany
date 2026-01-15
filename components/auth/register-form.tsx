@@ -17,7 +17,7 @@ export function RegisterForm() {
   const searchParams = useSearchParams();
   const [formData, setFormData] = useState({
     full_name: "",
-    email: "",
+    email: searchParams.get('email') || "",
     password: "",
     phone: ""
   });

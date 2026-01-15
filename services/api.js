@@ -216,6 +216,25 @@ class ApiService {
   }
 
   /**
+   * Get donation status
+   * @param {string} donationId - Donation ID
+   * @returns {Promise<Object>} Donation status info
+   */
+  async getDonationStatus(donationId) {
+    try {
+      const response = await this.request(`/api/donations/${donationId}/status`, {
+        method: 'GET',
+      });
+      return response;
+    } catch (error) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Error fetching donation status:', error);
+      }
+      throw error;
+    }
+  }
+
+  /**
    * Get all news items
    * @returns {Promise<Array>} List of news items
    */

@@ -66,8 +66,8 @@ class IokaService:
             "capture_method": "AUTO",
             "external_id": donation_id,
             "description": description,
-            "back_url": f"{self.frontend_url}/donate?status=completed&donation_id={donation_id}",
-            "success_url": f"{self.frontend_url}/donate?status=success&donation_id={donation_id}",
+            "back_url": f"{self.frontend_url}/payment/success?donation_id={donation_id}",
+            "success_url": f"{self.frontend_url}/payment/success?donation_id={donation_id}",
             "failure_url": f"{self.frontend_url}/donate?status=failed&donation_id={donation_id}",
             "webhook_url": f"{self.backend_url}/api/webhooks/ioka"
         }

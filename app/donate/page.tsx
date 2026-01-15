@@ -52,20 +52,39 @@ function DonateContent({}) {
 
   // Check for pending donation data when component mounts
   useEffect(() => {
-    const step = searchParams.get('step')
-    if (step === 'complete') {
-      const pendingDonation = localStorage.getItem('pendingDonation')
-      if (pendingDonation) {
+    // Check if user is returning from a payment attempt
+    const checkPaymentReturn = async () => {
+      const lastDonationId = localStorage.getItem('lastDonationId')
+      if (lastDonationId) {
         try {
-          const { donationData: savedData } = JSON.parse(pendingDonation)
-          setDonationData(savedData)
-          setCurrentStep(2) // Go to payment step
-        } catch (error) {
-          console.error('Error restoring donation data:', error)
+          const status = await apiService.getDonationStatus(lastDonationId) as any
+          if (status.status === 'completed') {
+            // If already paid, redirect to success page
+            router.replace(`/payment/success?donation_id=${lastDonationId}`)
+            return
+          }
+        } catch (e) {
+          console.error("Error checking last donation status", e)
+        }
+      }
+
+      const step = searchParams.get('step')
+      if (step === 'complete') {
+        const pendingDonation = localStorage.getItem('pendingDonation')
+        if (pendingDonation) {
+          try {
+            const { donationData: savedData } = JSON.parse(pendingDonation)
+            setDonationData(savedData)
+            setCurrentStep(2) // Go to payment step
+          } catch (error) {
+            console.error('Error restoring donation data:', error)
+          }
         }
       }
     }
-  }, [searchParams])
+
+    checkPaymentReturn()
+  }, [searchParams, router])
 
   // Fetch locations and select one randomly
   useEffect(() => {
