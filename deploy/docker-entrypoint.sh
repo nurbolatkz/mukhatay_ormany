@@ -1,18 +1,34 @@
-#!/bin/bash
 
-# Exit on error
+#!/bin/bash
 set -e
 
-echo "Waiting for database to be ready..."
-# docker-compose healthcheck handles the wait
+echo "⏳ Waiting for database to be ready..."
+sleep 5
 
-echo "Applying database migrations..."
-# This will create tables if they don't exist OR update them if they do
-flask db upgrade
+# Проверяем существует ли папка migrations
+if [ ! -d "migrations" ]; then
+    echo "📁 Creating migrations directory..."
+    flask db init
+    echo "✅ Migrations directory created"
+    
+    echo "📝 Creating initial migration..."
+    flask db migrate -m "Initial migration"
+    echo "✅ Initial migration created"
+fi
 
-echo "Seeding database with default data..."
-# Run seed script to ensure locations/packages exist (it should handle duplicates safely)
-python seed.py || echo "Seeding skipped or already done"
+echo "🔄 Applying database migrations..."
+flask db upgrade || {
+    echo "⚠️ Migration failed, trying to create tables directly..."
+    python << PYTHON
+from app import app, db
+with app.app_context():
+    db.create_all()
+    print("✅ Tables created directly")
+PYTHON
+}
 
-echo "Starting application..."
-exec gunicorn --bind 0.0.0.0:5000 --workers 3 --timeout 120 app:app
+echo "🌱 Seeding database with default data..."
+python seed.py || echo "⚠️ Seeding skipped or already done"
+
+echo "🚀 Starting application..."
+exec gunicorn --bind 0.0.0.0:5000 --workers 3 --timeout 120 --access-logfile - --error-logfile - app:app
