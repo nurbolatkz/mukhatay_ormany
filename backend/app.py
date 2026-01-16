@@ -1336,9 +1336,21 @@ def ioka_webhook():
         return jsonify({'message': f'Webhook processing error: {str(e)}'}), 500
 
 @app.route('/certificates/<path:filename>')
+@app.route('/api/certificates/<path:filename>')
 def serve_certificate(filename):
     """Serve certificate PDF files from the static directory"""
-    return send_from_directory(os.path.join(app.root_path, 'static', 'certificates'), filename)
+    # Remove any directory traversal or extra paths
+    filename = os.path.basename(filename)
+    directory = os.path.join(app.root_path, 'static', 'certificates')
+    file_path = os.path.join(directory, filename)
+    
+    app.logger.debug(f"Serving certificate: {filename} from {directory}")
+    
+    if not os.path.exists(file_path):
+        app.logger.error(f"Certificate file not found: {file_path}")
+        return jsonify({"message": "Certificate file not found on server"}), 404
+        
+    return send_from_directory(directory, filename)
 
 @app.route('/api/donations/<string:donation_id>/status', methods=['GET'])
 def get_donation_status(donation_id):
@@ -1353,18 +1365,23 @@ def get_donation_status(donation_id):
             ioka_status = status_result.get('status')
             if ioka_status == 'PAID':
                 donation.status = 'completed'
-                # Ensure certificate is created
+                # Ensure certificate is created and physical file exists
+                certificates_dir = os.path.join(app.root_path, 'static', 'certificates')
+                certificate_file = os.path.join(certificates_dir, f"{donation.id}.pdf")
+                
                 existing_certificate = Certificate.query.filter_by(donation_id=donation.id).first()
-                if not existing_certificate:
-                    # Generate physical PDF
+                
+                if not existing_certificate or not os.path.exists(certificate_file):
+                    # Generate/Regenerate physical PDF
                     pdf_path = generate_certificate_pdf(donation)
                     
-                    new_certificate = Certificate(
-                        id=str(uuid.uuid4()),
-                        donation_id=donation.id,
-                        pdf_url=pdf_path or f"/certificates/{donation.id}.pdf"
-                    )
-                    db.session.add(new_certificate)
+                    if not existing_certificate:
+                        new_certificate = Certificate(
+                            id=str(uuid.uuid4()),
+                            donation_id=donation.id,
+                            pdf_url=pdf_path or f"/api/certificates/{donation.id}.pdf"
+                        )
+                        db.session.add(new_certificate)
                 db.session.commit()
             elif ioka_status in ['CANCELLED', 'EXPIRED']:
                 donation.status = 'cancelled'
