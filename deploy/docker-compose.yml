@@ -1,24 +1,6 @@
 version: '3.8'
 
 services:
-  postgres:
-    image: postgres:15-alpine
-    container_name: mukhatay-ormany-postgres
-    restart: unless-stopped
-    networks:
-      - mukhatay_network
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_DB=mukhatay_user
-      - POSTGRES_USER=mukhatay_user
-      - POSTGRES_PASSWORD=StrongPassword2025!
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U mukhatay_user"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   backend:
     build:
       context: ..
@@ -26,17 +8,14 @@ services:
     container_name: mukhatay-ormany-backend
     restart: unless-stopped
     networks:
-      - mukhatay_network
+      - shared_network
     ports:
-      - "127.0.0.1:5001:5000"  # Биндим на localhost:5001
+      - "127.0.0.1:5001:5000"
     environment:
       - FLASK_ENV=production
-      - DATABASE_URL=postgresql://mukhatay_user:StrongPassword2025!@postgres:5432/mukhatay_user
+      - DATABASE_URL=postgresql://mukhatay_user:StrongPassword2025!@shared-postgres:5432/mukhatay_db
       - SECRET_KEY=your_secure_secret_key_here_2025_mukhatay_ormany
       - FLASK_HOST=0.0.0.0
-    depends_on:
-      postgres:
-        condition: service_healthy
 
   frontend:
     build:
@@ -45,21 +24,18 @@ services:
     container_name: mukhatay-ormany-frontend
     restart: unless-stopped
     networks:
-      - mukhatay_network
+      - shared_network
     ports:
-      - "127.0.0.1:3001:3000"  # Биндим на localhost:3001
+      - "127.0.0.1:3001:3000"
     environment:
       - NEXT_PUBLIC_API_URL=https://mukhatayormany.kz
-      - BACKEND_URL=http://backend:5000  # Внутренняя связь между контейнерами
+      - BACKEND_URL=http://mukhatay-ormany-backend:5000
       - NODE_ENV=production
       - PORT=3000
       - HOSTNAME=0.0.0.0
     depends_on:
       - backend
 
-volumes:
-  postgres_data:
-
 networks:
-  mukhatay_network:
-    driver: bridge
+  shared_network:
+    external: true
