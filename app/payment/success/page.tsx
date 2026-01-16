@@ -18,6 +18,45 @@ function SuccessContent() {
   const [statusInfo, setStatusInfo] = useState<any>(null)
   const [error, setError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
+  const [isDownloading, setIsDownloading] = useState(false)
+
+  const clearLastDonation = () => {
+    localStorage.removeItem('lastDonationId')
+  }
+
+  const handleDownload = async () => {
+    if (!statusInfo?.certificate_url) return
+    
+    setIsDownloading(true)
+    try {
+      const response = await fetch(statusInfo.certificate_url)
+      if (!response.ok) throw new Error("Файл не найден")
+      
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `certificate-${donationId}.pdf`
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(a)
+      
+      toast({
+        title: "Успех",
+        description: "Сертификат успешно загружен",
+      })
+    } catch (err: any) {
+      console.error("Download error:", err)
+      toast({
+        title: "Ошибка",
+        description: "Не удалось скачать сертификат. Попробуйте позже.",
+        variant: "destructive"
+      })
+    } finally {
+      setIsDownloading(false)
+    }
+  }
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)
@@ -166,11 +205,18 @@ function SuccessContent() {
           </div>
 
           {statusInfo.certificate_available && (
-            <Button variant="outline" asChild className="w-full h-14 text-lg font-bold border-2 rounded-2xl group">
-              <a href={statusInfo.certificate_url} target="_blank" rel="noopener noreferrer">
+            <Button 
+              variant="outline" 
+              onClick={handleDownload}
+              disabled={isDownloading}
+              className="w-full h-14 text-lg font-bold border-2 rounded-2xl group"
+            >
+              {isDownloading ? (
+                <Spinner className="mr-2 h-5 w-5" />
+              ) : (
                 <Download className="mr-2 h-5 w-5 group-hover:translate-y-0.5 transition-transform" />
-                Скачать сертификат
-              </a>
+              )}
+              {isDownloading ? "Загрузка..." : "Скачать сертификат"}
             </Button>
           )}
 
@@ -201,26 +247,29 @@ function SuccessContent() {
               </div>
               
               <div className="flex flex-col gap-3">
-                <Button asChild className="w-full h-14 text-lg font-extrabold bg-primary text-background-dark hover:bg-primary/90 shadow-xl shadow-primary/20 rounded-2xl">
+                <Button asChild onClick={clearLastDonation} className="w-full h-14 text-lg font-extrabold bg-primary text-background-dark hover:bg-primary/90 shadow-xl shadow-primary/20 rounded-2xl">
                   <Link href={`/register?email=${encodeURIComponent(statusInfo.email || "")}`}>
                     Создать аккаунт и сохранить вклад
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
-                <Button variant="ghost" asChild className="w-full font-bold text-muted-foreground hover:text-foreground">
+                <Button variant="ghost" asChild onClick={clearLastDonation} className="w-full font-bold text-muted-foreground hover:text-foreground">
                   <Link href="/">Остаться гостем</Link>
                 </Button>
               </div>
             </div>
           ) : (
             <div className="flex flex-col gap-3">
-              <Button asChild className="w-full h-14 text-lg font-extrabold bg-primary text-background-dark hover:bg-primary/90 shadow-xl shadow-primary/20 rounded-2xl">
+              <Button asChild onClick={clearLastDonation} className="w-full h-14 text-lg font-extrabold bg-primary text-background-dark hover:bg-primary/90 shadow-xl shadow-primary/20 rounded-2xl">
                 <Link href="/cabinet">
                   Перейти в личный кабинет
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              <Button variant="ghost" asChild className="w-full font-bold text-muted-foreground hover:text-foreground">
+              <Button variant="outline" asChild onClick={clearLastDonation} className="w-full h-12 border-2 rounded-xl font-bold">
+                <Link href="/donate">Посадить еще одно дерево</Link>
+              </Button>
+              <Button variant="ghost" asChild onClick={clearLastDonation} className="w-full font-bold text-muted-foreground hover:text-foreground">
                 <Link href="/">Вернуться на главную</Link>
               </Button>
             </div>

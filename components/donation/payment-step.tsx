@@ -81,8 +81,13 @@ export function PaymentStep({ donationData, onBack }: PaymentStepProps) {
       const createdDonation = await apiService.createDonation(donationPayload, isGuest)
       console.log("Donation created:", createdDonation)
       
-      // Type assertion to access the id property
+      // Type assertion to access the id and user_id property
       const donationId = (createdDonation as { id: string }).id
+      const guestUserId = (createdDonation as { user_id?: string }).user_id
+      
+      if (guestUserId) {
+        localStorage.setItem('guestUserId', guestUserId)
+      }
       
       // Process payment through Ioka
       console.log("Processing payment for donation:", donationId)

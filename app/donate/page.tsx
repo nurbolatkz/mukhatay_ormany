@@ -55,11 +55,23 @@ function DonateContent({}) {
     // Check if user is returning from a payment attempt
     const checkPaymentReturn = async () => {
       const lastDonationId = localStorage.getItem('lastDonationId')
+      
+      // Only trigger the "back-button protection" if we are likely returning from a payment process
+      // We check if there's an ID in the URL OR if we have a recently completed donation in storage
+      const urlDonationId = searchParams.get('donation_id')
+      
       if (lastDonationId) {
         try {
           const status = await apiService.getDonationStatus(lastDonationId) as any
           if (status.status === 'completed') {
-            // If already paid, redirect to success page
+            // If the user arrived here WITHOUT an ID in the URL, they might be trying a NEW donation
+            // In that case, we clear the old one and let them proceed
+            if (!urlDonationId) {
+              localStorage.removeItem('lastDonationId')
+              return
+            }
+            
+            // If they HAVE an ID in URL or we're sure they shouldn't be here, redirect
             router.replace(`/payment/success?donation_id=${lastDonationId}`)
             return
           }

@@ -63,6 +63,11 @@ def generate_certificate_pdf(donation):
     if not PDF_ENABLED:
         return None
         
+    # Extra safety check: only generate if paid
+    if donation.status != 'completed':
+        print(f"Skipping PDF generation: donation {donation.id} status is {donation.status}")
+        return None
+        
     try:
         # Create directory if it doesn't exist
         certificates_dir = os.path.join(app.root_path, 'static', 'certificates')
@@ -131,6 +136,7 @@ class User(db.Model):
     phone = db.Column(db.String)
     company_name = db.Column(db.String)
     role = db.Column(db.String, default='user')
+    status = db.Column(db.String, default='active')  # active, guest
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     last_login = db.Column(db.DateTime)
 
@@ -212,26 +218,72 @@ def token_required(f):
 def register_user():
     try:
         data = request.get_json()
+        guest_user_id = data.get('guest_user_id')
         
-        # Check if user already exists
-        existing_user = User.query.filter_by(email=data['email']).first()
+        # Try to find user to upgrade (either by guest ID or email)
+        existing_user = None
+        if guest_user_id:
+            existing_user = User.query.get(guest_user_id)
+        
+        if not existing_user:
+            existing_user = User.query.filter_by(email=data['email']).first()
+        
         if existing_user:
-            return jsonify({'message': 'Пользователь с таким email уже существует'}), 400
+            if existing_user.status == 'guest':
+                # UPGRADE Guest to Active
+                
+                # If changing email, check if new email is already taken by another active user
+                if existing_user.email != data['email']:
+                    email_taken = User.query.filter_by(email=data['email']).first()
+                    if email_taken and email_taken.id != existing_user.id:
+                        return jsonify({'message': 'Этот email уже используется другим аккаунтом'}), 400
+                
+                hashed_password = generate_password_hash(data['password'], method='pbkdf2:sha256', salt_length=12)
+                existing_user.full_name = data.get('full_name', existing_user.full_name)
+                existing_user.email = data['email']
+                existing_user.password = hashed_password
+                existing_user.phone = data.get('phone', existing_user.phone)
+                existing_user.status = 'active'
+                
+                # Re-link any other donations with the NEW email that might have been legacy guests
+                legacy_donations = Donation.query.filter_by(email=existing_user.email, user_id=None).all()
+                for d in legacy_donations:
+                    d.user_id = existing_user.id
+                
+                db.session.commit()
+                return jsonify({
+                    'message': 'Аккаунт успешно активирован!',
+                    'user_id': existing_user.id,
+                    'is_upgrade': True
+                })
+            else:
+                return jsonify({'message': 'Пользователь с таким email уже существует'}), 400
         
-        # Use stronger password hashing
+        # Create new active user from scratch
         hashed_password = generate_password_hash(data['password'], method='pbkdf2:sha256', salt_length=12)
-        new_user = User(id=str(uuid.uuid4()), full_name=data['full_name'], email=data['email'], password=hashed_password, phone=data['phone'])
+        new_user = User(
+            id=str(uuid.uuid4()), 
+            full_name=data['full_name'], 
+            email=data['email'], 
+            password=hashed_password, 
+            phone=data['phone'],
+            status='active'
+        )
         db.session.add(new_user)
         db.session.commit()
         
-        # Link any guest donations with the same email
+        # Link any legacy guest donations with the same email
         guest_donations = Donation.query.filter_by(email=data['email'], user_id=None).all()
         for donation in guest_donations:
             donation.user_id = new_user.id
         if guest_donations:
             db.session.commit()
         
-        return jsonify({'message': 'Новый пользователь создан!'})
+        return jsonify({
+            'message': 'Новый пользователь создан!',
+            'user_id': new_user.id,
+            'is_upgrade': False
+        })
     except Exception as e:
         # Handle database integrity errors (like duplicate emails)
         db.session.rollback()
@@ -363,14 +415,33 @@ def create_guest_donation():
     data = request.get_json()
     
     # Extract email from donor_info
-    donor_email = data.get('donor_info', {}).get('email')
+    donor_info = data.get('donor_info', {})
+    donor_email = donor_info.get('email')
+    donor_name = donor_info.get('full_name')
+    
+    if not donor_email:
+        return jsonify({'message': 'Email is required'}), 400
+
+    # Link to guest user or existing user
+    user = User.query.filter_by(email=donor_email).first()
+    if not user:
+        # Create a guest user if they don't exist
+        user = User(
+            id=str(uuid.uuid4()),
+            full_name=donor_name,
+            email=donor_email,
+            password=generate_password_hash(str(uuid.uuid4()), method='pbkdf2:sha256', salt_length=12),
+            status='guest'
+        )
+        db.session.add(user)
+        db.session.commit()
     
     new_donation = Donation(
         id=str(uuid.uuid4()),
         location_id=data['location_id'],
         package_id=data['package_id'],
-        user_id=None,  # No user for guest donations
-        email=donor_email,  # Store email for linking later
+        user_id=user.id,
+        email=donor_email,
         tree_count=data['tree_count'],
         amount=data['amount'],
         status='pending',
@@ -378,7 +449,12 @@ def create_guest_donation():
     )
     db.session.add(new_donation)
     db.session.commit()
-    return jsonify({'id': new_donation.id, 'status': new_donation.status}), 201
+    return jsonify({
+        'id': new_donation.id, 
+        'status': new_donation.status,
+        'user_id': user.id,
+        'is_guest': user.status == 'guest'
+    }), 201
 
 @app.route('/api/donations/<string:donation_id>/payment', methods=['POST'])
 @token_required
@@ -462,10 +538,11 @@ def process_guest_payment(donation_id):
     print(f"IOKA_ENABLED: {IOKA_ENABLED}")
     
     donation = Donation.query.get_or_404(donation_id)
-    # For guest donations, we don't check user ownership
-    # but we ensure it's actually a guest donation (user_id is None)
-    if donation.user_id is not None:
-        return jsonify({'message': 'Permission denied'}), 403
+    
+    # Check if the associated user is a guest
+    user = User.query.get(donation.user_id)
+    if user and user.status == 'active':
+        return jsonify({'message': 'Please login to continue with this donation'}), 403
     
     # If Ioka is enabled, create payment order
     if IOKA_ENABLED:
@@ -577,6 +654,7 @@ def get_user_profile(current_user):
         'phone': current_user.phone,
         'company_name': current_user.company_name,
         'role': current_user.role,
+        'status': current_user.status,
         'created_at': current_user.created_at.isoformat() + 'Z' if current_user.created_at else None,
         'last_login': current_user.last_login.isoformat() + 'Z' if current_user.last_login else None
     }
@@ -1295,12 +1373,19 @@ def get_donation_status(donation_id):
                 donation.status = 'failed'
                 db.session.commit()
 
-    is_guest = donation.user_id is None
+    user = User.query.get(donation.user_id) if donation.user_id else None
+    is_guest = True
     has_account = False
-    if is_guest and donation.email:
-        existing_user = User.query.filter_by(email=donation.email).first()
-        has_account = existing_user is not None
     
+    if user:
+        is_guest = (user.status == 'guest')
+        has_account = (user.status == 'active')
+    elif donation.email:
+        existing_user = User.query.filter_by(email=donation.email).first()
+        if existing_user:
+            has_account = (existing_user.status == 'active')
+            is_guest = (existing_user.status == 'guest')
+
     certificate = Certificate.query.filter_by(donation_id=donation.id).first()
     
     # Return frontend proxy URL instead of direct backend link

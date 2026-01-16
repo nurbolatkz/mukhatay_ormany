@@ -13,6 +13,7 @@ interface User {
   phone: string;
   company_name: string;
   role: string;
+  status: string;
   created_at: string;
   last_login: string | null;
 }
