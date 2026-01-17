@@ -25,6 +25,38 @@ except ImportError:
     PDF_ENABLED = False
     print("Warning: reportlab not installed. PDF generation disabled.")
 
+# Register fonts for Cyrillic support
+def register_pdf_fonts():
+    if not PDF_ENABLED:
+        return
+    try:
+        # Try to find a font that supports Cyrillic
+        # We'll look for DejaVuSans which is common in Linux
+        font_paths = [
+            "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+            "/usr/share/fonts/TTF/DejaVuSans.ttf",
+            "C:\\Windows\\Fonts\\arial.ttf",  # Local Windows testing
+            os.path.join(app.root_path, 'static', 'fonts', 'DejaVuSans.ttf')
+        ]
+        
+        registered = False
+        for path in font_paths:
+            if os.path.exists(path):
+                pdfmetrics.registerFont(TTFont('Cyrillic', path))
+                pdfmetrics.registerFont(TTFont('Cyrillic-Bold', path.replace('.ttf', '-Bold.ttf') if os.path.exists(path.replace('.ttf', '-Bold.ttf')) else path))
+                registered = True
+                print(f"Registered Cyrillic font from: {path}")
+                break
+        
+        if not registered:
+            print("Warning: No Cyrillic-capable font found. PDF text may be garbled.")
+    except Exception as e:
+        print(f"Error registering fonts: {e}")
+
+# Call font registration
+with app.app_context():
+    register_pdf_fonts()
+
 # Load environment variables
 load_dotenv()
 
@@ -58,6 +90,42 @@ def log_request_info():
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
+def register_fonts():
+    """Register fonts that support Cyrillic characters"""
+    try:
+        # Option 1: Use DejaVu fonts (commonly available in Docker container after our recent Dockerfile update)
+        # We'll look for DejaVuSans which is provided by fonts-dejavu-core
+        font_paths = [
+            "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+            "/usr/share/fonts/TTF/DejaVuSans.ttf",
+            "C:\\Windows\\Fonts\\arial.ttf",  # Local Windows testing
+            os.path.join(app.root_path, 'static', 'fonts', 'DejaVuSans.ttf')
+        ]
+        
+        for path in font_paths:
+            if os.path.exists(path):
+                bold_path = path.replace('.ttf', '-Bold.ttf')
+                if not os.path.exists(bold_path):
+                    bold_path = path # fallback to regular if bold not found
+                
+                pdfmetrics.registerFont(TTFont('DejaVu', path))
+                pdfmetrics.registerFont(TTFont('DejaVu-Bold', bold_path))
+                return 'DejaVu', 'DejaVu-Bold'
+        
+        # Fallback 2: try system fonts (Liberation)
+        liberation_path = '/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf'
+        liberation_bold = '/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf'
+        if os.path.exists(liberation_path):
+            pdfmetrics.registerFont(TTFont('Arial', liberation_path))
+            pdfmetrics.registerFont(TTFont('Arial-Bold', liberation_bold if os.path.exists(liberation_bold) else liberation_path))
+            return 'Arial', 'Arial-Bold'
+
+        print("Warning: No Cyrillic fonts available, text may not display correctly")
+        return 'Helvetica', 'Helvetica-Bold'
+    except Exception as e:
+        print(f"Error registering fonts: {e}")
+        return 'Helvetica', 'Helvetica-Bold'
+
 def generate_certificate_pdf(donation):
     """Generate a physical PDF file for the certificate"""
     if not PDF_ENABLED:
@@ -69,6 +137,9 @@ def generate_certificate_pdf(donation):
         return None
         
     try:
+        # Register fonts at the start
+        font_name, font_bold = register_fonts()
+        
         # Create directory if it doesn't exist
         certificates_dir = os.path.join(app.root_path, 'static', 'certificates')
         if not os.path.exists(certificates_dir):
@@ -91,20 +162,20 @@ def generate_certificate_pdf(donation):
         
         # Title
         c.setFillColor(colors.HexColor('#064E3B'))
-        c.setFont("Helvetica-Bold", 40)
+        c.setFont(font_bold, 40)
         c.drawCentredString(width/2, height - 100, "СЕРТИФИКАТ ПОСАДКИ")
         
         # Message
-        c.setFont("Helvetica", 20)
+        c.setFont(font_name, 20)
         c.drawCentredString(width/2, height - 160, "Настоящим подтверждается, что")
         
         # Donor Name
         donor_name = donation.donor_info.get('full_name', 'Анонимный благотворитель')
-        c.setFont("Helvetica-Bold", 30)
+        c.setFont(font_bold, 30)
         c.drawCentredString(width/2, height - 220, donor_name)
         
         # Contribution
-        c.setFont("Helvetica", 20)
+        c.setFont(font_name, 20)
         c.drawCentredString(width/2, height - 280, f"внес(ла) вклад в посадку {donation.tree_count} деревьев")
         
         # Location
@@ -113,12 +184,12 @@ def generate_certificate_pdf(donation):
         c.drawCentredString(width/2, height - 320, f"в локации {location_name}")
         
         # Date
-        c.setFont("Helvetica", 14)
+        c.setFont(font_name, 14)
         date_str = donation.created_at.strftime('%d.%m.%Y')
         c.drawCentredString(width/2, 100, f"Дата: {date_str}")
         
         # ID
-        c.setFont("Helvetica-Oblique", 10)
+        c.setFont(font_name, 10)
         c.drawCentredString(width/2, 60, f"ID Сертификата: {donation.id}")
         
         c.save()
