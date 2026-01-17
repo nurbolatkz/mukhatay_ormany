@@ -25,48 +25,8 @@ except ImportError:
     PDF_ENABLED = False
     print("Warning: reportlab not installed. PDF generation disabled.")
 
-# Register fonts for Cyrillic support
-def register_pdf_fonts():
-    if not PDF_ENABLED:
-        return
-    try:
-        # Try to find a font that supports Cyrillic
-        # We'll look for DejaVuSans which is common in Linux
-        font_paths = [
-            "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-            "/usr/share/fonts/TTF/DejaVuSans.ttf",
-            "C:\\Windows\\Fonts\\arial.ttf",  # Local Windows testing
-            os.path.join(app.root_path, 'static', 'fonts', 'DejaVuSans.ttf')
-        ]
-        
-        registered = False
-        for path in font_paths:
-            if os.path.exists(path):
-                pdfmetrics.registerFont(TTFont('Cyrillic', path))
-                pdfmetrics.registerFont(TTFont('Cyrillic-Bold', path.replace('.ttf', '-Bold.ttf') if os.path.exists(path.replace('.ttf', '-Bold.ttf')) else path))
-                registered = True
-                print(f"Registered Cyrillic font from: {path}")
-                break
-        
-        if not registered:
-            print("Warning: No Cyrillic-capable font found. PDF text may be garbled.")
-    except Exception as e:
-        print(f"Error registering fonts: {e}")
-
-# Call font registration
-with app.app_context():
-    register_pdf_fonts()
-
 # Load environment variables
 load_dotenv()
-
-# Import Ioka service
-try:
-    from ioka_service import ioka_service
-    IOKA_ENABLED = True
-except Exception as e:
-    print(f"Warning: Ioka service not available: {e}")
-    IOKA_ENABLED = False
 
 app = Flask(__name__, static_folder='static')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///tree_donation.db')
@@ -75,6 +35,14 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', os.urandom(24))  # Use e
 
 # Enable CORS for all routes
 CORS(app)
+
+# Import Ioka service
+try:
+    from ioka_service import ioka_service
+    IOKA_ENABLED = True
+except Exception as e:
+    print(f"Warning: Ioka service not available: {e}")
+    IOKA_ENABLED = False
 
 # Add request logging
 import logging
@@ -89,6 +57,36 @@ def log_request_info():
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+
+# Register fonts at startup
+with app.app_context():
+    if PDF_ENABLED:
+        try:
+            # We call this to ensure fonts are registered on startup
+            # The function itself handles path detection
+            from reportlab.pdfbase import pdfmetrics
+            from reportlab.pdfbase.ttfonts import TTFont
+            
+            def register_fonts_startup():
+                font_paths = [
+                    "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+                    "/usr/share/fonts/TTF/DejaVuSans.ttf",
+                    "C:\\Windows\\Fonts\\arial.ttf",
+                    os.path.join(app.root_path, 'static', 'fonts', 'DejaVuSans.ttf')
+                ]
+                for path in font_paths:
+                    if os.path.exists(path):
+                        bold_path = path.replace('.ttf', '-Bold.ttf')
+                        if not os.path.exists(bold_path): bold_path = path
+                        pdfmetrics.registerFont(TTFont('DejaVu', path))
+                        pdfmetrics.registerFont(TTFont('DejaVu-Bold', bold_path))
+                        print(f"Registered Cyrillic fonts from {path}")
+                        return True
+                return False
+            
+            register_fonts_startup()
+        except Exception as e:
+            print(f"Startup font registration warning: {e}")
 
 def register_fonts():
     """Register fonts that support Cyrillic characters"""
